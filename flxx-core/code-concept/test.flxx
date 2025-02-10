@@ -1,0 +1,5 @@
+# test program, adds an immediate to memory, then adds it to a second immediate, pushes it onto the stack
+$r0 = d3000
+$r0* = d1037
+$r1 = d39 + $r0*
+push $r1
