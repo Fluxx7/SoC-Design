@@ -1,4 +1,12 @@
 #include <limits.h>
+#ifndef linesize
+#define linesize 256
+#endif
+
+extern char** rline_ptr;
+extern int linenum;
+extern FILE* mirror;
+
 
 /**
  * Extracts a portion of a string before a specific character sequence
@@ -30,9 +38,10 @@ int smatch(const char* src, const char* match);
 
 int parse_number(const char* number_string);
 
-
+int compile_error(const char*, ...);
 
 int itob(int integer, char* token);
 
 
 #define s_slice(string, index) (string+index)
+#define pmirror(string, tokens) fputs(string, tokens); if(reflect) fputs(string, mirror)

@@ -1,21 +1,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
 
-#include "compiler.h"
+
 #include "computils.h"
-#include "targets/ng-core.h"
-#define pmirror(string, tokens) fputs(string, tokens); if(reflect) fputs(string, mirror)
-
+#include "preprocessor.h"
+#include "../targets/targets.h"
 
 
 char** rline_ptr;
 int linenum = 0;
+FILE* mirror;
 
 int main(int argc, char** argv) {
     int reflect = 0;
     int verbose = 0;
+    int (*target_gen)(FILE*, char*) = targets[0].comp_function;
     if (argc < 3){
         printf("An input and output file must both be provided\n");
         return 1;
@@ -23,35 +23,45 @@ int main(int argc, char** argv) {
 
     if (argc > 3) {
         for (int i = 3; i < argc; i++) {
-            if (strcmp(argv[3], "-v") == 0) {
+            if (strcmp(argv[i], "-v") == 0) {
                 verbose = 1;
             }
-            if (strcmp(argv[3], "-m") == 0) {
+            if (strcmp(argv[i], "-m") == 0) {
                 reflect = 1;
+            }
+            if (smatch(argv[i], "-t=") == 1) {
+                for (int i = 0; i < target_count; i++){
+                    if(strcmp(s_slice(argv[i], 3), targets[i].name) == 0) {
+                        target_gen = targets[i].comp_function;
+                    } else {
+                        printf("invalid compilation target '%s'\n", s_slice(argv[i], 3));
+                        return 1;
+                    }
+                }
             }
         }
     }
     
     FILE* input = fopen(argv[1], "r");
     FILE* output = tmpfile();
-    //FILE* processed_input = tmpfile(); // used to store 
-    //FILE* statements = tmpfile(); // used to store 
+    FILE* processed_input = tmpfile(); // used to store  with 
+    FILE* statements = tmpfile(); // used to store 
     FILE* tokens = tmpfile(); // used to store parsed tokens from instructions ie. output, X, Y, operation, jmp condition, in a way that is easily turned to machine code
-    FILE* mirror;
+
     if (reflect) mirror = fopen("mirror.txt", "w+");
 
     if (output == NULL){
         return compile_error("Failed to create temp file for compilation");
     }
-    size_t linesize = 256;
     char* rawline = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
     
-    rline_ptr = &rawline;
+    //rline_ptr = &rawline;
     char** constants;
     int* const_values;
 
     int const_count = -1;
     int instruction_type;
+    preprocess(input, processed_input, statements, reflect, verbose);
     char lineout[instruction_size+1] = "0000000000000000"; // CI x x * x u op1 op2 zx sw a d *a lt eq gt
     while (1) {
         if(fgets(rawline, linesize, input) == NULL){
@@ -315,101 +325,95 @@ int main(int argc, char** argv) {
                 }
 
                 // turn tokens into machine code
-                // rewind(parsing);
-                // while (1){
-                //     if(fgets(*token, linesize, parsing) == NULL){
+                // rewind(tokens);
+                // strcpy(lineout, "1000000000000000");
+                // int mov = 0;
+                // char* codeline = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
+                // while (1) {
+                //     if (fgets(codeline, linesize, tokens) == NULL) {
                 //         break;
-                //     }   
-                // }
-                rewind(tokens);
-                strcpy(lineout, "1000000000000000");
-                int mov = 0;
-                char* codeline = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
-                while (1) {
-                    if (fgets(codeline, linesize, tokens) == NULL) {
-                        break;
-                    }
-                    char* cline = sclean_i(codeline, '\n', 0);
-                    // handle outputs
-                    if (smatch(cline, "OUT ")){
-                        for (int l = 0; l < strlen(s_slice(cline, 3)); l++) {
-                            for (int r = 0; r < reg_count; r++) {
-                                if (s_slice(cline, 3)[l] == regtok[r][0]) {
-                                    lineout[outbits[r]] = '1';            
-                                }
-                            }
-                        }
-                    }
-                    if (smatch(cline, "OP ")){
-                        for (int o = 0; o < opcount; o++) {
-                            if (strcmp(s_slice(cline, 3), op_outs[o]) == 0) {
-                                for (int ol = 0; ol < opcode_size; ol++) {
-                                    lineout[OPCODE+ol] = opbits[o][ol];
-                                }
-                            }
-                        }
-                        if (strcmp(s_slice(cline, 3), "IMM") == 0) {
-                            if (!smatch(s_slice(lineout,OUT_A), "100")) {
-                                return compile_error("immediate values must be written to the A register exclusively");
-                            }
-                            lineout[CI] = '0';
-                        }
-                        if (strcmp(s_slice(cline, 3), "MOV") == 0) {
-                            lineout[ZERO_X] = '1';
-                            lineout[OPCODE] = '1';
-                            mov = 1;
-                        }
-                    }
-                    if (smatch(cline, "X ")){
-                        if (lineout[CI] == '0') {
-                            char binval[16];
-                            itob(atoi(s_slice(cline, 2)), binval);
-                            strcpy(s_slice(lineout,1), binval);
-                        } else if (cline[2] == '0') {
-                            lineout[ZERO_X] = '1';
-                        } else if (mov == 1) {
-                            if (cline[2] == 'D'){
-                                lineout[SWAP_XY] = '1';
+                //     }
+                //     char* cline = sclean_i(codeline, '\n', 0);
+                //     // handle outputs
+                //     if (smatch(cline, "OUT ")){
+                //         for (int l = 0; l < strlen(s_slice(cline, 3)); l++) {
+                //             for (int r = 0; r < reg_count; r++) {
+                //                 if (s_slice(cline, 3)[l] == regtok[r][0]) {
+                //                     lineout[outbits[r]] = '1';            
+                //                 }
+                //             }
+                //         }
+                //     }
+                //     if (smatch(cline, "OP ")){
+                //         for (int o = 0; o < opcount; o++) {
+                //             if (strcmp(s_slice(cline, 3), op_outs[o]) == 0) {
+                //                 for (int ol = 0; ol < opcode_size; ol++) {
+                //                     lineout[OPCODE+ol] = opbits[o][ol];
+                //                 }
+                //             }
+                //         }
+                //         if (strcmp(s_slice(cline, 3), "IMM") == 0) {
+                //             if (!smatch(s_slice(lineout,OUT_A), "100")) {
+                //                 return compile_error("immediate values must be written to the A register exclusively");
+                //             }
+                //             lineout[CI] = '0';
+                //         }
+                //         if (strcmp(s_slice(cline, 3), "MOV") == 0) {
+                //             lineout[ZERO_X] = '1';
+                //             lineout[OPCODE] = '1';
+                //             mov = 1;
+                //         }
+                //     }
+                //     if (smatch(cline, "X ")){
+                //         if (lineout[CI] == '0') {
+                //             char binval[16];
+                //             itob(atoi(s_slice(cline, 2)), binval);
+                //             strcpy(s_slice(lineout,1), binval);
+                //         } else if (cline[2] == '0') {
+                //             lineout[ZERO_X] = '1';
+                //         } else if (mov == 1) {
+                //             if (cline[2] == 'D'){
+                //                 lineout[SWAP_XY] = '1';
                                 
-                            }
-                            if (cline[2] == 'P') {
-                                lineout[PTR_IN] = '1';
-                            }
-                            //printf("rawline: '%c', lineout: %s\n", rawline[2], lineout);
-                        } else if (cline[2] != 'D') {
-                            lineout[SWAP_XY] = '1';
-                            if (cline[2] == 'P') {
-                                lineout[PTR_IN] = '1';
-                            }
-                        }
-                    }
-                    if (smatch(cline, "Y ")){
-                        if (cline[2] != 'A'){
-                            if (cline[2] == 'P'){
-                                if(lineout[SWAP_XY] == '1' && lineout[ZERO_X] != 1){
-                                    return compile_error("D must be an operand");
-                                } 
-                                lineout[PTR_IN] = '1';
-                            }
-                        } else if(lineout[SWAP_XY] == '1'){
-                                return compile_error("D must be an operand");
-                        } 
+                //             }
+                //             if (cline[2] == 'P') {
+                //                 lineout[PTR_IN] = '1';
+                //             }
+                //             //printf("rawline: '%c', lineout: %s\n", rawline[2], lineout);
+                //         } else if (cline[2] != 'D') {
+                //             lineout[SWAP_XY] = '1';
+                //             if (cline[2] == 'P') {
+                //                 lineout[PTR_IN] = '1';
+                //             }
+                //         }
+                //     }
+                //     if (smatch(cline, "Y ")){
+                //         if (cline[2] != 'A'){
+                //             if (cline[2] == 'P'){
+                //                 if(lineout[SWAP_XY] == '1' && lineout[ZERO_X] != 1){
+                //                     return compile_error("D must be an operand");
+                //                 } 
+                //                 lineout[PTR_IN] = '1';
+                //             }
+                //         } else if(lineout[SWAP_XY] == '1'){
+                //                 return compile_error("D must be an operand");
+                //         } 
                         
-                    }
-                    if (smatch(cline, "J ")){
-                        int match_found = 0;
-                        for (int l = 0; l < 7 && !match_found; l++) {
-                            if (strcmp(branches[l],s_slice(cline, 2)) == 0) {
-                                match_found = 1;
-                                for (int s = 0; s < 3; s++) {
-                                    lineout[BRANCH+s] = branch_bits[l][s];
-                                }
-                            }
-                        }
-                    }
-                    free(cline);
-                }
-                free(codeline);
+                //     }
+                //     if (smatch(cline, "J ")){
+                //         int match_found = 0;
+                //         for (int l = 0; l < 7 && !match_found; l++) {
+                //             if (strcmp(branches[l],s_slice(cline, 2)) == 0) {
+                //                 match_found = 1;
+                //                 for (int s = 0; s < 3; s++) {
+                //                     lineout[BRANCH+s] = branch_bits[l][s];
+                //                 }
+                //             }
+                //         }
+                //     }
+                //     free(cline);
+                // }
+                target_gen(tokens, lineout);
 
                 fputs(lineout, output);
                 fputs("\n", output);
@@ -450,15 +454,3 @@ int main(int argc, char** argv) {
 
 
 
-int compile_error(const char * message, ...){
-    char buf[1024];
-    va_list args;
-    va_start(args, message);
-    vsprintf(buf, message, args);
-    if (*rline_ptr != NULL){
-        printf("Error: %s\n-> Line %d: %s\n", buf, linenum+1, (*rline_ptr));
-    } else {
-        printf("Error: %s\n", buf);
-    }
-    return 1;
-}

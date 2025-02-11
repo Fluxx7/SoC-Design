@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "computils.h"
 
@@ -133,4 +134,17 @@ int itob(int integer, char* token)
     }
     token[token_index] = '\0';
     return 0;
+}
+
+int compile_error(const char * message, ...){
+    char buf[1024];
+    va_list args;
+    va_start(args, message);
+    vsprintf(buf, message, args);
+    if (*rline_ptr != NULL){
+        printf("Error: %s\n-> Line %d: %s\n", buf, linenum+1, (*rline_ptr));
+    } else {
+        printf("Error: %s\n", buf);
+    }
+    return 1;
 }
