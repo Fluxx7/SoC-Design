@@ -8,7 +8,7 @@
 #include "../targets/targets.h"
 
 
-char** rline_ptr;
+char rline_ptr[linesize];
 int linenum = 0;
 FILE* mirror;
 
@@ -53,36 +53,38 @@ int main(int argc, char** argv) {
     if (output == NULL){
         return compile_error("Failed to create temp file for compilation");
     }
-    char* rawline = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
-    
-    //rline_ptr = &rawline;
+    char rawline[linesize];
     char** constants;
     int* const_values;
 
     int const_count = -1;
     int instruction_type;
     preprocess(input, processed_input, statements, reflect, verbose);
+    rewind(input);
     char lineout[instruction_size+1] = "0000000000000000"; // CI x x * x u op1 op2 zx sw a d *a lt eq gt
     while (1) {
         if(fgets(rawline, linesize, input) == NULL){
             break;
         }
-        char* line = sclean(rawline);
+        strcpy(rline_ptr, rawline);
+        char line[linesize];
+        sclean(rawline, line);
         if (line[0] != '#' && strlen(line) != 0){
             // handle constants
             if (linenum == 0 && smatch(rawline, "DEFINE ")) {
-                int const_index = 7;
-                char* const_name = ssplit(rawline, &const_index, " ");
-                char* const_val = sclean(s_slice(rawline, const_index));
-                if (const_count == -1) {
+                int const_index = strlen("DEFINE ");
+                const_count++;
+                if (const_count == 0) {
                     constants = (char**) malloc(sizeof(char*));
                     const_values = (int*) malloc(sizeof(int));
                 } else {
-                    constants = (char**) realloc(constants, sizeof(char*)*(const_count+2));
-                    const_values = (int*) realloc(const_values, sizeof(int)*(const_count+2));
-                }
-                const_count++;
-                constants[const_count] = const_name;
+                    constants = (char**) realloc(constants, sizeof(char*)*(const_count+1));
+                    const_values = (int*) realloc(const_values, sizeof(int)*(const_count+1));
+                } 
+                constants[const_count] = (char*) calloc(linesize, linesize*sizeof(char));
+                ssplit(rawline, constants[const_count], &const_index, " ");
+                char const_val[strlen(s_slice(rawline, const_index))];
+                sclean(s_slice(rawline, const_index), const_val);
                 int imm;
                 if ((imm = parse_number(const_val)) != -1) {
                     if (imm < imm_limit){
@@ -92,7 +94,6 @@ int main(int argc, char** argv) {
                         return compile_error("Constants must be between 1 and %d", imm_limit - 1);
                     }
                 }
-                free(const_val);
             } 
             // handle instructions
             else {
@@ -105,17 +106,14 @@ int main(int argc, char** argv) {
                 int i_split = 0;
                 
                 
-                char* outregs;
+                char outregs[linesize];
                 // determine instruction type
-                if ((outregs = ssplit(line, &i_split,"=")) == NULL) {
+                if (ssplit(line, outregs, &i_split,"=") == 0) {
                     if (smatch(line, "LABEL")){ 
-                        free(line);
                         continue;
-                    } else if ((outregs = ssplit(line, &i_split,";")) != NULL){
+                    } else if (ssplit(line, outregs, &i_split,";") != 0){
                         instruction_type = 2;
                         i_split = 0;
-                        free(outregs);
-
                     } else if (smatch(line, "JMP")) {
                         instruction_type = 0;
                     } else {
@@ -130,7 +128,6 @@ int main(int argc, char** argv) {
                     char register_str[30] = " ";
                     
                     strcat(register_str, outregs);
-                    free(outregs);
                     strcat (register_str, " ");
                     if (verbose) printf("Register assignments: %s \n", register_str);
                     int charnum = 0;
@@ -171,23 +168,22 @@ int main(int argc, char** argv) {
 
                 // Operation handling
                 if (instruction_type != 0) {
-                    char* operation = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
-                    char* token;
-                    if ((token = ssplit(line, &i_split, ";")) == NULL){
+                    char operation[linesize];
+                    char token[linesize];
+                    if (ssplit(line, token, &i_split, ";") == 0){
                         strcpy(operation, line+i_split);
                     } else {
                         strcpy(operation, token);
                         instruction_type = 0;
                         //printf("Token: %s Operation: %s\n", *token, operation);
-                        free(token);
                     }
 
                     pmirror("OP ", tokens);
-                    char* opr;
+                    char opr[linesize];
                     int op_ind = 0;
                     int op_found = 0;
                     for (int op = 0; op < opcount && !op_found; op++){
-                        if ((opr = ssplit(operation, &op_ind, operators[op])) != NULL) {
+                        if (ssplit(operation, opr, &op_ind, operators[op]) != 0) {
                             pmirror(op_outs[op],tokens);
                             pmirror("\n", tokens);
                             if (strcmp(opr,"") != 0) {
@@ -214,7 +210,6 @@ int main(int argc, char** argv) {
                             }
                             if (verbose) printf("pre-op: %s op: %s post-op: %s\n", opr, operators[op], s_slice(operation, op_ind));
                             op_found = 1;
-                            free(opr);
                         }
                     }
                     if (!op_found){
@@ -244,7 +239,8 @@ int main(int argc, char** argv) {
                                     }
                                 }
                             } else if(operation[0] == '0' && operation[1] == 'b'){
-                                char* bin_num = sclean_i(operation+2, '_', 0);
+                                char bin_num[strlen(operation+2)];
+                                sclean_i(operation+2, bin_num, '_', 0);
                                 if ((imm = strtol(bin_num, NULL, 2)) > 0) {
                                     if (imm < 32768){
                                         if (verbose) printf("op is binary immediate of value %d\n", imm);
@@ -254,7 +250,6 @@ int main(int argc, char** argv) {
                                         pmirror(buffer, tokens);
                                     }  
                                 }
-                                free(bin_num);
                             } else if ((imm = atoi(operation)) > 0){
                                 if (verbose) printf("op is decimal immediate of value %d\n", imm);
                                 pmirror("IMM\n", tokens);
@@ -277,15 +272,15 @@ int main(int argc, char** argv) {
                                     // scan for labels matching the operation
                                     long pos = ftell(input);
                                     rewind(input);
-                                    char* scanline = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
-                                    char* csline;
+                                    char scanline[linesize];
+                                    char csline[linesize];
                                     int label_found = 0;
                                     int local_linenum = 0;
                                     while(1){
                                         if (fgets(scanline, linesize, input) == NULL) {
                                             break;
                                         }
-                                        csline = sclean(scanline);
+                                        sclean(scanline, csline);
                                         if (smatch(csline, "LABEL")){
                                             if (strcmp(s_slice(csline, 5),operation) == 0) {
                                                 label_found = 1;
@@ -301,9 +296,7 @@ int main(int argc, char** argv) {
                                             //printf("%s\n",csline);
                                             local_linenum++;
                                         }
-                                        free(csline);
                                     }
-                                    free(scanline);
                                     if (!label_found) {
                                         return compile_error("Invalid operation");
                                     }
@@ -313,7 +306,6 @@ int main(int argc, char** argv) {
                         }
                     }
                     if (verbose) printf("Operation: %s\n", operation);
-                    free(operation);
                 }
 
                 // handle branching
@@ -324,96 +316,9 @@ int main(int argc, char** argv) {
                     if (verbose) printf("Jump condition: %s\n", s_slice(line, i_split));
                 }
 
-                // turn tokens into machine code
-                // rewind(tokens);
-                // strcpy(lineout, "1000000000000000");
-                // int mov = 0;
-                // char* codeline = (char*) calloc(linesize, (size_t) (linesize * sizeof(char)));
-                // while (1) {
-                //     if (fgets(codeline, linesize, tokens) == NULL) {
-                //         break;
-                //     }
-                //     char* cline = sclean_i(codeline, '\n', 0);
-                //     // handle outputs
-                //     if (smatch(cline, "OUT ")){
-                //         for (int l = 0; l < strlen(s_slice(cline, 3)); l++) {
-                //             for (int r = 0; r < reg_count; r++) {
-                //                 if (s_slice(cline, 3)[l] == regtok[r][0]) {
-                //                     lineout[outbits[r]] = '1';            
-                //                 }
-                //             }
-                //         }
-                //     }
-                //     if (smatch(cline, "OP ")){
-                //         for (int o = 0; o < opcount; o++) {
-                //             if (strcmp(s_slice(cline, 3), op_outs[o]) == 0) {
-                //                 for (int ol = 0; ol < opcode_size; ol++) {
-                //                     lineout[OPCODE+ol] = opbits[o][ol];
-                //                 }
-                //             }
-                //         }
-                //         if (strcmp(s_slice(cline, 3), "IMM") == 0) {
-                //             if (!smatch(s_slice(lineout,OUT_A), "100")) {
-                //                 return compile_error("immediate values must be written to the A register exclusively");
-                //             }
-                //             lineout[CI] = '0';
-                //         }
-                //         if (strcmp(s_slice(cline, 3), "MOV") == 0) {
-                //             lineout[ZERO_X] = '1';
-                //             lineout[OPCODE] = '1';
-                //             mov = 1;
-                //         }
-                //     }
-                //     if (smatch(cline, "X ")){
-                //         if (lineout[CI] == '0') {
-                //             char binval[16];
-                //             itob(atoi(s_slice(cline, 2)), binval);
-                //             strcpy(s_slice(lineout,1), binval);
-                //         } else if (cline[2] == '0') {
-                //             lineout[ZERO_X] = '1';
-                //         } else if (mov == 1) {
-                //             if (cline[2] == 'D'){
-                //                 lineout[SWAP_XY] = '1';
-                                
-                //             }
-                //             if (cline[2] == 'P') {
-                //                 lineout[PTR_IN] = '1';
-                //             }
-                //             //printf("rawline: '%c', lineout: %s\n", rawline[2], lineout);
-                //         } else if (cline[2] != 'D') {
-                //             lineout[SWAP_XY] = '1';
-                //             if (cline[2] == 'P') {
-                //                 lineout[PTR_IN] = '1';
-                //             }
-                //         }
-                //     }
-                //     if (smatch(cline, "Y ")){
-                //         if (cline[2] != 'A'){
-                //             if (cline[2] == 'P'){
-                //                 if(lineout[SWAP_XY] == '1' && lineout[ZERO_X] != 1){
-                //                     return compile_error("D must be an operand");
-                //                 } 
-                //                 lineout[PTR_IN] = '1';
-                //             }
-                //         } else if(lineout[SWAP_XY] == '1'){
-                //                 return compile_error("D must be an operand");
-                //         } 
-                        
-                //     }
-                //     if (smatch(cline, "J ")){
-                //         int match_found = 0;
-                //         for (int l = 0; l < 7 && !match_found; l++) {
-                //             if (strcmp(branches[l],s_slice(cline, 2)) == 0) {
-                //                 match_found = 1;
-                //                 for (int s = 0; s < 3; s++) {
-                //                     lineout[BRANCH+s] = branch_bits[l][s];
-                //                 }
-                //             }
-                //         }
-                //     }
-                //     free(cline);
-                // }
-                target_gen(tokens, lineout);
+                if (target_gen(tokens, lineout) == 1) {
+                    return 1;
+                }
 
                 fputs(lineout, output);
                 fputs("\n", output);
@@ -424,15 +329,15 @@ int main(int argc, char** argv) {
             }
 
         }
-        free(line);
     }
     // releasing all allocated memory
-    free(rawline);
-    for (int i = 0; i <= const_count; i++) {
-        free(constants[i]);
+    if (const_count != -1) {
+        for (int i = 0; i <= const_count; i++) {
+            free(constants[i]);
+        }
+        free(constants);
+        free(const_values);
     }
-    free(constants);
-    free(const_values);
 
 
     fclose(input);

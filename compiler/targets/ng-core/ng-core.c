@@ -14,7 +14,8 @@ int ng_code_gen(FILE* tokens, char* lineout){
         if (fgets(codeline, linesize, tokens) == NULL) {
             break;
         }
-        char* cline = sclean_i(codeline, '\n', 0);
+        char cline[linesize];
+        sclean_i(codeline, cline, '\n', 0);
         // handle outputs
         if (smatch(cline, "OUT ")){
             for (int l = 0; l < strlen(s_slice(cline, 3)); l++) {
@@ -92,7 +93,6 @@ int ng_code_gen(FILE* tokens, char* lineout){
                 }
             }
         }
-        free(cline);
     }
     return 0;
 }

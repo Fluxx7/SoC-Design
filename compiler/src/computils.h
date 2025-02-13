@@ -3,7 +3,7 @@
 #define linesize 256
 #endif
 
-extern char** rline_ptr;
+extern char rline_ptr[linesize];
 extern int linenum;
 extern FILE* mirror;
 
@@ -15,14 +15,14 @@ extern FILE* mirror;
  * @param delim The character sequence to terminate the split at
  * @returns Split string if the string was split successfully, NULL if splitting sequence was not found
  */
-char* ssplit(const char* src, int* iindex, const char* delim);
+int ssplit(const char* src, char* out, int* iindex, const char* delim);
 
 /**
  * Outputs a string with no spaces
  * @param src Input string to be formatted
  * @returns Address of the output formatted string
  */
-char* sclean(const char* src);
+int sclean(const char* src, char* out);
 
 
 /**
@@ -32,7 +32,7 @@ char* sclean(const char* src);
  * @param spacing The number of characters to put in between non-character tokens (must be >= 0)
  * @returns Address of the output formatted string
  */
-char* sclean_i(const char* src, char character, int spacing);
+int sclean_i(const char* src, char* out, char character, int spacing);
 
 int smatch(const char* src, const char* match);
 

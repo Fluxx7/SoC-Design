@@ -6,6 +6,9 @@
 
 int preprocess(FILE* input, FILE* processed_input, FILE* statements, int reflect, int verbose) {
     char rawline[linesize];
+    FILE* state_mirror = fopen("smirror.txt", "w+");
+    FILE* proc_mirror = fopen("procmirror.txt", "w+");
+    rewind(input);
     /* 
     two goals: 
     - break down each line into predefined statements
@@ -21,36 +24,35 @@ int preprocess(FILE* input, FILE* processed_input, FILE* statements, int reflect
     
     Final result should only include assembly instructions that can easily be processed by the primary system
     Support both mirroring and verbosity setttings
-    */
+     */
+    // statement processing
+    while(1) {
+        if(fgets(rawline, linesize, input) == NULL) {
+            break;
+        } 
+
+
+    }
     char** constants;
     int* const_values;
     int const_count = -1;
     rewind(input);
+
+    // Replacing constants
     while (1) {
         if(fgets(rawline, linesize, input) == NULL) {
             break;
         } 
-        char* line = sclean(rawline);
-        if (smatch(line, "DEFINE")) {
-            int const_index = 6;
-            char* const_name = ssplit(line, &const_index, " ");
-            char* const_val = sclean(s_slice(line, const_index));
-            if (const_count == -1) {
-                constants = (char**) malloc(sizeof(char*));
-                const_values = (int*) malloc(sizeof(int));
-            } else {
-                constants = (char**) realloc(constants, sizeof(char*)*(const_count+2));
-                const_values = (int*) realloc(const_values, sizeof(int)*(const_count+2));
-            }
-            const_count++;
-            constants[const_count] = const_name;
-            int imm;
-            if ((imm = parse_number(const_val)) != -1) {
-                const_values[const_count] = imm;
-                if (verbose) printf("Constant '%s' defined as %d\n", constants[const_count], const_values[const_count]); 
-            }
-            free(const_val);
-        } 
-        free(line);
+        char line[linesize];
+        sclean(rawline, line);
     }
+    if (const_count != -1) {
+        for (int i = 0; i <= const_count; i++) {
+            free(constants[i]);
+        }
+        free(constants);
+        free(const_values);
+    }
+    fclose(state_mirror);
+    fclose(proc_mirror);
 }
