@@ -1,6 +1,6 @@
 
-ngcc: compiler.o computils.o preprocessor.o targets.o
-	gcc -std=c2x -g -Wall compiler.o computils.o preprocessor.o targets.o -lm -o ngcc
+fcc: compiler.o computils.o preprocessor.o targets.o
+	gcc -std=c2x -g -Wall compiler.o computils.o preprocessor.o targets.o -lm -o fcc
 
 
 
@@ -27,7 +27,7 @@ targets.o: targets/ng-core/ng-core.c targets/ng-core/ng-core.h targets/ng-core/n
 # various removal functions
 
 clean:
-	rm -f compiler.o computils.o ngcc testout.txt mirror.txt
+	rm -f compiler.o computils.o fcc testout.txt mirror.txt
 
 c_opts:
 	rm -f mirror.txt
@@ -35,4 +35,4 @@ c_opts:
 c_part:
 	rm -f compiler.o computils.o preprocessor.o targets.o
 
-all: ngcc
+all: fcc

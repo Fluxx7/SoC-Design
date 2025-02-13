@@ -30,9 +30,9 @@ int main(int argc, char** argv) {
                 reflect = 1;
             }
             if (smatch(argv[i], "-t=") == 1) {
-                for (int i = 0; i < target_count; i++){
-                    if(strcmp(s_slice(argv[i], 3), targets[i].name) == 0) {
-                        target_gen = targets[i].comp_function;
+                for (int j = 0; j < target_count; j++){
+                    if(strcmp(s_slice(argv[i], 3), targets[j].name) == 0) {
+                        target_gen = targets[j].comp_function;
                     } else {
                         printf("invalid compilation target '%s'\n", s_slice(argv[i], 3));
                         return 1;
