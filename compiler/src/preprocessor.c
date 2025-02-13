@@ -55,4 +55,5 @@ int preprocess(FILE* input, FILE* processed_input, FILE* statements, int reflect
     }
     fclose(state_mirror);
     fclose(proc_mirror);
+    return 0;
 }

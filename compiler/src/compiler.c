@@ -10,6 +10,7 @@
 
 char rline_ptr[linesize];
 int linenum = 0;
+int truenum = 0;
 FILE* mirror;
 
 int main(int argc, char** argv) {
@@ -69,6 +70,7 @@ int main(int argc, char** argv) {
         strcpy(rline_ptr, rawline);
         char line[linesize];
         sclean(rawline, line);
+        truenum++;
         if (line[0] != '#' && strlen(line) != 0){
             // handle constants
             if (linenum == 0 && smatch(rawline, "DEFINE ")) {

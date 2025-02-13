@@ -137,7 +137,7 @@ int compile_error(const char * message, ...){
     va_start(args, message);
     vsprintf(buf, message, args);
     if (strlen(rline_ptr) != 0){
-        printf("Error: %s\n-> Line %d: %s\n", buf, linenum+1, rline_ptr);
+        printf("Error: %s\n-> Line %d: %s\n", buf, truenum, rline_ptr);
     } else {
         printf("Error: %s\n", buf);
     }

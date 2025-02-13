@@ -7,3 +7,5 @@ compiler/mirror.txt
 compiler/fcc
 compiler/console.txt
 compiler/*.o
+*.o
+compiler/fcc

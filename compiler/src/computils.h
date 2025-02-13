@@ -5,6 +5,7 @@
 
 extern char rline_ptr[linesize];
 extern int linenum;
+extern int truenum;
 extern FILE* mirror;
 
 
