@@ -1,85 +1,21 @@
-OUT A
-OP IMM
-X 256
-
-
 OUT D
-OP MOV
-X A
-
-
-OUT A
 OP IMM
-X 32767
-
-
-OUT D
-OP AND
-X D
-Y P
-
-
-OUT A
-OP IMM
-X 8
-
-
-
-OP MOV
-X D
-J JEQ
-
-
-OUT A
-OP IMM
-X 20
-
-
-
-J JMP
-
-
-OUT A
-OP IMM
-X 4
-
-
-OUT D
-OP MOV
-X A
-
-
-OUT A
-OP IMM
-X 32767
+X 1
 
 
 OUT DP
-OP LOR
-X D
-Y P
-
-
-OUT A
 OP IMM
-X 1024
+X 1
 
 
-OUT D
-OP AND
-X D
-Y A
-
-
-OUT A
+OUT PA
 OP IMM
-X 0
+X 1
 
 
-
-OP MOV
-X D
-J JEQ
+OUT AP
+OP IMM
+X 1
 
 
 OUT A
@@ -87,77 +23,20 @@ OP IMM
 X 32767
 
 
-OUT D
-OP MOV
-X P
-
-
-OUT A
-OP IMM
-X 12
-
-
-
-J JMP
-
-
-OUT A
-OP IMM
-X 8
-
-
-OUT D
-OP SUB
-X 0
-Y A
-
-
-OUT A
-OP IMM
-X 32767
-
-
-OUT DP
-OP LOR
-X D
-Y P
-
-
-OUT A
-OP IMM
-X 512
-
-
-OUT D
-OP AND
-X D
-Y A
-
-
-OUT A
-OP IMM
-X 0
-
-
-
+OUT P
 OP MOV
 X D
-J JEQ
+
+
+OUT P
+OP ADD
+X D
+Y 1
 
 
 OUT A
 OP IMM
-X 32767
-
-
-OUT D
-OP MOV
-X P
-
-
-OUT A
-OP IMM
-X 24
+X 7
 
 
 

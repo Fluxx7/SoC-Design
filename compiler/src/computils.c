@@ -55,11 +55,11 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
     
 }
 
-int sclean(const char* src, char* out){
+void sclean(const char* src, char* out){
     return sclean_i(src, out, ' ', 0);   
 }
 
-int sclean_i(const char* src, char* out, char character, int count){
+void sclean_i(const char* src, char* out, char character, int count){
     int index = 0, tok_index = 0;
     int add_char = 0;
     while(1){
@@ -67,7 +67,7 @@ int sclean_i(const char* src, char* out, char character, int count){
             out[tok_index] = '\0';
 
             //printf("Index: %d, src: %s, final token: %s\n", index, src, token);
-            return 0;
+            return;
         } else {
             if (src[index] != character){
                 if (add_char == 0){

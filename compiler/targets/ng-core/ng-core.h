@@ -2,9 +2,13 @@
     #include "ng-core-defs.h"
 #endif
 
+const char* oplist[3][opcount] = {
+    {"+", "-", "~", "^", "&", "|"},
+    {"ADD", "SUB", "INV", "XOR", "AND", "LOR"},
+    {"100", "110", "011", "010", "000", "001"}
+};
+
 const char* operators[opcount] = { 
-    "+1",
-    "-1",
     "+",
     "-",
     "~",
@@ -13,8 +17,6 @@ const char* operators[opcount] = {
     "|"
 };
 const char* op_outs[opcount] = {
-    "AON",
-    "SON",
     "ADD",
     "SUB",
     "INV",
@@ -24,8 +26,6 @@ const char* op_outs[opcount] = {
 };
 
 const char* opbits[opcount] = {
-    "101",
-    "111",
     "100",
     "110",
     "011",

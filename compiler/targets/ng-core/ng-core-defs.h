@@ -1,4 +1,4 @@
-#define opcount 8
+#define opcount 6
 #define opcode_size 3
 #define reg_count 3
 #define instruction_size 16

@@ -6,6 +6,8 @@
     #include "ng-core-defs.h"
 #endif
 
+extern const char* oplist[3][opcount];
+
 extern const char* operators[opcount];
 extern const char* op_outs[opcount];
 extern const char* opbits[opcount];

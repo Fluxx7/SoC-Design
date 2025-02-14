@@ -35,9 +35,6 @@ int ng_code_gen(FILE* tokens, char* lineout){
                 }
             }
             if (strcmp(s_slice(cline, 3), "IMM") == 0) {
-                if (!smatch(s_slice(lineout,OUT_A), "100")) {
-                    return compile_error("immediate values must be written to the A register exclusively");
-                }
                 lineout[CI] = '0';
             }
             if (strcmp(s_slice(cline, 3), "MOV") == 0) {
@@ -61,7 +58,6 @@ int ng_code_gen(FILE* tokens, char* lineout){
                 if (cline[2] == 'P') {
                     lineout[PTR_IN] = '1';
                 }
-                //printf("rawline: '%c', lineout: %s\n", rawline[2], lineout);
             } else if (cline[2] != 'D') {
                 lineout[SWAP_XY] = '1';
                 if (cline[2] == 'P') {
@@ -83,6 +79,9 @@ int ng_code_gen(FILE* tokens, char* lineout){
             
         }
         if (smatch(cline, "J ")){
+            if (lineout[0] == '0') {
+                return compile_error("jumps cannot be performed with immediate values");
+            }
             int match_found = 0;
             for (int l = 0; l < 7 && !match_found; l++) {
                 if (strcmp(branches[l],s_slice(cline, 2)) == 0) {

@@ -30,8 +30,17 @@ int preprocess(FILE* input, FILE* processed_input, FILE* statements, int reflect
         if(fgets(rawline, linesize, input) == NULL) {
             break;
         } 
+        char line[linesize];
+        sclean(rawline, line);
+        if (strlen(line) == 0 || line[0] == '#') {
+            fputs("blank\n", state_mirror);
+        } 
+        if (smatch(line, "DEFINE")) {
+            fputs("DEF\n", state_mirror);
+        } 
+        if (smatch(line, "")) {
 
-
+        }
     }
     char** constants;
     int* const_values;
@@ -45,6 +54,7 @@ int preprocess(FILE* input, FILE* processed_input, FILE* statements, int reflect
         } 
         char line[linesize];
         sclean(rawline, line);
+        
     }
     if (const_count != -1) {
         for (int i = 0; i <= const_count; i++) {

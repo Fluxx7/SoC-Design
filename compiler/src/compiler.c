@@ -202,10 +202,19 @@ int main(int argc, char** argv) {
                                 pmirror("\n", tokens);
                             }
                             if (strcmp(s_slice(operation, op_ind),"") != 0) {
+                                int reg_found = 0;
                                 for (int r = 0; r < reg_count; r++){
                                     if (strcmp(s_slice(operation, op_ind), registers[r]) == 0) {
                                         pmirror("Y ", tokens);
                                         pmirror(regtok[r], tokens);
+                                        pmirror("\n", tokens);
+                                        reg_found = 1;
+                                    }
+                                }
+                                if (!reg_found) {
+                                    if (parse_number(s_slice(operation, op_ind)) != -1) {
+                                        pmirror("Y ", tokens);
+                                        pmirror(s_slice(operation, op_ind), tokens);
                                         pmirror("\n", tokens);
                                     }
                                 }
