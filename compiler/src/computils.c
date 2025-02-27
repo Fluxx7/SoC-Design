@@ -9,6 +9,7 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
     int delim_match = 0;
     int* index;
     int orig_index;
+    int output = out == NULL ? 0 : 1;
     if (iindex == NULL) {
         index = (int*) malloc(sizeof(int));
         *index = 0;
@@ -35,13 +36,13 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
                     delim_match = 0;
                 }
                 //printf("Index: %d, token: %s, line: %s\n", *index, out, src+*index);
-                out[*index-orig_index] = src[*index];
+                if(output) out[*index-orig_index] = src[*index];
             } else {
                 //printf("Index: %d, delim_match: %d, token: %s, line: %s\n", *index, delim_match, out, src+*index);
                 delim_match++;
-                out[*index-orig_index] = src[*index];
+                if (output) out[*index-orig_index] = src[*index];
                 if (delim[delim_match] == '\0') {
-                    out[(*index-orig_index)-delim_match+1] = '\0';
+                    if (output) out[(*index-orig_index)-delim_match+1] = '\0';
                     (*index)++;
                     if (iindex == NULL) {
                         free(index);

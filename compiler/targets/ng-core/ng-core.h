@@ -1,14 +1,8 @@
-#ifndef opcount
-    #include "ng-core-defs.h"
-#endif
+#pragma once
+#include "ng-core-defs.h"
 
-const char* oplist[3][opcount] = {
-    {"+", "-", "~", "^", "&", "|"},
-    {"ADD", "SUB", "INV", "XOR", "AND", "LOR"},
-    {"100", "110", "011", "010", "000", "001"}
-};
 
-const char* operators[opcount] = { 
+const char* ng_operators[ng_opcount] = { 
     "+",
     "-",
     "~",
@@ -16,7 +10,7 @@ const char* operators[opcount] = {
     "&",
     "|"
 };
-const char* op_outs[opcount] = {
+const char* ng_op_outs[ng_opcount] = {
     "ADD",
     "SUB",
     "INV",
@@ -25,7 +19,7 @@ const char* op_outs[opcount] = {
     "LOR"
 };
 
-const char* opbits[opcount] = {
+const char* ng_opbits[ng_opcount] = {
     "100",
     "110",
     "011",
@@ -34,7 +28,7 @@ const char* opbits[opcount] = {
     "001"
 };
 
-const char* branches[7] = {
+const char* ng_branches[7] = {
     "JMP",
     "JLT",
     "JLE",
@@ -44,7 +38,7 @@ const char* branches[7] = {
     "JNE"
 };
 
-const char* branch_bits[7] = {
+const char* ng_branch_bits[7] = {
     "111",
     "100",
     "110",
@@ -54,19 +48,19 @@ const char* branch_bits[7] = {
     "101"
 };
 
-const char* registers[reg_count] = {
+const char* ng_registers[ng_reg_count] = {
     "A",
     "D",
     "*A"
 };
 
-const char* regtok[reg_count] = {
+const char* ng_regtok[ng_reg_count] = {
     "A",
     "D",
     "P"
 };
 
-const enum bitval outbits[reg_count] = {
+const enum bitval ng_outbits[ng_reg_count] = {
     OUT_A,
     OUT_D,
     OUT_APTR

@@ -2,7 +2,7 @@
 #ifndef linesize
 #define linesize 256
 #endif
-
+#define here() printf("here\n")
 extern char rline_ptr[linesize];
 extern int linenum;
 extern int truenum;

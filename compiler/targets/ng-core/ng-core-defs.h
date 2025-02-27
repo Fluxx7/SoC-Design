@@ -1,9 +1,12 @@
-#define opcount 6
-#define opcode_size 3
-#define reg_count 3
-#define instruction_size 16
-#define imm_limit 32768
+#include "../targetdef.h"
 
+#define ng_opcount 6
+#define ng_opcode_size 3
+#define ng_reg_count 3
+#define ng_instruction_size 16
+#define ng_imm_limit 32768
+
+#pragma once
 enum bitval {
     NONE = -1,
     CI = 0,

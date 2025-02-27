@@ -1,0 +1,37 @@
+LABELmain
+A=256 9
+D=A 10
+A=32767 11
+D=D&*A 12
+A=forward 14
+D;JEQ 15
+A=left 17
+JMP 18
+LABELforward
+A=0b100 22
+D=A 23
+A=32767 24
+D*A=D|*A 25
+LABELfwd_loop
+A=1024 28
+D=D&A 29
+A=main 30
+D;JEQ 32
+A=32767 35
+D=*A 36
+A=fwd_loop 37
+JMP 38
+LABELleft
+A=0b1000 41
+D=-A 42
+A=32767 43
+D*A=D|*A 44
+LABELleft_loop
+A=512 47
+D=D&A 48
+A=main 49
+D;JEQ 51
+A=32767 54
+D=*A 55
+A=left_loop 56
+JMP 57
