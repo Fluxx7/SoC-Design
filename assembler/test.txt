@@ -1,0 +1,14 @@
+# Assembler code
+DEFINE test 10
+DEFINE LAMP 0x7FFF
+DEFINE test2 4059
+# set D to 1
+D = 1
+
+#set A to lamp address
+A = LAMP
+
+*A = D
+*A = D + 1
+A = 1
+JMP

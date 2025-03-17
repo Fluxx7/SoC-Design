@@ -1,9 +1,9 @@
 
-fcc: src/compiler.c src/computils.h src/computils.c targets/targets.h targets/targetdef.h src/preprocessor.c src/preprocessor.h targets/ng-core/ng-core.c targets/ng-core/ng-core.h targets/ng-core/ng-core-defs.h targets/ng-core/ng-core-target.h 
-	gcc -std=c2x -g -Wall src/compiler.c src/computils.c src/preprocessor.c targets/ng-core/ng-core.c -lm -o fcc
-
-fccpart: compiler.o computils.o preprocessor.o targets.o
+fcc: compiler.o computils.o preprocessor.o targets.o
 	gcc -std=c2x -g -Wall compiler.o computils.o preprocessor.o targets.o -lm -o fcc
+
+
+
 
 compiler.o: src/compiler.c src/computils.h src/preprocessor.h targets/targets.h targets/targetdef.h
 	gcc -std=c2x -g -Wall -c src/compiler.c
