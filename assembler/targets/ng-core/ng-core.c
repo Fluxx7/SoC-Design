@@ -6,7 +6,7 @@
 #include "../../src/computils.h"
 
 struct comp_target_constants ng_target_constants = {
-    ng_opcount, ng_opcode_size, ng_reg_count, ng_instruction_size, ng_imm_limit
+    ngp_opcount, ng_opcode_size, ngp_reg_count, ng_instruction_size, ng_imm_limit
 };
 
 int ng_code_gen(FILE* tokens, char* lineout){
@@ -23,7 +23,7 @@ int ng_code_gen(FILE* tokens, char* lineout){
         // handle outputs
         if (smatch(cline, "OUT ")){
             for (int l = 0; l < strlen(s_slice(cline, 3)); l++) {
-                for (int r = 0; r < ng_reg_count; r++) {
+                for (int r = 0; r < ngp_reg_count; r++) {
                     if (s_slice(cline, 3)[l] == ng_regtok[r][0]) {
                         lineout[ng_outbits[r]] = '1';            
                     }
@@ -31,7 +31,7 @@ int ng_code_gen(FILE* tokens, char* lineout){
             }
         }
         if (smatch(cline, "OP ")){
-            for (int o = 0; o < ng_opcount; o++) {
+            for (int o = 0; o < ngp_opcount; o++) {
                 if (strcmp(s_slice(cline, 3), ng_op_outs[o]) == 0) {
                     for (int ol = 0; ol < ng_opcode_size; ol++) {
                         lineout[OPCODE+ol] = ng_opbits[o][ol];

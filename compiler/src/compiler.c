@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < instruction_size; i++) {
         lineout[i] = '0';
     }
-    lineout[instruction_size] = '\0'; // CI x x * x u op1 op2 zx sw a d *a lt eq gt
+    lineout[instruction_size] = '\0';
     while (1) {
 
         char line[linesize];
@@ -116,11 +116,10 @@ int main(int argc, char** argv) {
 
             // Register assignment
             if (instruction_type == 1) {
-                char register_str[30] = " ";
+                char register_str[30] = "";
                 
                 strcat(register_str, outregs);
-                strcat (register_str, " ");
-                if (verbose) printf("Register assignments: %s \n", register_str);
+                if (verbose) printf("Register assignments: [%s]\n", register_str);
                 int charnum = 0;
                 int end = 0;
                 pmirror("OUT ", tokens);
@@ -128,28 +127,33 @@ int main(int argc, char** argv) {
                     if(register_str[charnum] == (char) 0){
                         end = 1;
                     } else {
-                        switch (register_str[charnum])
-                        {
-                        case 'A':
-                            pmirror("A", tokens);
-                            charnum++;
-                            break;
-                        case 'D':
-                            pmirror("D", tokens);
-                            charnum++;
-                            break;
-                        case '*':
-                            if (register_str[charnum + 1] == 'A') {
-                                pmirror("P", tokens);
-                                charnum += 2;
-                            } else {
-                                return compile_error("invalid lone '*' in register assignment");
+                        int found = 0;
+                        for (int regname = 0; regname < target->constants->reg_count && !found; regname++){
+                            if (target->registers[0][regname][0] == register_str[charnum]) {
+                                if (strlen(target->registers[0][regname]) > 1) {
+                                    int full_match = 1;
+                                    for (int len = 1; len < strlen(target->registers[0][regname]) && full_match; len++) {
+                                        if (target->registers[0][regname][len] != register_str[charnum+len]){
+                                            full_match = 0;
+                                        }
+                                    }
+
+                                    if (full_match) {
+                                        pmirror(target->registers[1][regname], tokens);
+                                        charnum += strlen(target->registers[0][regname]);
+                                        found = 1;
+                                    } else {
+                                        return compile_error("invalid '*' in register assignment");
+                                    }
+                                    
+                                } else {
+                                    pmirror(target->registers[1][regname], tokens);
+                                    charnum ++;
+                                    found = 1;
+                                }
                             }
-                            break;
-                        case ' ':
-                            charnum++;
-                            break;
-                        default:
+                        }
+                        if (found == 0) {
                             return compile_error("invalid character '%c' in register assignment", register_str[charnum]);
                         }
                     }

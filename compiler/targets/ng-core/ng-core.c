@@ -14,6 +14,9 @@ int ng_code_gen(FILE* tokens, char* lineout){
     strcpy(lineout, "1000000000000000");
     int mov = 0;
     char codeline[linesize];
+    char x_reg[3] = "";
+    char y_reg[3] = "";
+    char op[4] = "";
     while (1) {
         if (fgets(codeline, linesize, tokens) == NULL) {
             break;
