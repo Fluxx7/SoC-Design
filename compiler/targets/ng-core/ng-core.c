@@ -12,93 +12,142 @@ struct comp_target_constants ng_target_constants = {
 int ng_code_gen(FILE* tokens, char* lineout){
     rewind(tokens);
     strcpy(lineout, "1000000000000000");
-    int mov = 0;
     char codeline[linesize];
-    char x_reg[3] = "";
-    char y_reg[3] = "";
+    char x_reg[32] = "NULL";
+    char y_reg[8] = "NULL";
+    char out_regs[8] = "NULL";
     char op[4] = "";
+    char jmp[5] = "NULL";
     while (1) {
         if (fgets(codeline, linesize, tokens) == NULL) {
-            break;
+            // code for output here
+
+            // immediate value handling
+            if (strcmp(op, "IMM") == 0) {
+                if(strcmp(jmp, "NULL")!= 0){
+                    return compile_error("ng-core: jumps cannot be performed when assigning an immediate value");
+                }
+                if (strcmp(out_regs, "A") != 0 ) {
+                    return compile_error("ng-core: immediate values can only be written to the A register");
+                } else {
+                    if (strcmp(x_reg, "NULL") == 0) {
+                        return compile_error("fatal error: immediate write was requested but value was not found");
+                    }
+                    lineout[CI] = '0';
+                    char binval[16];
+                    itob(atoi(x_reg), binval);
+                    strcpy(s_slice(lineout,1), binval);
+                }
+            } else {
+                // set output bits
+                for (int l = 0; l < strlen(out_regs); l++) {
+                    for (int r = 0; r < ng_reg_count; r++) {
+                        if (out_regs[l] == ng_regtok[r][0]) {
+                            lineout[ng_outbits[r]] = '1';            
+                        }
+                    }
+                }
+
+                // set operation bits
+                for (int o = 0; o < ng_opcount; o++) {
+                    if (strcmp(op, ng_op_outs[o]) == 0) {
+                        for (int ol = 0; ol < ng_opcode_size; ol++) {
+                            lineout[OPCODE+ol] = ng_opbits[o][ol];
+                        }
+                    }
+                }
+
+                // handle register copying
+                if (strcmp(op, "MOV") == 0) {
+                    lineout[ZERO_X] = '1';
+                    lineout[OPCODE] = '1';
+                    if (x_reg[0] == 'D') {
+                        lineout[SWAP_XY] = '1';
+                    } else if (x_reg[0] == 'P') {
+                        lineout[PTR_IN] = '1';
+                    }
+                } else {
+                    if (strcmp(x_reg, "NULL") != 0 && strcmp(y_reg, "NULL") != 0) {
+                        // set register control bits
+                        if (x_reg[0] == '0') {
+                            lineout[ZERO_X] = '1';
+                            switch (y_reg[0])
+                            {
+                            case 'D':
+                                lineout[SWAP_XY] = '1';
+                                break;
+                            case 'A':
+                                break;
+                            case 'P':
+                                lineout[PTR_IN] = '1';
+                                break;
+                            default:
+                                return compile_error("fatal error: invalid register provided as operand");
+                                break;
+                            }
+                            if (y_reg[0] == 'D'){
+                                lineout[SWAP_XY] = '1';
+                            }
+                        } else if (x_reg[0] != 'D' && y_reg[0] != 'D') {
+                            return compile_error("ng-core: D must be an operand");
+                        } else if (x_reg[0] == y_reg[0]) {
+                            return compile_error("ng-core: one register cannot be used for both operands");
+                        } else {
+                            if (x_reg[0] == 'D') {
+                                if (y_reg[0] == 'P') {
+                                    lineout[PTR_IN] = '1';
+                                }  
+                            } else {
+                                lineout[SWAP_XY] = '1';
+                                if (x_reg[0] == 'P') {
+                                    lineout[PTR_IN] = '1';
+                                }
+                            }
+                        }  
+                    }
+                }
+
+                // handle branches
+                if (strcmp(jmp, "NULL") != 0) {
+                    int match_found = 0;
+                    for (int l = 0; l < 7 && !match_found; l++) {
+                        if (strcmp(ng_branches[l],jmp) == 0) {
+                            match_found = 1;
+                            for (int s = 0; s < 3; s++) {
+                                lineout[BRANCH+s] = ng_branch_bits[l][s];
+                            }
+                        }
+                    }
+                }
+
+            }
+
+
+            return 0;
         }
+        // code for reading inputs here
+
         char cline[linesize];
         sclean_i(codeline, cline, '\n', 0);
-        // handle outputs
+        
+        // outputs
         if (smatch(cline, "OUT ")){
-            for (int l = 0; l < strlen(s_slice(cline, 3)); l++) {
-                for (int r = 0; r < ng_reg_count; r++) {
-                    if (s_slice(cline, 3)[l] == ng_regtok[r][0]) {
-                        lineout[ng_outbits[r]] = '1';            
-                    }
-                }
-            }
+            strcpy(out_regs, s_slice(cline, 4));
         }
+
+        // operation
         if (smatch(cline, "OP ")){
-            for (int o = 0; o < ng_opcount; o++) {
-                if (strcmp(s_slice(cline, 3), ng_op_outs[o]) == 0) {
-                    for (int ol = 0; ol < ng_opcode_size; ol++) {
-                        lineout[OPCODE+ol] = ng_opbits[o][ol];
-                    }
-                }
-            }
-            if (strcmp(s_slice(cline, 3), "IMM") == 0) {
-                lineout[CI] = '0';
-            }
-            if (strcmp(s_slice(cline, 3), "MOV") == 0) {
-                lineout[ZERO_X] = '1';
-                lineout[OPCODE] = '1';
-                mov = 1;
-            }
+            strcpy(op, s_slice(cline, 3));
         }
         if (smatch(cline, "X ")){
-            if (lineout[CI] == '0') {
-                char binval[16];
-                itob(atoi(s_slice(cline, 2)), binval);
-                strcpy(s_slice(lineout,1), binval);
-            } else if (cline[2] == '0') {
-                lineout[ZERO_X] = '1';
-            } else if (mov == 1) {
-                if (cline[2] == 'D'){
-                    lineout[SWAP_XY] = '1';
-                    
-                }
-                if (cline[2] == 'P') {
-                    lineout[PTR_IN] = '1';
-                }
-            } else if (cline[2] != 'D') {
-                lineout[SWAP_XY] = '1';
-                if (cline[2] == 'P') {
-                    lineout[PTR_IN] = '1';
-                }
-            }
+            strcpy(x_reg, s_slice(cline, 2));
         }
         if (smatch(cline, "Y ")){
-            if (cline[2] != 'A'){
-                if (cline[2] == 'P'){
-                    if(lineout[SWAP_XY] == '1' && lineout[ZERO_X] != 1){
-                        return compile_error("D must be an operand");
-                    } 
-                    lineout[PTR_IN] = '1';
-                }
-            } else if(lineout[SWAP_XY] == '1'){
-                    return compile_error("D must be an operand");
-            } 
-            
+            strcpy(y_reg, s_slice(cline, 2));
         }
         if (smatch(cline, "J ")){
-            if (lineout[0] == '0') {
-                return compile_error("jumps cannot be performed with immediate values");
-            }
-            int match_found = 0;
-            for (int l = 0; l < 7 && !match_found; l++) {
-                if (strcmp(ng_branches[l],s_slice(cline, 2)) == 0) {
-                    match_found = 1;
-                    for (int s = 0; s < 3; s++) {
-                        lineout[BRANCH+s] = ng_branch_bits[l][s];
-                    }
-                }
-            }
+            strcpy(jmp, s_slice(cline, 2));
+            
         }
     }
-    return 0;
 }

@@ -100,6 +100,17 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
     if(mirror) rewind(state_mirror);
     rewind(statements);
     if(verbose) printf("Expanding macros\n");
+    /* 
+    macro targeting: 
+    START_MACRO <macro name> <number of arguments>
+    default arg names are arg<arg_num> ie arg0, arg1, arg2
+    SET_ARG <arg number> <arg_name>
+    <macro code>
+    END_MACRO <macro name>
+
+    to call a macro, just use .<macro name> ie .PUSH_D
+    */
+
     if(verbose) printf("Replacing constants and labels\n");
     // Replacing constants
     while (1) {
