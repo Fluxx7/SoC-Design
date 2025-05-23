@@ -37,14 +37,24 @@ void sclean(const char* src, char* out);
 void sclean_i(const char* src, char* out, char character, int spacing);
 
 /**
- * Returns 1 if the string src starts with match, 0 if it doesn't
+ * Returns 1 if the string 'src' starts with 'match', 0 if it doesn't
  */
 int smatch(const char* src, const char* match);
 
+/**
+ * returns an integer value equal to the value in number_string
+ * or returns -1 if it's invalid 
+ */
 int parse_number(const char* number_string);
 
+/**
+ * returns -1, and prints the input as a formatted string
+ */
 int compile_error(const char*, ...);
 
+/**
+ * takes an integer and puts the binary representation into token
+ */
 int itob(int integer, char* token);
 
 

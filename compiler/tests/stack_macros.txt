@@ -1,0 +1,277 @@
+DEFINE SP 0
+DEFINE ARGS 1
+DEFINE LOCALS 2
+DEFINE RETVAL 6
+
+START_MACRO init.stack 0
+A = 256
+D = A
+A = SP
+*A = D
+END_MACRO init.stack
+
+START_MACRO push.D 0
+A = SP
+A *A = *A + 1
+A = A - 1
+*A = D
+END_MACRO push.D
+
+START_MACRO pop.D 0
+A = SP
+A *A = *A - 1
+D = *A
+END_MACRO pop.D
+
+START_MACRO pop.A 0
+A = SP
+A *A = *A - 1
+A = *A
+END_MACRO pop.A
+
+START_MACRO push.value 1 value
+A = value
+D = A
+push.D
+END_MACRO push.value
+
+START_MACRO add 0
+pop.D
+pop.A
+D = D+A
+push.D
+END_MACRO add
+
+START_MACRO sub 0
+pop.D
+pop.A
+D = A-D
+push.D
+END_MACRO sub
+
+START_MACRO neg 0
+pop.D
+D = -D
+push.D
+END_MACRO neg
+
+START_MACRO and 0
+pop.D
+pop.A
+D = D&A
+push.D
+END_MACRO and
+
+START_MACRO or 0
+pop.D
+pop.A
+D = D|A
+push.D
+END_MACRO or
+
+START_MACRO eq 0
+pop.D
+pop.A
+D = D - A
+A = true
+D ; JEQ
+push.value 0
+A = false
+JMP
+
+true:
+D = D - 1
+push.D
+
+false:
+END_MACRO eq
+
+START_MACRO gt 0
+pop.D
+pop.A
+D = D - A
+A = true
+D ; JLT
+push.value 0
+A = false
+JMP
+
+true:
+D = -1
+push.D
+
+false:
+END_MACRO gt
+
+START_MACRO gt 0
+pop.D
+pop.A
+D = D - A
+A = true
+D ; JLT
+push.value 0
+A = false
+JMP
+
+true:
+D = -1
+push.D
+
+false:
+END_MACRO gt
+
+START_MACRO lt 0
+pop.D
+pop.A
+D = D - A
+A = true
+D ; JGT
+push.value 0
+A = false
+JMP
+
+true:
+D = -1
+push.D
+
+false:
+END_MACRO lt
+
+START_MACRO not 0
+pop.D
+D = ~D
+push.D
+END_MACRO not
+
+START_MACRO goto 1 label
+A = label
+JMP
+END_MACRO goto
+
+START_MACRO if.goto 1 label
+pop.D
+A = label
+D ; JNE
+END_MACRO if.goto
+
+START_MACRO push.memory 0
+pop.A
+D = *A
+push.D
+END_MACRO push.memory
+
+START_MACRO pop.memory 0
+pop.D
+pop.A
+*A = D
+END_MACRO pop.memory
+
+START_MACRO push.static 1 address
+A = address
+D = *A
+push.D
+END_MACRO push.static
+
+START_MACRO pop.static 1 address
+pop.D
+A = address
+*A = D
+END_MACRO pop.static
+
+START_MACRO call 2 functionName argumentCount
+DEFINE TEMP 3
+#Push ARGS
+push.static ARGS
+#Calculate new ARGS address
+D = A
+A = argumentCount
+D = D - A
+A = ARGS
+*A = D
+#Push LOCALS, returnAddress
+push.static LOCALS
+push.value returnAddress
+#Jump to functionName
+goto functionName
+returnAddress:
+
+#Restore LOCALS
+pop.static LOCALS
+#Store current ARGS in TEMP slot
+pop.static TEMP
+#Set SP to the previous ARGS value
+push.static ARGS
+pop.static SP
+#Restore old ARGS value from stack
+push.static TEMP
+pop.static ARGS
+#Push RETVAL on stack
+push.static RETVAL
+END_MACRO call
+
+START_MACRO function 2 functionName localsCount
+functionName:
+push.static SP
+pop.static LOCALS
+push.static SP
+push.value localsCount
+add
+pop.static SP
+END_MACRO function
+
+START_MACRO return 0
+pop.static RETVAL
+push.static LOCALS
+pop.static SP
+pop.A
+JMP
+END_MACRO return
+
+START_MACRO push.argument 1 index
+push.value index
+push.static ARGS
+add
+push.memory
+END_MACRO push.argument
+
+START_MACRO pop.argument 1 index
+A = index
+D = A
+A = ARGS
+D = D + *A
+# stack: value| d: addr
+push.D
+# stack: value addr| d: addr
+A = 2
+D = A
+A = SP
+A = *A - D
+D = *A
+push.D
+# stack: value addr value
+pop.memory
+# stack: value
+pop.A
+END_MACRO pop.argument
+
+START_MACRO push.local 1 index
+A = index
+D = A
+A = LOCALS
+D = D + *A
+A = D
+D = *A
+push.D
+END_MACRO push.local
+
+START_MACRO pop.local 1 index
+A = index
+D = A
+A = LOCALS
+D = D + *A
+pop.A
+A = D + A
+D = A - D
+A = A - D
+*A = D
+END_MACRO pop.local

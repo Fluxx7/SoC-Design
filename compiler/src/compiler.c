@@ -31,6 +31,10 @@ int main(int argc, char** argv) {
         if (strcmp(argv[i], "-m") == 0) {
             reflect = 1;
         }
+        if (strcmp(argv[i], "-a") == 0) {
+            verbose = 1;
+            reflect = 1;
+        }
         if (strcmp(argv[i], "-pm") == 0) {
             preflect = 1;
         }
@@ -40,6 +44,12 @@ int main(int argc, char** argv) {
         if (strcmp(argv[i], "-pa") == 0) {
             preflect = 1;
             pverbose = 1;
+        }
+        if (strcmp(argv[i], "-aa") == 0) {
+            preflect = 1;
+            pverbose = 1;
+            verbose = 1;
+            reflect = 1;
         }
         if (smatch(argv[i], "-t=") == 1) {
             for (int j = 0; j < target_count; j++){
@@ -218,7 +228,7 @@ int main(int argc, char** argv) {
                 }
                 if (!op_found){
                     char buffer[32];
-                    int imm;
+                    int imm = 0;
                     if (operation[0] == '0' && operation[1] == 'x'){
                         if ((imm = strtol(operation+2, NULL, 16)) > 0) {
                             if (imm < target->constants->imm_limit){
@@ -241,7 +251,7 @@ int main(int argc, char** argv) {
                                 pmirror(buffer, tokens);
                             }  
                         }
-                    } else if ((imm = atoi(operation)) > 0){
+                    } else if ((imm = atoi(operation)) > 0 || strcmp(operation, "0") == 0){
                         if (verbose) printf("op is decimal immediate of value %d\n", imm);
                         pmirror("IMM\n", tokens);
                         pmirror("X ", tokens);
@@ -260,39 +270,7 @@ int main(int argc, char** argv) {
                             }
                         }
                         if (!reg_found) {
-                            // scan for labels matching the operation
-                            long pos = ftell(processed_input);
-                            rewind(processed_input);
-                            char scanline[linesize];
-                            char csline[linesize];
-                            int label_found = 0;
-                            int local_linenum = 0;
-                            while(1){
-                                if (fgets(scanline, linesize, processed_input) == NULL) {
-                                    break;
-                                }
-                                sclean(scanline, csline);
-                                
-                                if (smatch(csline, "LABEL")){
-                                    if (strcmp(s_slice(csline, 5),operation) == 0) {
-                                        label_found = 1;
-                                        if (verbose) printf("op is using label '%s' at linenum %d\n", operation, local_linenum); 
-                                        pmirror("IMM\n", tokens);
-                                        pmirror("X ", tokens);
-                                        sprintf(buffer, "%d\n", local_linenum);
-                                        pmirror(buffer, tokens);
-                                        break;
-                                    }
-                                    
-                                } else {
-                                    //printf("%s\n",csline);
-                                    local_linenum++;
-                                }
-                            }
-                            if (!label_found) {
-                                return compile_error("Invalid operation");
-                            }
-                            fseek(processed_input, pos, SEEK_SET);
+                            return compile_error("Invalid operation");
                         }
                     }
                 }

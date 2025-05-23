@@ -114,7 +114,7 @@ int parse_number(const char* number_string) {
         if ((imm = strtol(bin_num, NULL, 2)) > 0) {
             return imm;
         }
-    } else if ((imm = atoi(number_string)) > 0){
+    } else if ((imm = atoi(number_string)) > 0 || strcmp(number_string, "0") == 0){
        return imm;
     }
     return -1;
