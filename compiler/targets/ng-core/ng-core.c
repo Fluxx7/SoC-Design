@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "ng-core.h"
 #include "ng-core-target.h"
-#include "../../src/computils.h"
+#include "../../src/utilities/computils.h"
 
 struct comp_target_constants ng_target_constants = {
     ng_opcount, ng_opcode_size, ng_reg_count, ng_instruction_size, ng_imm_limit};

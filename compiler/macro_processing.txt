@@ -3,20 +3,20 @@ INCLUDE tests/stack_macros.txt
 DEFINE addr 0x6001
 DEFINE dispAddr 0x6002
 
-init.stack
+
 A = 0x4000
 D = A
 A = dispAddr
 *A = D
-goto main
+
 
 main:
 
-call waitSync 0
-pop.D
+
+
 A = end
 D ; JEQ
-call render 0
+
 A = 0x20
 D = A
 A = dispAddr
@@ -24,25 +24,25 @@ A = dispAddr
 A = main
 JMP
 
-function waitSync 1
+
 
 LABEL wait_sync:
 A = addr
 D = *A
 A = 2
 D = D & A
-push.D
-pop.local 0
+
+
 
 loop_sync:
 A = addr
 D = *A
 A = 2
 D = D & A
-push.D
-push.local 0
-pop.D
-pop.A
+
+
+
+
 D = D - A
 A = loop_sync
 D ; JEQ
@@ -52,32 +52,32 @@ A = addr
 D = *A
 A = 1
 D = D & A
-push.D
-return
 
-function render 1
-push.value 0
-pop.local 0
+
+
+
+
+
 
 render_loop:
-call waitSync 0
-pop.D
+
+
 A = dispAddr
 A = *A
 D = D + *A
 *A = D + *A
-push.local 0
-push.value 1
-add
-pop.local 0
+
+
+
+
 A = 16
 D = A - D
 A = render_return
 D ; JEQ
-goto render_loop
+
 
 render_return:
-return
+
 
 
 end:

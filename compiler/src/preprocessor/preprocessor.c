@@ -2,9 +2,20 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "computils.h"
+#include "../utilities/computils.h"
 #define stmirror(string, file) fputs(string, file); if(mirror) fputs(string, state_mirror)
 #define prmirror(string, file) fputs(string, file); if(mirror) fputs(string, proc_mirror)
+#define exmirror(string, file) fputs(string, file); if(mirror) fputs(string, macr_mirror)
+#define expand_constants(counter, name_list, val_list) \
+counter++;\
+if (counter == 0) {\
+    name_list = (char**) malloc(sizeof(char*));\
+    val_list = (int*) malloc(sizeof(int));\
+} else {\
+    name_list = (char**) realloc(name_list, sizeof(char*)*(counter+1));\
+    val_list = (int*) realloc(val_list, sizeof(int)*(counter+1));\
+} \
+name_list[counter] = (char*) calloc(linesize, sizeof(char));
 
 typedef struct macro_def {
     char macro_name[linesize];
@@ -13,6 +24,8 @@ typedef struct macro_def {
     char** body;
     int line_count;
 } macro_def;
+
+int macro_replace(macro_def*, int, int, char*, FILE*, int, FILE*, int, int);
 
 int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, FILE* statements, int mirror, int verbose) {
     char rawline[linesize];
@@ -46,6 +59,10 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
     macro_def* macros;
     int macro_count = -1;
     int include_count = -1;
+    char** constants;
+    int* const_values;
+    int const_count = -1;
+    // finding macros
     while(1) {
         if(fgets(rawline, linesize, input) == NULL) {
             break;
@@ -63,7 +80,6 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
             char newfile[linesize];
             sclean(s_slice(rawline, strlen("INCLUDE ")), newfile);
             included[include_count] = fopen(newfile, "r");
-            int macro_scan_linenum = 0;
             while(1) {
                 if(fgets(rawline, linesize, included[include_count]) == NULL) {
                     break;
@@ -78,38 +94,116 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
                     }
 
                     // grabs macro name
-                    char macro_name[linesize];
                     int macro_scan_index = 0;
-                    ssplit(s_slice(rawline, strlen("START_MACRO ")), macro_name, &macro_scan_index, " ");
+                    ssplit(s_slice(rawline, strlen("START_MACRO ")), macros[macro_count].macro_name, &macro_scan_index, " ");
 
                     // grabs arg_count
-                    strcpy(macros[macro_count].macro_name, macro_name);
-                    ssplit(s_slice(rawline, strlen("START_MACRO ")), macro_name, &macro_scan_index, " ");
-                    macros[macro_count].arg_count = atoi(macro_name);
+                    char macro_buffer[linesize];
+                    ssplit(s_slice(rawline, strlen("START_MACRO ")), macro_buffer, &macro_scan_index, " ");
+                    macros[macro_count].arg_count = atoi(macro_buffer);
+
+                    // grabs arg names
                     macros[macro_count].arg_names = (char**) malloc(sizeof(char*)*macros[macro_count].arg_count);
-
+                    char arg_name[linesize];
                     for (int macro_arg_loop = 0; macro_arg_loop < macros[macro_count].arg_count; macro_arg_loop++) {
-                        ssplit(s_slice(rawline, strlen("START_MACRO ")), macro_name, &macro_scan_index, " ");
-                        strcpy(macros[macro_count].arg_names[macro_arg_loop], macro_name);
+                        macros[macro_count].arg_names[macro_arg_loop] = (char*) calloc(strlen(rawline), sizeof(char));
+                        ssplit(s_slice(rawline, strlen("START_MACRO ")), arg_name, &macro_scan_index, " ");
+                        sclean(arg_name, macros[macro_count].arg_names[macro_arg_loop]);
                     }
 
-                    int line_count = 0;
+                    int line_count = -1;
                     while(1) {
-
+                        if(fgets(rawline, linesize, included[include_count]) == NULL) {
+                            return compile_error("no END_MACRO call found for %s", macros[macro_count].macro_name);
+                        }
+                        if(smatch(rawline, "END_MACRO ") && smatch(s_slice(rawline, strlen("END_MACRO ")), macros[macro_count].macro_name)) {
+                            break;
+                        }
+                        line_count++;
+                        if (line_count == 0) {
+                            macros[macro_count].body = (char**) malloc(sizeof(char*));
+                        } else {
+                            macros[macro_count].body = (char**) realloc(macros[macro_count].body, sizeof(char*)*(line_count+1));
+                        }
+                        macros[macro_count].body[line_count] = (char*) calloc(strlen(rawline), sizeof(char));
+                        strcpy(macros[macro_count].body[line_count], rawline);
                     }
+                    macros[macro_count].line_count = line_count;
 
                     printf("macro name: %s, arg_count: %d, line_count: %d\n", macros[macro_count].macro_name, macros[macro_count].arg_count, macros[macro_count].line_count);
                     printf("macro count: %d\n\n", macro_count);
                     
+                } else if (smatch(rawline, "DEFINE ")) {
+                    int const_index = strlen("DEFINE ");
+                
+                    expand_constants(const_count, constants, const_values);
+                    ssplit(rawline, constants[const_count], &const_index, " ");
+        
+                    // extracts the constant value as a string into const_val
+                    char const_val[strlen(s_slice(rawline, const_index))];
+                    sclean(s_slice(rawline, const_index), const_val);
+        
+                    // parses the number in const_val and either puts the number into const_values or throws an error
+                    int imm;
+                    if ((imm = parse_number(const_val)) != -1) {
+                        if (imm < target->constants->imm_limit){
+                            const_values[const_count] = imm;
+                            if (verbose) printf("Preprocessor: Constant '%s' defined as %d\n", constants[const_count], const_values[const_count]); 
+                        } else {
+                            return compile_error("Constants must be between 1 and %d", target->constants->imm_limit - 1);
+                        }
+                    } else {
+                        return compile_error("Immediate value was not a valid number");
+                    }
                 }
-                macro_scan_linenum++;
             }
         }
 
     }
     rewind(input);
-    
+    FILE* expanded_input = tmpfile();
+    FILE* macr_mirror; 
+    if (mirror) {
+        macr_mirror = fopen("macro_processing.txt", "w+");
+    }
+    // replacing macros
+    while(1) {
+        if(fgets(rawline, linesize, input) == NULL) {
+            break;
+        }
+        char cleanline[linesize];
+        sclean(rawline, cleanline);
+        int macro_found = 0;
+        for (int macro = 0; macro <= macro_count && !macro_found; macro++) {
+            if (smatch(cleanline, macros[macro].macro_name)) {
+                // this needs to insert the macro while replacing any arguments it takes with the provided values
+                // should probably also check to see if the macro contains any macros
+                // therefore this should probably be a recursive function
+                if (macro_replace(macros, macro_count, macro, rawline, expanded_input, mirror, macr_mirror, verbose, 0) == -1) return -1;
+                exmirror("\n", expanded_input);
+                macro_found = 1;
+            }
+        }
+        if (!macro_found) {
+            exmirror(rawline, expanded_input);
+        }
+    }
+    fclose(input);
+    if (mirror) {
+        fclose(macr_mirror);
+    }
+    input = expanded_input;
+    rewind(input);
     if (macro_count != -1) {
+        for (int i = 0; i <= macro_count; i++) {
+            for (int j = 0; j < macros[i].arg_count; j++) {
+                free(macros[i].arg_names[j]);
+            }
+            free(macros[i].arg_names);
+            for (int j = 0; j <= macros[i].line_count; j++) {
+                free(macros[i].body[j]);
+            }
+        }
         free(macros);
     }
     if (include_count != -1) {
@@ -132,9 +226,7 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
     */
 
     // statement processing
-    char** constants;
-    int* const_values;
-    int const_count = -1;
+    
     int plinenum = 0;
     if(verbose) printf("Finding statements, constants, and labels...\n");
     while(1) {
@@ -149,18 +241,7 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
             stmirror("blank\n", statements);
             int const_index = strlen("DEFINE ");
         
-            // expands the list of constants by one
-            const_count++;
-            if (const_count == 0) {
-                constants = (char**) malloc(sizeof(char*));
-                const_values = (int*) malloc(sizeof(int));
-            } else {
-                constants = (char**) realloc(constants, sizeof(char*)*(const_count+1));
-                const_values = (int*) realloc(const_values, sizeof(int)*(const_count+1));
-            } 
-
-            // extracts the constant name into constants[const_count]
-            constants[const_count] = (char*) calloc(linesize, linesize*sizeof(char));
+            expand_constants(const_count, constants, const_values);
             ssplit(rawline, constants[const_count], &const_index, " ");
 
             // extracts the constant value as a string into const_val
@@ -184,19 +265,12 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
             stmirror("LABEL\n", statements);
             
 
-            // expands the list of constants by one
-            const_count++;
-            if (const_count == 0) {
-                constants = (char**) malloc(sizeof(char*));
-                const_values = (int*) malloc(sizeof(int));
-            } else {
-                constants = (char**) realloc(constants, sizeof(char*)*(const_count+1));
-                const_values = (int*) realloc(const_values, sizeof(int)*(const_count+1));
-            } 
+            expand_constants(const_count, constants, const_values);
 
             // puts the label into constants[const_count]
-            constants[const_count] = (char*) calloc(linesize, linesize*sizeof(char));
-            sclean(s_slice(rawline, strlen("LABEL ")), constants[const_count]);
+            char labelname[linesize];
+            sclean(s_slice(rawline, strlen("LABEL ")), labelname);
+            sclean_i(labelname, constants[const_count], ':', 0);
 
             // confirms the label is in a valid line number to be stored as a constant, and adds it to the list of constants
             if (plinenum < target->constants->imm_limit){
@@ -206,7 +280,27 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
                 return compile_error("Label addresses must be between 1 and %d", target->constants->imm_limit - 1);
             }
         
-        }else {
+        } else if (line[strlen(line)-1] == ':') {
+            // same as previous label code, handles no LABEL marker
+            stmirror("LABEL\n", statements);
+            
+
+            expand_constants(const_count, constants, const_values);
+
+            // puts the label into constants[const_count]
+            char labelname[linesize];
+            sclean(rawline, labelname);
+            sclean_i(labelname, constants[const_count], ':', 0);
+
+            // confirms the label is in a valid line number to be stored as a constant, and adds it to the list of constants
+            if (plinenum < target->constants->imm_limit){
+                const_values[const_count] = plinenum;
+                if (verbose) printf("Preprocessor: Label '%s' defined as linenum %d\n", constants[const_count], const_values[const_count]); 
+            } else {
+                return compile_error("Label addresses must be between 1 and %d", target->constants->imm_limit - 1);
+            }
+        
+        } else {
             int index=0;
             if (ssplit(line, NULL, &index, "=")){
                 stmirror("=", statements);
@@ -297,5 +391,67 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
     }
     rewind(processed_input);
     rewind(statements);
+    return 0;
+}
+
+
+
+#define curr_macro macro_list[macro_index]
+#define curr_macro_line curr_macro.body[macro_line]
+/**
+ * Takes the list of macros, the current macro to insert, and outputs the fully expanded macro to the provided output file
+ */
+int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char* codeline,  FILE* output, int mirror, FILE* macr_mirror, int verbose, int layer) {
+    if (layer > recursion_limit) {
+        return compile_error("Excessive recursion in macros, final macro in recursion %s", curr_macro.macro_name);
+    }
+    if (layer == 0) {
+        printf("starting macro '%s'\n", curr_macro.macro_name);
+    } else {
+        printf("inner macro: '%s'\n", curr_macro.macro_name);
+    }
+    
+
+    char cleanline[linesize];
+    sclean_i(codeline, cleanline, '\n', 0);
+    // grab the provided arg values
+    char arg_values[curr_macro.arg_count][linesize];
+    int arg_scan_index = strlen(curr_macro.macro_name) + 1;
+    for(int arg_loop_index = 0; arg_loop_index < curr_macro.arg_count; arg_loop_index++) {
+        if (ssplit(cleanline, arg_values[arg_loop_index], &arg_scan_index, " ") == 0) {
+            sclean(s_slice(cleanline, arg_scan_index), arg_values[arg_loop_index]);
+            //printf("here\n");
+        }
+        //printf("codeline: %s, index: %d\n", cleanline, arg_scan_index);
+        printf("arg '%s' has value '%s'\n", curr_macro.arg_names[arg_loop_index], arg_values[arg_loop_index]);
+    }
+    
+    FILE* localfile = tmpfile();
+
+    for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
+        
+        int macro_found = 0;
+        for (int macro = 0; macro <= macro_count && !macro_found; macro++) {
+            if (smatch(curr_macro_line, macro_list[macro].macro_name) && curr_macro_line[strlen(macro_list[macro].macro_name)] == ' ') {
+                if (macro_replace(macro_list, macro_count, macro, curr_macro_line, localfile, mirror, macr_mirror, verbose, layer+1) == -1) return -1;
+                
+                macro_found = 1;
+            }
+        }
+        if (!macro_found) {
+            
+        }
+    }
+    rewind(localfile);
+    char rawline[linesize];
+    while(1) {
+        if(fgets(rawline, linesize, localfile) == NULL) {
+            break;
+        }
+        exmirror(rawline, output);
+    }
+    fclose(localfile);
+    if (verbose) printf("Preprocessor: macro '%s' expanded", macro_list[macro_index].macro_name);
+    if (layer == 0) printf("\n");
     return 0;
 }

@@ -1,20 +1,20 @@
 
-fcc: src/compiler.c src/computils.h src/computils.c targets/targets.h targets/targetdef.h src/preprocessor.c src/preprocessor.h targets/ng-core/ng-core.c targets/ng-core/ng-core.h targets/ng-core/ng-core-defs.h targets/ng-core/ng-core-target.h 
-	gcc -std=c2x -g -Wall src/compiler.c src/computils.c src/preprocessor.c targets/ng-core/ng-core.c -lm -o fcc
+fcc: src/compiler.c src/utilities/computils.h src/utilities/computils.c targets/targets.h targets/targetdef.h src/preprocessor/preprocessor.c src/preprocessor/preprocessor.h targets/ng-core/ng-core.c targets/ng-core/ng-core.h targets/ng-core/ng-core-defs.h targets/ng-core/ng-core-target.h 
+	gcc -std=c2x -g -Wall src/compiler.c src/utilities/computils.c src/preprocessor/preprocessor.c targets/ng-core/ng-core.c -lm -o fcc
 
 fccpart: compiler.o computils.o preprocessor.o targets.o
 	gcc -std=c2x -g -Wall compiler.o computils.o preprocessor.o targets.o -lm -o fcc
 
-compiler.o: src/compiler.c src/computils.h src/preprocessor.h targets/targets.h targets/targetdef.h
+compiler.o: src/compiler.c src/utilities/computils.h src/preprocessor/preprocessor.h targets/targets.h targets/targetdef.h
 	gcc -std=c2x -g -Wall -c src/compiler.c
 
-computils.o: src/computils.c src/computils.h 
-	gcc -std=c2x -g -Wall -c src/computils.c
+computils.o: src/utilities/computils.c src/utilities/computils.h 
+	gcc -std=c2x -g -Wall -c src/utilities/computils.c
 
-preprocessor.o: src/preprocessor.c src/preprocessor.h src/computils.h targets/targetdef.h
-	gcc -std=c2x -g -Wall -c src/preprocessor.c
+preprocessor.o: src/preprocessor/preprocessor.c src/preprocessor/preprocessor.h src/utilities/computils.h targets/targetdef.h
+	gcc -std=c2x -g -Wall -c src/preprocessor/preprocessor.c
 
-targets.o: targets/ng-core/ng-core.c targets/ng-core/ng-core.h targets/targetdef.h targets/ng-core/ng-core-defs.h targets/ng-core/ng-core-target.h src/computils.h
+targets.o: targets/ng-core/ng-core.c targets/ng-core/ng-core.h targets/targetdef.h targets/ng-core/ng-core-defs.h targets/ng-core/ng-core-target.h src/utilities/computils.h
 	gcc -std=c2x -g -Wall -c targets/ng-core/ng-core.c -o targets.o
 
 

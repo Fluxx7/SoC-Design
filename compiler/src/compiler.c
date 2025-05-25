@@ -3,8 +3,8 @@
 #include <string.h>
 
 
-#include "computils.h"
-#include "preprocessor.h"
+#include "utilities/computils.h"
+#include "preprocessor/preprocessor.h"
 #include "../targets/targets.h"
 
 
@@ -77,7 +77,9 @@ int main(int argc, char** argv) {
 
     int instruction_type;
     int instruction_size = target->constants->instruction_size;
-    preprocess(target, input, processed_input, statements, preflect, pverbose);
+    if (preprocess(target, input, processed_input, statements, preflect, pverbose) == -1) {
+        return 1;
+    }
     rewind(input);
     char lineout[instruction_size+1];
     char rawline[linesize];
