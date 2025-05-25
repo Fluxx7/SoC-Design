@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
 
     int instruction_type;
     int instruction_size = target->constants->instruction_size;
-    if (preprocess(target, input, processed_input, statements, preflect, pverbose) == -1) {
+    if (preprocess(target, input, processed_input, statements, preflect, pverbose)) {
         return 1;
     }
     rewind(input);
