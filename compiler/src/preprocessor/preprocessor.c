@@ -415,18 +415,27 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
     char cleanline[linesize];
     sclean_i(codeline, cleanline, '\n', 0);
     // grab the provided arg values
-    char arg_values[curr_macro.arg_count][linesize];
+    int const_index = curr_macro.arg_count - 1;
+    char** constants = (char**) malloc(sizeof(char*)*(const_index+1));
+    char** const_values = (char**) malloc(sizeof(char*)*(const_index+1));
     int arg_scan_index = strlen(curr_macro.macro_name) + 1;
-    for(int arg_loop_index = 0; arg_loop_index < curr_macro.arg_count; arg_loop_index++) {
-        if (ssplit(cleanline, arg_values[arg_loop_index], &arg_scan_index, " ") == 0) {
-            sclean(s_slice(cleanline, arg_scan_index), arg_values[arg_loop_index]);
-            //printf("here\n");
+
+    for(int arg_loop_index = 0; arg_loop_index <= const_index; arg_loop_index++) {
+        // allocate memory and add the argument name as a constant
+        constants[arg_loop_index] = (char*) calloc(linesize, sizeof(char));
+        const_values[arg_loop_index] = (char*) calloc(linesize, sizeof(char));
+        strcpy(constants[arg_loop_index], curr_macro.arg_names[arg_loop_index]);
+
+        if (ssplit(cleanline, const_values[arg_loop_index], &arg_scan_index, " ") == 0) {
+            sclean(s_slice(cleanline, arg_scan_index), const_values[arg_loop_index]);
         }
-        //printf("codeline: %s, index: %d\n", cleanline, arg_scan_index);
-        printf("arg '%s' has value '%s'\n", curr_macro.arg_names[arg_loop_index], arg_values[arg_loop_index]);
+        printf("arg '%s' has value '%s'\n", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
     }
     
     FILE* localfile = tmpfile();
+
+    // stores the current line, with constant values replaced
+    char filled_line[linesize];
 
     for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
         
@@ -442,6 +451,12 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
             
         }
     }
+    for (int i = 0; i <= const_index; i++) {
+        free(constants[i]);
+        free(const_values[i]);
+    }
+    free(constants);
+    free(const_values);
     rewind(localfile);
     char rawline[linesize];
     while(1) {
