@@ -1,5 +1,36 @@
 ---
 triple:          'arm64-apple-darwin'
 binary-path:     fcc
-relocations:     []
+relocations:
+  - { offset: 0x26, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100000598, symSize: 0x1B58 }
+  - { offset: 0x3F, size: 0x8, addend: 0x0, symName: _targets, symObjAddr: 0x1B58, symBinAddr: 0x10000C000, symSize: 0x0 }
+  - { offset: 0x348, size: 0x8, addend: 0x0, symName: _linenum, symObjAddr: 0x405C, symBinAddr: 0x10000C200, symSize: 0x0 }
+  - { offset: 0x35D, size: 0x8, addend: 0x0, symName: _truenum, symObjAddr: 0x4060, symBinAddr: 0x10000C204, symSize: 0x0 }
+  - { offset: 0x372, size: 0x8, addend: 0x0, symName: _rline_ptr, symBinAddr: 0x10000C300, symSize: 0x0 }
+  - { offset: 0x394, size: 0x8, addend: 0x0, symName: _mirror, symBinAddr: 0x10000C208, symSize: 0x0 }
+  - { offset: 0x39D, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x0, symBinAddr: 0x100000598, symSize: 0x1B58 }
+  - { offset: 0x7F6, size: 0x8, addend: 0x0, symName: _ssplit, symObjAddr: 0x0, symBinAddr: 0x1000020F0, symSize: 0x264 }
+  - { offset: 0x81D, size: 0x8, addend: 0x0, symName: _ssplit, symObjAddr: 0x0, symBinAddr: 0x1000020F0, symSize: 0x264 }
+  - { offset: 0x8A7, size: 0x8, addend: 0x0, symName: _sclean, symObjAddr: 0x264, symBinAddr: 0x100002354, symSize: 0x34 }
+  - { offset: 0x8D9, size: 0x8, addend: 0x0, symName: _sclean_i, symObjAddr: 0x298, symBinAddr: 0x100002388, symSize: 0x14C }
+  - { offset: 0x96D, size: 0x8, addend: 0x0, symName: _smatch, symObjAddr: 0x3E4, symBinAddr: 0x1000024D4, symSize: 0x98 }
+  - { offset: 0x9BF, size: 0x8, addend: 0x0, symName: _parse_number, symObjAddr: 0x47C, symBinAddr: 0x10000256C, symSize: 0x1E8 }
+  - { offset: 0xA16, size: 0x8, addend: 0x0, symName: _itob, symObjAddr: 0x664, symBinAddr: 0x100002754, symSize: 0x7C }
+  - { offset: 0xA68, size: 0x8, addend: 0x0, symName: _compile_error, symObjAddr: 0x6E0, symBinAddr: 0x1000027D0, symSize: 0xE4 }
+  - { offset: 0xB19, size: 0x8, addend: 0x0, symName: _preprocess, symObjAddr: 0x0, symBinAddr: 0x1000028B4, symSize: 0x1890 }
+  - { offset: 0xDBE, size: 0x8, addend: 0x0, symName: _preprocess, symObjAddr: 0x0, symBinAddr: 0x1000028B4, symSize: 0x1890 }
+  - { offset: 0x125B, size: 0x8, addend: 0x0, symName: _macro_replace, symObjAddr: 0x1890, symBinAddr: 0x100004144, symSize: 0xF44 }
+  - { offset: 0x16AE, size: 0x8, addend: 0x0, symName: _has_label, symObjAddr: 0x0, symBinAddr: 0x100005088, symSize: 0x114 }
+  - { offset: 0x16C9, size: 0x8, addend: 0x0, symName: _has_label, symObjAddr: 0x0, symBinAddr: 0x100005088, symSize: 0x114 }
+  - { offset: 0x1778, size: 0x8, addend: 0x0, symName: _ng_code_gen, symObjAddr: 0x0, symBinAddr: 0x10000519C, symSize: 0x900 }
+  - { offset: 0x179F, size: 0x8, addend: 0x0, symName: _ng_operators, symObjAddr: 0xAF8, symBinAddr: 0x10000C050, symSize: 0x0 }
+  - { offset: 0x17D6, size: 0x8, addend: 0x0, symName: _ng_op_outs, symObjAddr: 0xB28, symBinAddr: 0x10000C080, symSize: 0x0 }
+  - { offset: 0x17EB, size: 0x8, addend: 0x0, symName: _ng_opbits, symObjAddr: 0xB58, symBinAddr: 0x10000C0B0, symSize: 0x0 }
+  - { offset: 0x1800, size: 0x8, addend: 0x0, symName: _ng_branches, symObjAddr: 0xB88, symBinAddr: 0x10000C0E0, symSize: 0x0 }
+  - { offset: 0x1821, size: 0x8, addend: 0x0, symName: _ng_branch_bits, symObjAddr: 0xBC0, symBinAddr: 0x10000C118, symSize: 0x0 }
+  - { offset: 0x1836, size: 0x8, addend: 0x0, symName: _ng_registers, symObjAddr: 0xBF8, symBinAddr: 0x10000C150, symSize: 0x0 }
+  - { offset: 0x1857, size: 0x8, addend: 0x0, symName: _ng_regtok, symObjAddr: 0xC10, symBinAddr: 0x10000C168, symSize: 0x0 }
+  - { offset: 0x186C, size: 0x8, addend: 0x0, symName: _ng_outbits, symObjAddr: 0xC3C, symBinAddr: 0x100006460, symSize: 0x0 }
+  - { offset: 0x18E2, size: 0x8, addend: 0x0, symName: _ng_target_constants, symObjAddr: 0xC28, symBinAddr: 0x10000C180, symSize: 0x0 }
+  - { offset: 0x193D, size: 0x8, addend: 0x0, symName: _ng_code_gen, symObjAddr: 0x0, symBinAddr: 0x10000519C, symSize: 0x900 }
 ...

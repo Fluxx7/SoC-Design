@@ -3,21 +3,31 @@ INCLUDE tests/stack_macros.txt
 DEFINE addr 0x6001
 DEFINE dispAddr 0x6002
 
+# TOP MACRO 
+# init.stack
 A = 256
 D = A
 A = SP
 *A = D
+
 A = 0x4000
 D = A
 A = dispAddr
 *A = D
+# TOP MACRO 
+# goto main
 A = main
 JMP
 
+
 main:
 
+# TOP MACRO 
+# call waitSync 0
+# push.static ARGS
 A = ARGS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
@@ -27,67 +37,94 @@ A = 0
 D = D - A
 A = ARGS
 *A = D
+# push.static LOCALS
 A = LOCALS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
-A = returnAddress
+# push.value 0_14_call_returnAddress
+A = 0_14_call_returnAddress
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# goto waitSync
 A = waitSync
 JMP
-returnAddress:
+0_14_call_returnAddress:
 
+# pop.static LOCALS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = LOCALS
 *A = D
+# pop.static 3
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = 3
 *A = D
+# push.static ARGS
 A = ARGS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
+# push.static 3
 A = 3
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static ARGS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = ARGS
 *A = D
+# push.static RETVAL
 A = RETVAL
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
+
 A = end
 D ; JEQ
+# TOP MACRO 
+# call render 0
+# push.static ARGS
 A = ARGS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
@@ -97,60 +134,80 @@ A = 0
 D = D - A
 A = ARGS
 *A = D
+# push.static LOCALS
 A = LOCALS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
-A = returnAddress
+# push.value 0_18_call_returnAddress
+A = 0_18_call_returnAddress
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# goto render
 A = render
 JMP
-returnAddress:
+0_18_call_returnAddress:
 
+# pop.static LOCALS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = LOCALS
 *A = D
+# pop.static 3
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = 3
 *A = D
+# push.static ARGS
 A = ARGS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
+# push.static 3
 A = 3
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static ARGS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = ARGS
 *A = D
+# push.static RETVAL
 A = RETVAL
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
 A = 0x20
 D = A
 A = dispAddr
@@ -158,60 +215,83 @@ A = dispAddr
 A = main
 JMP
 
+# TOP MACRO 
+# function waitSync 1
 waitSync:
+# push.static SP
 A = SP
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static LOCALS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = LOCALS
 *A = D
+# push.static SP
 A = SP
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# push.value 1
 A = 1
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# add
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
 D = D+A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
 
+
 LABEL wait_sync:
 A = addr
 D = *A
 A = 2
 D = D & A
+# TOP MACRO 
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# pop.local 0
 A = 0
 D = A
 A = LOCALS
 D = D + *A
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
@@ -220,31 +300,45 @@ D = A - D
 A = A - D
 *A = D
 
+
 loop_sync:
 A = addr
 D = *A
 A = 2
 D = D & A
+# TOP MACRO 
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# push.local 0
 A = 0
 D = A
 A = LOCALS
 D = D + *A
 A = D
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
+
+# TOP MACRO 
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
+
 D = D - A
 A = loop_sync
 D ; JEQ
@@ -254,81 +348,118 @@ A = addr
 D = *A
 A = 1
 D = D & A
+# TOP MACRO 
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# return
+# pop.static RETVAL
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = RETVAL
 *A = D
+# push.static LOCALS
 A = LOCALS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
 JMP
 
+
+# TOP MACRO 
+# function render 1
 render:
+# push.static SP
 A = SP
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static LOCALS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = LOCALS
 *A = D
+# push.static SP
 A = SP
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# push.value 1
 A = 1
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# add
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
 D = D+A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
+
+# TOP MACRO 
+# push.value 0
 A = 0
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# pop.local 0
 A = 0
 D = A
 A = LOCALS
 D = D + *A
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
@@ -337,9 +468,14 @@ D = A - D
 A = A - D
 *A = D
 
+
 render_loop:
+# TOP MACRO 
+# call waitSync 0
+# push.static ARGS
 A = ARGS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
@@ -349,98 +485,138 @@ A = 0
 D = D - A
 A = ARGS
 *A = D
+# push.static LOCALS
 A = LOCALS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
-A = returnAddress
+# push.value 0_62_call_returnAddress
+A = 0_62_call_returnAddress
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# goto waitSync
 A = waitSync
 JMP
-returnAddress:
+0_62_call_returnAddress:
 
+# pop.static LOCALS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = LOCALS
 *A = D
+# pop.static 3
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = 3
 *A = D
+# push.static ARGS
 A = ARGS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
+# push.static 3
 A = 3
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static ARGS
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = ARGS
 *A = D
+# push.static RETVAL
 A = RETVAL
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
+
 A = dispAddr
 A = *A
 D = D + *A
 *A = D + *A
+# TOP MACRO 
+# push.local 0
 A = 0
 D = A
 A = LOCALS
 D = D + *A
 A = D
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# push.value 1
 A = 1
 D = A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# add
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
 D = D+A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+
+# TOP MACRO 
+# pop.local 0
 A = 0
 D = A
 A = LOCALS
 D = D + *A
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
@@ -448,34 +624,48 @@ A = D + A
 D = A - D
 A = A - D
 *A = D
+
 A = 16
 D = A - D
 A = render_return
 D ; JEQ
+# TOP MACRO 
+# goto render_loop
 A = render_loop
 JMP
 
+
 render_return:
+# TOP MACRO 
+# return
+# pop.static RETVAL
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = RETVAL
 *A = D
+# push.static LOCALS
 A = LOCALS
 D = *A
+# push.D
 A = SP
 A *A = *A + 1
 A = A - 1
 *A = D
+# pop.static SP
+# pop.D
 A = SP
 A *A = *A - 1
 D = *A
 A = SP
 *A = D
+# pop.A
 A = SP
 A *A = *A - 1
 A = *A
 JMP
+
 
 
 end:

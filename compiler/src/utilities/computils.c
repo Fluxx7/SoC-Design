@@ -35,10 +35,8 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
                 if (delim_match > 0) {
                     delim_match = 0;
                 }
-                //printf("Index: %d, token: %s, line: %s\n", *index, out, src+*index);
                 if(output) out[*index-orig_index] = src[*index];
             } else {
-                //printf("Index: %d, delim_match: %d, token: %s, line: %s\n", *index, delim_match, out, src+*index);
                 delim_match++;
                 if (output) out[*index-orig_index] = src[*index];
                 if (delim[delim_match] == '\0') {

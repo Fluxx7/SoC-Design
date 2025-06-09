@@ -1,33 +1,11 @@
 #include "preprocessor.h"
+#include "preprocessor_utils.h"
 #include <stdlib.h>
 #include <string.h>
 
 #include "../utilities/computils.h"
 
-#define stmirror(string, file) fputs(string, file); if(mirror) fputs(string, state_mirror)
-#define prmirror(string, file) fputs(string, file); if(mirror) fputs(string, proc_mirror)
-#define exmirror(string, file) fputs(string, file); if(mirror) fputs(string, macr_mirror)
 
-#define expand_constants(counter, name_list, val_list) \
-counter++;\
-if (counter == 0) {\
-    name_list = (char**) malloc(sizeof(char*));\
-    val_list = (int*) malloc(sizeof(int));\
-} else {\
-    name_list = (char**) realloc(name_list, sizeof(char*)*(counter+1));\
-    val_list = (int*) realloc(val_list, sizeof(int)*(counter+1));\
-} \
-name_list[counter] = (char*) calloc(linesize, sizeof(char));
-
-typedef struct macro_def {
-    char macro_name[linesize];
-    int arg_count;
-    char** arg_names;
-    char** body;
-    int line_count;
-} macro_def;
-
-int macro_replace(macro_def*, int, int, char*, int, FILE*, int, FILE*, int, int);
 
 int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, FILE* statements, int mirror, int verbose) {
     char rawline[linesize];
@@ -39,22 +17,6 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
     }
     if(verbose) printf("Preprocessor start\n");
     rewind(input);
-    /* 
-    two goals: 
-    - break down each line into predefined statements
-        - outline the statements found in the statements file to make later steps faster
-        - this is also needed to safely replace labels, macros, and constants
-    - replace all labels, macros, and constants with the equivalent values, and remove comments
-        - start with macros, as they can include other macros, labels, and constants, and they will also affect the address of labels
-            - loop through and expand each macro found
-                - can loop repeatedly and track located macros until no more macros are found
-                - better option might be to recursively expand a macro until the macro is fully expanded
-            - once no more macros exist, replace all constants with predefined values
-            - replace all labels with correct line addresses
-    
-    Final result should only include assembly instructions that can easily be processed by the primary system
-    Support both mirroring and verbosity setttings
-     */
 
     if(verbose) printf("Expanding macros\n");
     FILE** included;
@@ -132,8 +94,8 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
                     }
                     macros[macro_count].line_count = line_count + 1;
 
-                    printf("macro name: %s, arg_count: %d, line_count: %d\n", macros[macro_count].macro_name, macros[macro_count].arg_count, macros[macro_count].line_count);
-                    printf("macro count: %d\n\n", macro_count);
+                    if(verbose) printf("macro name: %s, arg_count: %d, line_count: %d\n", macros[macro_count].macro_name, macros[macro_count].arg_count, macros[macro_count].line_count);
+                    if(verbose) printf("macro count: %d\n\n", macro_count);
                     
                 } else if (smatch(rawline, "DEFINE ")) {
                     int const_index = strlen("DEFINE ");
@@ -163,6 +125,8 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
 
     }
     rewind(input);
+
+
     FILE* expanded_input = tmpfile();
     FILE* macr_mirror; 
     if (mirror) {
@@ -179,7 +143,7 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
         int macro_found = 0;
         for (int macro = 0; macro <= macro_count && !macro_found; macro++) {
             if (smatch(cleanline, macros[macro].macro_name)) {
-                if (macro_replace(macros, macro_count, macro, rawline, local_linenum, expanded_input, mirror, macr_mirror, verbose, 0)) return 1;
+                if (macro_replace(macros, macro_count, macro, rawline, local_linenum, expanded_input, mirror, macr_mirror, verbose, 0, NULL)) return 1;
                 macro_found = 1;
             }
         }
@@ -240,6 +204,8 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
         }
         char line[linesize];
         sclean(rawline, line);
+        char label_name[linesize];    
+        
         if (strlen(line) == 0 || line[0] == '#' || smatch(rawline, "INCLUDE ")) {
             stmirror("blank\n", statements);
         } else if (smatch(rawline, "DEFINE ")) {
@@ -269,42 +235,10 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
             } else {
                 return compile_error("Immediate value was not a valid number");
             }
-        } else if (smatch(line, "LABEL")) {
-            // labels are stored as a constant with the value being their line number
+        } else if (has_label(rawline, label_name) != 0){
             stmirror("LABEL\n", statements);
-            
-
             expand_constants(const_count, constants, const_values);
-
-            // puts the label into constants[const_count]
-            char labelname[linesize];
-            sclean(s_slice(rawline, strlen("LABEL ")), labelname);
-            sclean_i(labelname, constants[const_count], ':', 0);
-            for (int test = 0; test < const_count; test++) {
-                if (strcmp(constants[const_count], constants[test]) == 0) {
-                    return compile_error("Multiple labels with the same name are not allowed: '%s' at line %d", constants[const_count], plinenum);
-                }
-            }
-
-            // confirms the label is in a valid line number to be stored as a constant, and adds it to the list of constants
-            if (plinenum < target->constants->imm_limit){
-                const_values[const_count] = plinenum;
-                if (verbose) printf("Preprocessor: Label '%s' defined as linenum %d\n", constants[const_count], const_values[const_count]); 
-            } else {
-                return compile_error("Label addresses must be between 1 and %d", target->constants->imm_limit - 1);
-            }
-        
-        } else if (line[strlen(line)-1] == ':') {
-            // same as previous label code, handles no LABEL marker
-            stmirror("LABEL\n", statements);
-            
-
-            expand_constants(const_count, constants, const_values);
-
-            // puts the label into constants[const_count]
-            char labelname[linesize];
-            sclean(rawline, labelname);
-            sclean_i(labelname, constants[const_count], ':', 0);
+            strcpy(constants[const_count], label_name);
             for (int test = 0; test < const_count; test++) {
                 if (strcmp(constants[const_count], constants[test]) == 0) {
                     return compile_error("Multiple labels with the same name are not allowed: '%s' at line %d", constants[const_count], plinenum);
@@ -317,7 +251,7 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
             } else {
                 return compile_error("Label addresses must be between 1 and %d", target->constants->imm_limit - 1);
             }
-        
+            
         } else {
             int index=0;
             if (ssplit(line, NULL, &index, "=")){
@@ -373,7 +307,7 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
                     //if(verbose) printf("Preprocessor: statement found %s\n", proc_statement);
                     for (int cons = 0; cons <= const_count; cons ++) {
                         if(strcmp(proc_statement, constants[cons]) == 0) {
-                            if(verbose) printf("%s is const: %s with value %d\n", proc_statement, constants[cons], const_values[cons]);
+                            if(verbose) printf("%s is const with value %d\n", proc_statement, const_values[cons]);
                             sprintf(fproc_statement, "%d", const_values[cons]);
                             //if(verbose) printf("Preprocessor: outputting statement %s\n", fproc_statement);
                             prmirror(fproc_statement, processed_input);
@@ -391,7 +325,7 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
                     }
                     prmirror(char_string, processed_input);
                 }
-                if(verbose) printf("\n");
+                //if(verbose) printf("\n");
             }
         }
     }
@@ -419,18 +353,24 @@ int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, F
 /**
  * Takes the list of macros, the current macro to insert, and outputs the fully expanded macro to the provided output file
  */
-int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char* codeline, int linenum, FILE* output, int mirror, FILE* macr_mirror, int verbose, int layer) {
+int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char* codeline, int linenum, FILE* output, int mirror, FILE* macr_mirror, int verbose, int layer, char* prefix) {
     if (layer > recursion_limit) {
         return compile_error("Excessive recursion in macros, final macro in recursion %s", curr_macro.macro_name);
     }
     if (layer == 0) {
-        printf("starting macro '%s'\n", curr_macro.macro_name);
+        if(verbose) printf("starting macro '%s'\n", curr_macro.macro_name);
     } else {
-        printf("inner macro: '%s'\n", curr_macro.macro_name);
+        if(verbose) printf("inner macro: '%s'\n", curr_macro.macro_name);
     }
-    
 
-    char cleanline[linesize];
+    char localprefix[linesize];
+    if (prefix == NULL){
+        strcpy(localprefix, curr_macro.macro_name);
+    } else {
+        sprintf(localprefix, "%s_%s", prefix, curr_macro.macro_name);
+    }
+
+    char cleanline[linesize] = "";
     sclean_i(codeline, cleanline, '\n', 0);
     // grab the provided arg values
     int const_index = curr_macro.arg_count - 1;
@@ -451,52 +391,16 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
         if (ssplit(cleanline, const_values[arg_loop_index], &arg_scan_index, " ") == 0) {
             sclean(s_slice(cleanline, arg_scan_index), const_values[arg_loop_index]);
         }
-        printf("arg '%s' has value '%s'\n", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
+        if(verbose) printf("arg '%s' has value '%s'\n", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
     }
-    
-    FILE* localfile = tmpfile();
 
-    // stores the current line, with constant values replaced
-    char filled_line[linesize];
-
+    // first, filter through the file to define all constants as well as rename inner labels (via constants)
+    //FILE* filterfile = tmpfile();
+    char filter_line[linesize];
     for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
-        if (curr_macro_line[0] == '#'){
-            //printf("%s\n", curr_macro_line);
-            continue;
-        }
-        strcpy(filled_line, "");
-        // first, replace all constants with assigned values
-        char curr_segment[linesize];
-        int segment_index = 0;
-        while(1){
-            int const_found = 0;
-            int label = 0;
-            char raw_segment[linesize];
-            int end = ssplit(curr_macro_line, raw_segment, &segment_index, " ");
-            if (end == 0) sclean(s_slice(curr_macro_line, segment_index), raw_segment);
-            sclean_i(raw_segment, curr_segment, ':', 0);
-            if (strcmp(raw_segment, curr_segment) != 0) {
-                label = 1;
-            }
-            for (int cons = 0; cons <= const_index && !const_found; cons ++) {
-                if(strcmp(curr_segment, constants[cons]) == 0) {
-                    sprintf(curr_segment, "%s", const_values[cons]);
-                    printf("constant '%s' with value '%s' used\n", constants[cons], const_values[cons]);
-                    const_found = 1;
-                }
-            }
-            strcat(filled_line, curr_segment);
-            if(label) strcat(filled_line, ":");
-            if (end == 0) {
-                strcat(filled_line, "\n");
-                //printf("%d %s", macro_line, filled_line);
-                break;
-            }
-            strcat(filled_line, " ");
-        }
-        //printf("%s", filled_line);
+        strcpy(filter_line, "");
         // next, parse the line for macros, definitions, or labels
-        if (smatch(filled_line, "DEFINE ")) {
+        if (smatch(curr_macro_line, "DEFINE ")) {
             int def_index = strlen("DEFINE ");
             const_index++;
             if (const_index == 0) {
@@ -508,66 +412,93 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
             }
             constants[const_index] = (char*) calloc(linesize, sizeof(char));
             const_values[const_index] = (char*) calloc(linesize, sizeof(char));
-            ssplit(filled_line, constants[const_index], &def_index, " ");
+            ssplit(curr_macro_line, constants[const_index], &def_index, " ");
 
             // extracts the constant value as a string into const_val
-            sclean(s_slice(filled_line, def_index), const_values[const_index]);
-            printf("New constant '%s' with value '%s'\n", constants[const_index], const_values[const_index]);
-        } else if (smatch(filled_line, "LABEL")) {
-            printf("fucking with labels\n");
-            const_index++;
-            if (const_index == 0) {
-                constants = (char**) malloc(sizeof(char*));
-                const_values = (char**) malloc(sizeof(char*));
-            } else {
-                constants = (char**) realloc(constants, sizeof(char*)*(const_index+1));
-                const_values = (char**) realloc(const_values, sizeof(char*)*(const_index+1));
+            sclean(s_slice(curr_macro_line, def_index), const_values[const_index]);
+            if(verbose) printf("New constant '%s' with value '%s'\n", constants[const_index], const_values[const_index]);
+        } else if (has_label(curr_macro_line, filter_line) == 1) {
+            int not_arg = 1;
+            for (int arg_check = 0; arg_check < curr_macro.arg_count && not_arg; arg_check++){
+                if (strcmp(filter_line, constants[arg_check]) == 0) {
+                    not_arg = 0;
+                }
             }
-            constants[const_index] = (char*) calloc(linesize, sizeof(char));
-            const_values[const_index] = (char*) calloc(linesize, sizeof(char));
-            // creates unique label tag
-            char labeltag[linesize] = "";
-            sprintf(labeltag, "%d%d", layer, linenum);
-            
 
-            // puts the label into the constants tracker
-            char labelname[linesize];
-            sclean(s_slice(filled_line, strlen("LABEL ")), labelname);
-            sclean_i(labelname, constants[const_index], ':', 0);
-            strcat(labeltag, constants[const_index]);
-            strcpy(const_values[const_index], labeltag);
-            printf("New constant '%s' with value '%s'\n", constants[const_index], const_values[const_index]);
-        } else if (filled_line[strlen(filled_line)] == ':') {
-            printf("fucking with labels\n");
-            // same as previous label code, handles no LABEL marker
-            const_index++;
-            if (const_index == 0) {
-                constants = (char**) malloc(sizeof(char*));
-                const_values = (char**) malloc(sizeof(char*));
-            } else {
-                constants = (char**) realloc(constants, sizeof(char*)*(const_index+1));
-                const_values = (char**) realloc(const_values, sizeof(char*)*(const_index+1));
+            if (not_arg) {
+                const_index++;
+                if (const_index == 0) {
+                    constants = (char**) malloc(sizeof(char*));
+                    const_values = (char**) malloc(sizeof(char*));
+                } else {
+                    constants = (char**) realloc(constants, sizeof(char*)*(const_index+1));
+                    const_values = (char**) realloc(const_values, sizeof(char*)*(const_index+1));
+                }
+                constants[const_index] = (char*) calloc(linesize, sizeof(char));
+                const_values[const_index] = (char*) calloc(linesize, sizeof(char));
+
+                strcpy(constants[const_index], filter_line);
+
+                // creates unique label tag
+                char labeltag[linesize] = "";
+                sprintf(labeltag, "%d_%d_%s_", layer, linenum, localprefix);
+                strcat(labeltag, filter_line);
+                strcpy(const_values[const_index], labeltag);
+                if(verbose) printf("New label '%s' with value '%s'\n", constants[const_index], const_values[const_index]);
             }
-            constants[const_index] = (char*) calloc(linesize, sizeof(char));
-            const_values[const_index] = (char*) calloc(linesize, sizeof(char));
-            // creates unique label tag
-            char labeltag[linesize] = "";
-            sprintf(labeltag, "%d%d", layer, linenum);
+        }
+    }
+    FILE* localfile = tmpfile();
+    // stores the current line, with constant values replaced
+    char filled_line[linesize];
+    // second, go through the file again and replace all constants and labels, and expand all macros
+    for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
+        if (curr_macro_line[0] == '#'){
+            //printf("%s\n", curr_macro_line);
+            continue;
+        }
+        strcpy(filled_line, "");
 
-            // puts the label into the constants tracker
-            char labelname[linesize];
-            sclean(filled_line, labelname);
-            sclean_i(labelname, constants[const_index], ':', 0);
-            strcat(labeltag, constants[const_index]);
-            strcpy(const_values[const_index], labeltag);
-            strcat(labeltag, ":");
-            fputs(labeltag, localfile);
-            printf("New constant '%s' with value '%s'\n", constants[const_index], const_values[const_index]);
-        } else {
+        // replace all constants and labels with assigned values
+        char curr_segment[linesize];
+        int segment_index = 0;
+        while(1){
+            int const_found = 0;
+            int label = 0;
+            char raw_segment[linesize];
+            // find the next chunk of space-separated characters, if ssplit fails then the rest of the line is the last chunk
+            int end = ssplit(curr_macro_line, raw_segment, &segment_index, " ");
+            if (end == 0) sclean(s_slice(curr_macro_line, segment_index), raw_segment);
+            sclean_i(raw_segment, curr_segment, ':', 0);
+
+           
+            if (strcmp(raw_segment, curr_segment) != 0) {
+                label = 1;
+            }
+            for (int cons = 0; cons <= const_index && !const_found; cons ++) {
+                if(strcmp(curr_segment, constants[cons]) == 0) {
+                    sprintf(curr_segment, "%s", const_values[cons]);
+                    if(verbose) printf("constant '%s' with value '%s' used\n", constants[cons], const_values[cons]);
+                    const_found = 1;
+                }
+            }
+            strcat(filled_line, curr_segment);
+            if(label) strcat(filled_line, ":");
+            if (end == 0) {
+                strcat(filled_line, "\n");
+                //printf("%d %s", macro_line, filled_line);
+                break;
+            }
+            strcat(filled_line, " ");
+        
+        }
+        //printf("%s", filled_line);
+        
+        if (!smatch(filled_line, "DEFINE ")) {
             int macro_found = 0;
             for (int macro = 0; macro <= macro_count && !macro_found; macro++) {
                 if (smatch(filled_line, macro_list[macro].macro_name) && (filled_line[strlen(macro_list[macro].macro_name)] == ' ' || filled_line[strlen(macro_list[macro].macro_name)] == '\n')) {
-                    if (macro_replace(macro_list, macro_count, macro, filled_line, macro_line, localfile, mirror, macr_mirror, verbose, layer+1) == -1) return -1;
+                    if (macro_replace(macro_list, macro_count, macro, filled_line, macro_line, localfile, mirror, macr_mirror, verbose, layer+1, localprefix) == 1) return 1;
                     macro_found = 1;
                 }
             }
@@ -586,6 +517,13 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
     }
     rewind(localfile);
     char rawline[linesize];
+    sprintf(rawline, "# %s\n", cleanline);
+    if (layer == 0) {
+        exmirror("# TOP MACRO \n", output);
+        exmirror(rawline, output);
+    } else {
+        fputs(rawline, output);
+    }
     while(1) {
         if(fgets(rawline, linesize, localfile) == NULL) {
             break;
@@ -599,9 +537,13 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
         
         //printf("%s", rawline);
     }
+    if (layer == 0) {
+        exmirror("\n", output);
+    }
+    
     fclose(localfile);
     if (verbose) printf("Preprocessor: macro '%s' expanded", macro_list[macro_index].macro_name);
-    if (layer == 0) printf("--\n");
-    printf("\n");
+    if (layer == 0 && verbose) printf("--\n");
+    if(verbose) printf("\n");
     return 0;
 }
