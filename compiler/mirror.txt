@@ -10,38 +10,17 @@ X A
 
 OUT A
 OP IMM
-X 32767
+X 0
 
 
-OUT D
-OP AND
-X D
-Y P
-
-
-OUT A
-OP IMM
-X 8
-
-
-
+OUT P
 OP MOV
 X D
-J JEQ
 
 
 OUT A
 OP IMM
-X 20
-
-
-
-J JMP
-
-
-OUT A
-OP IMM
-X 4
+X 16384
 
 
 OUT D
@@ -51,50 +30,17 @@ X A
 
 OUT A
 OP IMM
-X 32767
+X 24578
 
 
-OUT DP
-OP LOR
-X D
-Y P
-
-
-OUT A
-OP IMM
-X 1024
-
-
-OUT D
-OP AND
-X D
-Y A
-
-
-OUT A
-OP IMM
-X 0
-
-
-
+OUT P
 OP MOV
 X D
-J JEQ
 
 
 OUT A
 OP IMM
-X 32767
-
-
-OUT D
-OP MOV
-X P
-
-
-OUT A
-OP IMM
-X 12
+X 10
 
 
 
@@ -103,29 +49,944 @@ J JMP
 
 OUT A
 OP IMM
-X 8
+X 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
 
 
 OUT D
 OP SUB
-X 0
+X D
 Y A
 
 
 OUT A
 OP IMM
-X 32767
+X 1
 
 
-OUT DP
-OP LOR
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 35
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 147
+
+
+
+J JMP
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 3
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 3
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 6
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 450
+
+
+
+OP MOV
+X D
+J JEQ
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP SUB
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 103
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 260
+
+
+
+J JMP
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 3
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 3
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 6
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 32
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 24578
+
+
+OUT P
+OP ADD
 X D
 Y P
 
 
 OUT A
 OP IMM
-X 512
+X 10
+
+
+
+J JMP
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT D
+OP ADD
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 24577
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 2
 
 
 OUT D
@@ -139,15 +1000,86 @@ OP IMM
 X 0
 
 
+OUT AP
+OP ADD
+X P
+Y 1
 
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
 OP MOV
 X D
-J JEQ
 
 
 OUT A
 OP IMM
-X 32767
+X 0
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP ADD
+X D
+Y P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT A
+OP ADD
+X D
+Y A
+
+
+OUT D
+OP SUB
+X A
+Y D
+
+
+OUT A
+OP SUB
+X A
+Y D
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 24577
 
 
 OUT D
@@ -157,7 +1089,1289 @@ X P
 
 OUT A
 OP IMM
-X 24
+X 2
+
+
+OUT D
+OP AND
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP ADD
+X D
+Y P
+
+
+OUT A
+OP MOV
+X D
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT D
+OP SUB
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 205
+
+
+
+OP MOV
+X D
+J JEQ
+
+
+OUT A
+OP IMM
+X 24577
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP AND
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 6
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+
+J JMP
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT D
+OP ADD
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP ADD
+X D
+Y P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT A
+OP ADD
+X D
+Y A
+
+
+OUT D
+OP SUB
+X A
+Y D
+
+
+OUT A
+OP SUB
+X A
+Y D
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP SUB
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 341
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 147
+
+
+
+J JMP
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 3
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 3
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 6
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 24578
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT D
+OP ADD
+X D
+Y P
+
+
+OUT P
+OP ADD
+X D
+Y P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP ADD
+X D
+Y P
+
+
+OUT A
+OP MOV
+X D
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 1
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT D
+OP ADD
+X D
+Y A
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT D
+OP MOV
+X A
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP ADD
+X D
+Y P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
+
+
+OUT A
+OP ADD
+X D
+Y A
+
+
+OUT D
+OP SUB
+X A
+Y D
+
+
+OUT A
+OP SUB
+X A
+Y D
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 16
+
+
+OUT D
+OP SUB
+X A
+Y D
+
+
+OUT A
+OP IMM
+X 430
+
+
+
+OP MOV
+X D
+J JEQ
+
+
+OUT A
+OP IMM
+X 316
+
+
+
+J JMP
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 6
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 2
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP ADD
+X P
+Y 1
+
+
+OUT A
+OP SUB
+X A
+Y 1
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT D
+OP MOV
+X P
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT P
+OP MOV
+X D
+
+
+OUT A
+OP IMM
+X 0
+
+
+OUT AP
+OP SUB
+X P
+Y 1
+
+
+OUT A
+OP MOV
+X P
 
 
 

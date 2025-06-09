@@ -3,3 +3,9 @@
 flxx-core/.DS_Store
 nandgame-core/.DS_Store
 nandgameplus-core/.DS_Store
+compiler/mirror.txt
+compiler/fcc
+compiler/console.txt
+compiler/*.o
+*.o
+compiler/fcc

@@ -38,7 +38,7 @@ A = fwd_loop
 JMP
 
 LABEL left
-A = 0b1000
+A = 0x8
 D = -A
 A = addr
 D *A = D|*A
