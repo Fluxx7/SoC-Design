@@ -34,7 +34,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vng_core___024root final : public VerilatedMo
     VlWide<2048>/*65535:0*/ ng_core__DOT__mem__DOT__mem_array;
     SData/*15:0*/ ng_core__DOT__control__DOT__handle_out;
     IData/*31:0*/ __VactIterCount;
-    VL_OUT64(reflect,47,0);
     VlTriggerVec<1> __VstlTriggered;
     VlTriggerVec<1> __VicoTriggered;
     VlTriggerVec<2> __VactTriggered;

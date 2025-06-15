@@ -2,15 +2,12 @@ module ng_core (
     input logic clk,
     input logic rst,
     input logic [15:0] instruction,
-    output logic [15:0] addr,
-    output logic [47:0] reflect
+    output logic [15:0] addr
 );
 
 logic [15:0] a_reg, d_reg, a_mem_reg, result;
 logic [2:0] write;
 logic jmp;
-
-assign reflect = {a_reg, d_reg, a_mem_reg};
 
 memory mem (
     .clk(clk),

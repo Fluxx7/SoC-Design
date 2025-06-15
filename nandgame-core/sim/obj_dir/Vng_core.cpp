@@ -13,7 +13,6 @@ Vng_core::Vng_core(VerilatedContext* _vcontextp__, const char* _vcname__)
     , rst{vlSymsp->TOP.rst}
     , instruction{vlSymsp->TOP.instruction}
     , addr{vlSymsp->TOP.addr}
-    , reflect{vlSymsp->TOP.reflect}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

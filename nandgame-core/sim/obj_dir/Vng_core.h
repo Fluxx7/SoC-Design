@@ -32,7 +32,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vng_core VL_NOT_FINAL : public VerilatedModel
     VL_IN8(&rst,0,0);
     VL_IN16(&instruction,15,0);
     VL_OUT16(&addr,15,0);
-    VL_OUT64(&reflect,47,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.

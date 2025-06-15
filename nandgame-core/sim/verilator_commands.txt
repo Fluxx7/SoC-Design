@@ -1,0 +1,5 @@
+verilator -Wall --cc -I../rtl/ ../rtl/ng_core.sv --exe src/testbench.cpp src/rom.cpp src/debugger.cpp
+
+make -C obj_dir -f Vng_core.mk Vng_core    
+
+./obj_dir/Vng_core program.txt

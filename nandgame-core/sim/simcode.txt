@@ -1,10 +1,5 @@
-A = 7
-D = A
-
-loop:
-A = end
-D = D - 1 ; JEQ
-A = loop
-JMP
-
-end:
+A = 0x45
+A = -A
+D = 1
+D = D - A
+A = A - D

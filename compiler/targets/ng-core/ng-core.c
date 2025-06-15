@@ -119,20 +119,37 @@ int ng_code_gen(FILE *tokens, char *lineout)
                         // set register control bits
                         if (x_reg[0] == '0')
                         {
-                            lineout[ZERO_X] = '1';
-                            switch (y_reg[0])
-                            {
-                            case 'D':
-                                lineout[SWAP_XY] = '1';
-                                break;
-                            case 'A':
-                                break;
-                            case 'P':
-                                lineout[PTR_IN] = '1';
-                                break;
-                            default:
-                                return compile_error("fatal error: invalid register provided as operand");
-                                break;
+                            if (strcmp(op, "INV") == 0) {
+                                switch (y_reg[0])
+                                {
+                                case 'D':
+                                    break;
+                                case 'P':
+                                    lineout[PTR_IN] = '1';
+                                case 'A':
+                                    lineout[SWAP_XY] = '1';
+                                    break;
+                                default:
+                                    return compile_error("fatal error: invalid register provided as operand");
+                                    break;
+                                }
+                                
+                            } else {
+                                lineout[ZERO_X] = '1';
+                                switch (y_reg[0])
+                                {
+                                    case 'D':
+                                        lineout[SWAP_XY] = '1';
+                                        break;
+                                    case 'A':
+                                        break;
+                                    case 'P':
+                                        lineout[PTR_IN] = '1';
+                                        break;
+                                    default:
+                                        return compile_error("fatal error: invalid register provided as operand");
+                                        break;
+                                }
                             }
                         }
                         else if ((x_reg[0] != 'D' && y_reg[0] != 'D') || y_reg[0] == '1')

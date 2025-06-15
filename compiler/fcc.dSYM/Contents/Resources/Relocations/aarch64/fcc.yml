@@ -35,15 +35,15 @@ relocations:
   - { offset: 0x1335, size: 0x8, addend: 0x0, symName: _macro_replace, symObjAddr: 0x1BFC, symBinAddr: 0x100004900, symSize: 0xF8C }
   - { offset: 0x16B4, size: 0x8, addend: 0x0, symName: _has_label, symObjAddr: 0x0, symBinAddr: 0x10000588C, symSize: 0x114 }
   - { offset: 0x16CF, size: 0x8, addend: 0x0, symName: _has_label, symObjAddr: 0x0, symBinAddr: 0x10000588C, symSize: 0x114 }
-  - { offset: 0x177E, size: 0x8, addend: 0x0, symName: _ng_code_gen, symObjAddr: 0x0, symBinAddr: 0x1000059A0, symSize: 0x910 }
-  - { offset: 0x17A5, size: 0x8, addend: 0x0, symName: _ng_operators, symObjAddr: 0xB08, symBinAddr: 0x10000C058, symSize: 0x0 }
-  - { offset: 0x17DC, size: 0x8, addend: 0x0, symName: _ng_op_outs, symObjAddr: 0xB38, symBinAddr: 0x10000C088, symSize: 0x0 }
-  - { offset: 0x17F1, size: 0x8, addend: 0x0, symName: _ng_opbits, symObjAddr: 0xB68, symBinAddr: 0x10000C0B8, symSize: 0x0 }
-  - { offset: 0x1806, size: 0x8, addend: 0x0, symName: _ng_branches, symObjAddr: 0xB98, symBinAddr: 0x10000C0E8, symSize: 0x0 }
-  - { offset: 0x1827, size: 0x8, addend: 0x0, symName: _ng_branch_bits, symObjAddr: 0xBD0, symBinAddr: 0x10000C120, symSize: 0x0 }
-  - { offset: 0x183C, size: 0x8, addend: 0x0, symName: _ng_registers, symObjAddr: 0xC08, symBinAddr: 0x10000C158, symSize: 0x0 }
-  - { offset: 0x185D, size: 0x8, addend: 0x0, symName: _ng_regtok, symObjAddr: 0xC20, symBinAddr: 0x10000C170, symSize: 0x0 }
-  - { offset: 0x1872, size: 0x8, addend: 0x0, symName: _ng_outbits, symObjAddr: 0xC4C, symBinAddr: 0x100006D00, symSize: 0x0 }
-  - { offset: 0x18E8, size: 0x8, addend: 0x0, symName: _ng_target_constants, symObjAddr: 0xC38, symBinAddr: 0x10000C188, symSize: 0x0 }
-  - { offset: 0x1943, size: 0x8, addend: 0x0, symName: _ng_code_gen, symObjAddr: 0x0, symBinAddr: 0x1000059A0, symSize: 0x910 }
+  - { offset: 0x177E, size: 0x8, addend: 0x0, symName: _ng_code_gen, symObjAddr: 0x0, symBinAddr: 0x1000059A0, symSize: 0x99C }
+  - { offset: 0x17A5, size: 0x8, addend: 0x0, symName: _ng_operators, symObjAddr: 0xB90, symBinAddr: 0x10000C058, symSize: 0x0 }
+  - { offset: 0x17DC, size: 0x8, addend: 0x0, symName: _ng_op_outs, symObjAddr: 0xBC0, symBinAddr: 0x10000C088, symSize: 0x0 }
+  - { offset: 0x17F1, size: 0x8, addend: 0x0, symName: _ng_opbits, symObjAddr: 0xBF0, symBinAddr: 0x10000C0B8, symSize: 0x0 }
+  - { offset: 0x1806, size: 0x8, addend: 0x0, symName: _ng_branches, symObjAddr: 0xC20, symBinAddr: 0x10000C0E8, symSize: 0x0 }
+  - { offset: 0x1827, size: 0x8, addend: 0x0, symName: _ng_branch_bits, symObjAddr: 0xC58, symBinAddr: 0x10000C120, symSize: 0x0 }
+  - { offset: 0x183C, size: 0x8, addend: 0x0, symName: _ng_registers, symObjAddr: 0xC90, symBinAddr: 0x10000C158, symSize: 0x0 }
+  - { offset: 0x185D, size: 0x8, addend: 0x0, symName: _ng_regtok, symObjAddr: 0xCA8, symBinAddr: 0x10000C170, symSize: 0x0 }
+  - { offset: 0x1872, size: 0x8, addend: 0x0, symName: _ng_outbits, symObjAddr: 0xCD4, symBinAddr: 0x100006D90, symSize: 0x0 }
+  - { offset: 0x18E8, size: 0x8, addend: 0x0, symName: _ng_target_constants, symObjAddr: 0xCC0, symBinAddr: 0x10000C188, symSize: 0x0 }
+  - { offset: 0x1943, size: 0x8, addend: 0x0, symName: _ng_code_gen, symObjAddr: 0x0, symBinAddr: 0x1000059A0, symSize: 0x99C }
 ...

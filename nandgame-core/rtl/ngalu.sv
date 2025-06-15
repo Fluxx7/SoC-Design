@@ -31,23 +31,25 @@ always_comb begin
             end
         endcase
     end
-    1: begin
+    1'b1: begin
         case (opcode[1:0])
             2'b00: begin
                 outval = x + y; 
             end
             2'b01: begin
-                outval = x - y;
+                outval = x + 16'b1; 
             end
             2'b10: begin
-                outval = x + 1;
+                outval = x + (~y+1);
             end
             2'b11: begin
-                outval = x - 1;
+                outval = x + 16'hffff; 
             end
         endcase
     end
     endcase
 end
+
+
 /* verilator lint_on WIDTHEXPAND */
 endmodule

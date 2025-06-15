@@ -73,7 +73,7 @@ VL_ATTR_COLD void Vng_core___024root___dump_triggers__stl(Vng_core___024root* vl
 }
 #endif  // VL_DEBUG
 
-VL_ATTR_COLD void Vng_core___024root___stl_sequent__TOP__0(Vng_core___024root* vlSelf);
+void Vng_core___024root___ico_sequent__TOP__0(Vng_core___024root* vlSelf);
 
 VL_ATTR_COLD void Vng_core___024root___eval_stl(Vng_core___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vng_core___024root___eval_stl\n"); );
@@ -81,90 +81,8 @@ VL_ATTR_COLD void Vng_core___024root___eval_stl(Vng_core___024root* vlSelf) {
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Body
     if ((1ULL & vlSelfRef.__VstlTriggered.word(0U))) {
-        Vng_core___024root___stl_sequent__TOP__0(vlSelf);
+        Vng_core___024root___ico_sequent__TOP__0(vlSelf);
     }
-}
-
-VL_ATTR_COLD void Vng_core___024root___stl_sequent__TOP__0(Vng_core___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vng_core___024root___stl_sequent__TOP__0\n"); );
-    Vng_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Init
-    SData/*15:0*/ ng_core__DOT__control__DOT__handle__DOT____Vcellinp__alu__reg2;
-    ng_core__DOT__control__DOT__handle__DOT____Vcellinp__alu__reg2 = 0;
-    SData/*15:0*/ ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x;
-    ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x = 0;
-    SData/*15:0*/ ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y;
-    ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y = 0;
-    SData/*15:0*/ ng_core__DOT__control__DOT__handle__DOT__alu__DOT____VdfgRegularize_h948b49f6_0_0;
-    ng_core__DOT__control__DOT__handle__DOT__alu__DOT____VdfgRegularize_h948b49f6_0_0 = 0;
-    // Body
-    vlSelfRef.reflect = (((QData)((IData)((((IData)(vlSelfRef.ng_core__DOT__a_reg) 
-                                            << 0x10U) 
-                                           | (IData)(vlSelfRef.ng_core__DOT__d_reg)))) 
-                          << 0x10U) | (QData)((IData)(vlSelfRef.ng_core__DOT__a_mem_reg)));
-    ng_core__DOT__control__DOT__handle__DOT____Vcellinp__alu__reg2 
-        = ((0x1000U & (IData)(vlSelfRef.instruction))
-            ? (IData)(vlSelfRef.ng_core__DOT__a_mem_reg)
-            : (IData)(vlSelfRef.ng_core__DOT__a_reg));
-    if ((0x40U & (IData)(vlSelfRef.instruction))) {
-        ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y 
-            = vlSelfRef.ng_core__DOT__d_reg;
-        ng_core__DOT__control__DOT__handle__DOT__alu__DOT____VdfgRegularize_h948b49f6_0_0 
-            = ng_core__DOT__control__DOT__handle__DOT____Vcellinp__alu__reg2;
-    } else {
-        ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y 
-            = ng_core__DOT__control__DOT__handle__DOT____Vcellinp__alu__reg2;
-        ng_core__DOT__control__DOT__handle__DOT__alu__DOT____VdfgRegularize_h948b49f6_0_0 
-            = vlSelfRef.ng_core__DOT__d_reg;
-    }
-    ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x 
-        = ((0x80U & (IData)(vlSelfRef.instruction))
-            ? 0U : (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT____VdfgRegularize_h948b49f6_0_0));
-    if ((0x400U & (IData)(vlSelfRef.instruction))) {
-        if ((0x400U & (IData)(vlSelfRef.instruction))) {
-            vlSelfRef.ng_core__DOT__control__DOT__handle_out 
-                = (0xffffU & ((0x200U & (IData)(vlSelfRef.instruction))
-                               ? ((0x100U & (IData)(vlSelfRef.instruction))
-                                   ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      - (IData)(1U))
-                                   : ((IData)(1U) + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x)))
-                               : ((0x100U & (IData)(vlSelfRef.instruction))
-                                   ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      - (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y))
-                                   : ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)))));
-        }
-    } else {
-        vlSelfRef.ng_core__DOT__control__DOT__handle_out 
-            = (0xffffU & ((0x200U & (IData)(vlSelfRef.instruction))
-                           ? ((0x100U & (IData)(vlSelfRef.instruction))
-                               ? ((0x80U & (IData)(vlSelfRef.instruction))
-                                   ? 0xffffU : (~ (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT____VdfgRegularize_h948b49f6_0_0)))
-                               : ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                  ^ (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)))
-                           : ((0x100U & (IData)(vlSelfRef.instruction))
-                               ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                  | (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y))
-                               : ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                  & (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)))));
-    }
-    if ((0x8000U & (IData)(vlSelfRef.instruction))) {
-        vlSelfRef.ng_core__DOT__write = (7U & ((IData)(vlSelfRef.instruction) 
-                                               >> 3U));
-        vlSelfRef.ng_core__DOT__result = vlSelfRef.ng_core__DOT__control__DOT__handle_out;
-    } else {
-        vlSelfRef.ng_core__DOT__write = 4U;
-        vlSelfRef.ng_core__DOT__result = vlSelfRef.instruction;
-    }
-    vlSelfRef.ng_core__DOT__control__DOT__handle__DOT__lt 
-        = (1U & ((IData)(vlSelfRef.ng_core__DOT__control__DOT__handle_out) 
-                 >> 0xfU));
-    vlSelfRef.ng_core__DOT__control__DOT__handle__DOT__eq 
-        = (0U == (IData)(vlSelfRef.ng_core__DOT__control__DOT__handle_out));
-    vlSelfRef.ng_core__DOT__control__DOT__handle__DOT__gt 
-        = (1U & ((~ (IData)(vlSelfRef.ng_core__DOT__control__DOT__handle__DOT__lt)) 
-                 & (~ (IData)(vlSelfRef.ng_core__DOT__control__DOT__handle__DOT__eq))));
 }
 
 VL_ATTR_COLD void Vng_core___024root___eval_triggers__stl(Vng_core___024root* vlSelf);
@@ -244,7 +162,6 @@ VL_ATTR_COLD void Vng_core___024root___ctor_var_reset(Vng_core___024root* vlSelf
     vlSelf->rst = VL_RAND_RESET_I(1);
     vlSelf->instruction = VL_RAND_RESET_I(16);
     vlSelf->addr = VL_RAND_RESET_I(16);
-    vlSelf->reflect = VL_RAND_RESET_Q(48);
     vlSelf->ng_core__DOT__a_reg = VL_RAND_RESET_I(16);
     vlSelf->ng_core__DOT__d_reg = VL_RAND_RESET_I(16);
     vlSelf->ng_core__DOT__a_mem_reg = VL_RAND_RESET_I(16);

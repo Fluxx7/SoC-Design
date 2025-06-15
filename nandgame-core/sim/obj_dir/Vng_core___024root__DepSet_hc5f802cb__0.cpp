@@ -54,12 +54,13 @@ VL_INLINE_OPT void Vng_core___024root___ico_sequent__TOP__0(Vng_core___024root* 
             vlSelfRef.ng_core__DOT__control__DOT__handle_out 
                 = (0xffffU & ((0x200U & (IData)(vlSelfRef.instruction))
                                ? ((0x100U & (IData)(vlSelfRef.instruction))
-                                   ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      - (IData)(1U))
-                                   : ((IData)(1U) + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x)))
+                                   ? ((IData)(0xffffU) 
+                                      + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x))
+                                   : ((IData)(1U) + 
+                                      ((~ (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)) 
+                                       + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x))))
                                : ((0x100U & (IData)(vlSelfRef.instruction))
-                                   ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      - (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y))
+                                   ? ((IData)(1U) + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x))
                                    : ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
                                       + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)))));
         }
@@ -198,10 +199,6 @@ VL_INLINE_OPT void Vng_core___024root___nba_sequent__TOP__1(Vng_core___024root* 
     if ((4U & (IData)(vlSelfRef.ng_core__DOT__write))) {
         vlSelfRef.ng_core__DOT__a_reg = vlSelfRef.ng_core__DOT__result;
     }
-    vlSelfRef.reflect = (((QData)((IData)((((IData)(vlSelfRef.ng_core__DOT__a_reg) 
-                                            << 0x10U) 
-                                           | (IData)(vlSelfRef.ng_core__DOT__d_reg)))) 
-                          << 0x10U) | (QData)((IData)(vlSelfRef.ng_core__DOT__a_mem_reg)));
     ng_core__DOT__control__DOT__handle__DOT____Vcellinp__alu__reg2 
         = ((0x1000U & (IData)(vlSelfRef.instruction))
             ? (IData)(vlSelfRef.ng_core__DOT__a_mem_reg)
@@ -225,12 +222,13 @@ VL_INLINE_OPT void Vng_core___024root___nba_sequent__TOP__1(Vng_core___024root* 
             vlSelfRef.ng_core__DOT__control__DOT__handle_out 
                 = (0xffffU & ((0x200U & (IData)(vlSelfRef.instruction))
                                ? ((0x100U & (IData)(vlSelfRef.instruction))
-                                   ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      - (IData)(1U))
-                                   : ((IData)(1U) + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x)))
+                                   ? ((IData)(0xffffU) 
+                                      + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x))
+                                   : ((IData)(1U) + 
+                                      ((~ (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)) 
+                                       + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x))))
                                : ((0x100U & (IData)(vlSelfRef.instruction))
-                                   ? ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
-                                      - (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y))
+                                   ? ((IData)(1U) + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x))
                                    : ((IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__x) 
                                       + (IData)(ng_core__DOT__control__DOT__handle__DOT__alu__DOT__y)))));
         }
