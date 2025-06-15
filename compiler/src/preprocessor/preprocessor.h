@@ -3,5 +3,5 @@
 #endif
 #include "../../targets/targetdef.h"
 #pragma once
-int preprocess(struct comp_target* target, FILE* input, FILE* processed_input, FILE* statements, int mirror, int verbose);
+int preprocess(const char* path);
 #define recursion_limit 20

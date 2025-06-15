@@ -7,26 +7,48 @@
 #include "preprocessor/preprocessor.h"
 #include "../targets/targets.h"
 
-
+// I don't care if globals are bad practice, functions that have to take 8 million variables
+// to have access to every setting I want this compiler to have are worse
 char rline_ptr[linesize];
 int linenum = 0;
 int truenum = 0;
+int debug = 0;
 FILE* mirror;
+int reflect = 0;
+int preflect = 0;
+int verbose = 0;
+int pverbose = 0;
+int pronly;
+struct comp_target* target = &targets[0];
+FILE* input;
+FILE* output;
+FILE* processed_input;
+FILE* statements;
+FILE* tokens;
 
 int main(int argc, char** argv) {
-    int reflect = 0;
-    int preflect = 0;
-    int verbose = 0;
-    int pverbose = 0;
-    struct comp_target* target = &targets[0];
     if (argc < 3){
-        printf("An input and output file must both be provided\n");
-        return 1;
+        if (strcmp(argv[1], "clean") == 0) {
+            remove("macro_processing.txt");
+            remove("procmirror.txt");
+            remove("smirror.txt");
+            remove("mirror.txt");
+            printf("Removed mirror files\n");
+            return 0;
+        } else {
+            printf("An input and output file must both be provided\n");
+            return 1;
+        } 
     }
 
+    // I should really make this in a smarter fashion
+    // Maybe looping over an array of structs, with each struct having a name (eg 'pronly') and a function pointer that takes no arguments and returns void?
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-v") == 0) {
             verbose = 1;
+        }
+        if (strcmp(argv[i], "-pronly") == 0) {
+            pronly = 1;
         }
         if (strcmp(argv[i], "-m") == 0) {
             reflect = 1;
@@ -45,6 +67,14 @@ int main(int argc, char** argv) {
             preflect = 1;
             pverbose = 1;
         }
+        if (strcmp(argv[i], "-ma") == 0) {
+            preflect = 1;
+            reflect = 1;
+        }
+        if (strcmp(argv[i], "-va") == 0) {
+            verbose = 1;
+            pverbose = 1;
+        }
         if (strcmp(argv[i], "-aa") == 0) {
             preflect = 1;
             pverbose = 1;
@@ -61,15 +91,18 @@ int main(int argc, char** argv) {
                 }
             }
         }
+        if (strcmp(argv[i], "-d") == 0) {
+            debug = 1;
+        }
     }
     
-    FILE* input = fopen(argv[1], "r");
-    FILE* output = tmpfile();
-    FILE* processed_input = tmpfile(); // used to store  with 
-    FILE* statements = tmpfile(); // used to store 
-    FILE* tokens = tmpfile(); // used to store parsed tokens from instructions ie. output, X, Y, operation, jmp condition, in a way that is easily turned to machine code
+    input = fopen(argv[1], "r");
+    output = tmpfile();
+    processed_input = tmpfile(); // used to store  with 
+    statements = tmpfile(); // used to store 
+    tokens = tmpfile(); // used to store parsed tokens from instructions ie. output, X, Y, operation, jmp condition, in a way that is easily turned to machine code
 
-    if (reflect) mirror = fopen("mirror.txt", "w+");
+    
 
     if (output == NULL){
         return compile_error("Failed to create temp file for compilation");
@@ -77,9 +110,25 @@ int main(int argc, char** argv) {
 
     int instruction_type;
     int instruction_size = target->constants->instruction_size;
-    if (preprocess(target, input, processed_input, statements, preflect, pverbose)) {
+    if (preprocess(argv[1])) {
         return 1;
     }
+
+    // If the compiler is only preprocessing the file
+    if (pronly) {
+        FILE* outfile = fopen(argv[2], "w");
+        int a;
+        while ((a = fgetc(processed_input)) != EOF){
+            fputc(a, outfile); 
+        }
+        printf("%s compiled successfully, saved to %s\n", argv[1], argv[2]);
+        fclose(input);
+        fclose(outfile);
+        return 0;
+    }
+
+
+    if (reflect) mirror = fopen("mirror.txt", "w+");
     rewind(input);
     char lineout[instruction_size+1];
     char rawline[linesize];
@@ -292,6 +341,11 @@ int main(int argc, char** argv) {
             }
 
             fputs(lineout, output);
+            if (debug) {
+                char debug_line[linesize];
+                sclean_i(rawline, debug_line, '\n', 0);
+                fprintf(output, " %d %s", truenum, debug_line);
+            }
             fputs("\n", output);
             if(reflect) fputs("\n\n", mirror);
             fclose(tokens);
@@ -309,6 +363,9 @@ int main(int argc, char** argv) {
     rewind(output);
     FILE* outfile = fopen(argv[2], "w");
     int a;
+    if (debug) {
+        fputs("<debug>\n", outfile);
+    }
     while ((a = fgetc(output)) != EOF){
         fputc(a, outfile); 
     }

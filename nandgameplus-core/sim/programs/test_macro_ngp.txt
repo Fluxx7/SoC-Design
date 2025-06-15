@@ -1,0 +1,81 @@
+INCLUDE stack_macros_ngp.txt
+
+DEFINE addr 0x6001
+DEFINE dispAddr 0x6002
+
+init.stack
+$a = dispAddr
+$a* = 0x4000
+goto main
+
+main:
+
+call waitSync 0
+pop.reg $d
+$jz = end
+$d ; JEQ
+call render 0
+$d = 0x20
+$a = dispAddr
+$a* = $a* + $d
+$jz = main
+JMP
+
+function waitSync 1
+
+LABEL wait_sync:
+$a = addr
+$d = $a*
+$a = 2
+$d = $d & $a
+push.reg $d
+pop.local 0
+
+loop_sync:
+$a = addr
+$d = $a*
+$a = 2
+$d = $d & $a
+push.reg $d
+push.local 0
+pop.reg $d
+pop.reg $a
+$d = $d - $a
+$jz = loop_sync
+$d ; JEQ
+
+
+$a = addr
+$d = $a*
+$a = 1
+$d = $d & $a
+push.reg $d
+return
+
+function render 1
+push.value 0
+pop.local 0
+
+render_loop:
+call waitSync 0
+pop.reg $d
+$a = dispAddr
+$a = $a*
+$d = $a* + $d
+$a* = $a* + $d
+push.local 0
+push.value 1
+add
+pop.local 0
+$a = 16
+$d = $a - $d
+$jz = render_return
+$d ; JEQ
+goto render_loop
+
+render_return:
+return
+
+
+end:
+

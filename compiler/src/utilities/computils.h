@@ -3,10 +3,23 @@
 #define linesize 256
 #endif
 #define here() printf("here\n")
+
 extern char rline_ptr[linesize];
 extern int linenum;
 extern int truenum;
+extern int debug;
 extern FILE* mirror;
+extern int reflect;
+extern int preflect;
+extern int verbose;
+extern int pverbose;
+extern int pronly;
+extern struct comp_target* target;
+extern FILE* input;
+extern FILE* output;
+extern FILE* processed_input;
+extern FILE* statements;
+extern FILE* tokens;
 
 
 /**

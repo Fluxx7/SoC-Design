@@ -1,12 +1,16 @@
 module ng_core (
     input logic clk,
+    input logic rst,
     input logic [15:0] instruction,
-    output logic [15:0] addr
+    output logic [15:0] addr,
+    output logic [47:0] reflect
 );
 
 logic [15:0] a_reg, d_reg, a_mem_reg, result;
 logic [2:0] write;
 logic jmp;
+
+assign reflect = {a_reg, d_reg, a_mem_reg};
 
 memory mem (
     .clk(clk),
@@ -27,12 +31,17 @@ decoder control (
     .dst(write)
 );
 
-always_ff @ (posedge clk) begin
-    if (jmp) begin
-        addr <= a_reg;
+always_ff @ (posedge clk or negedge rst) begin
+    if (!rst) begin
+        addr <= 0;
     end
     else begin
-        addr <= addr + 16'b1;
+        if (jmp) begin
+            addr <= a_reg;
+        end
+        else begin
+            addr <= addr + 16'b1;
+        end
     end
 end
 

@@ -7,9 +7,9 @@
 #include "../../targets/targetdef.h"
 #pragma once
 
-#define stmirror(string, file) fputs(string, file); if(mirror) fputs(string, state_mirror)
-#define prmirror(string, file) fputs(string, file); if(mirror) fputs(string, proc_mirror)
-#define exmirror(string, file) fputs(string, file); if(mirror) fputs(string, macr_mirror)
+#define stmirror(string, file) fputs(string, file); if(preflect) fputs(string, state_mirror)
+#define prmirror(string, file) fputs(string, file); if(preflect) fputs(string, proc_mirror)
+#define exmirror(string, file) fputs(string, file); if(preflect) fputs(string, macr_mirror)
 
 #define expand_constants(counter, name_list, val_list) \
 counter++;\
@@ -30,5 +30,5 @@ typedef struct macro_def {
     int line_count;
 } macro_def;
 
-int macro_replace(macro_def*, int, int, char*, int, FILE*, int, FILE*, int, int, char*);
+int macro_replace(macro_def*, int, int, char*, int, FILE*, FILE*, int, char*);
 int has_label(char* rawline, char* name_out);

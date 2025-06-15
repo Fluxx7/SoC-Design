@@ -19,7 +19,7 @@ handler handle (
     .a_mem_reg(a_mem_reg),
     .out(handle_out),
     .jmp(handle_jmp),
-    .dst(dst)
+    .dst(handle_dst)
 );
 
 always_comb begin

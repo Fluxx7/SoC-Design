@@ -1,0 +1,217 @@
+DEFINE ARGS 1
+DEFINE LOCALS 2
+DEFINE RETVAL 6
+
+START_MACRO init.stack 0
+$sp = 256
+END_MACRO init.stack
+
+START_MACRO push.reg 1 reg
+$sp* = reg
+$sp = $sp + 1
+END_MACRO push.reg
+
+START_MACRO pop.reg 1 reg
+$sp = $sp - 1
+reg = $sp*
+END_MACRO pop.reg
+
+START_MACRO push.value 1 value
+$sp* = value
+END_MACRO push.value
+
+START_MACRO add 0
+pop.reg $d
+$sp* = $sp* + $d
+END_MACRO add
+
+START_MACRO sub 0
+pop.reg $d
+$sp* = $sp* - $d
+END_MACRO sub
+
+START_MACRO neg 0
+$sp* = -$sp*
+END_MACRO neg
+
+START_MACRO and 0
+pop.reg $d
+$sp* = $sp* & $d
+END_MACRO and
+
+START_MACRO or 0
+pop.reg $d
+$sp* = $sp* | $d
+END_MACRO or
+
+START_MACRO eq 0
+pop.reg $d
+$d = $sp* - $d
+$jz = true
+$d ; JEQ
+$sp* = 0
+$jz = false
+JMP
+
+true:
+$sp* = $d - 1
+
+false:
+END_MACRO eq
+
+START_MACRO gt 0
+pop.reg $d
+$d = $sp* - $d
+$jz = true
+$d ; JLT
+$sp* = 0
+$jz = false
+JMP
+
+true:
+$sp* = $d - 1
+
+false:
+END_MACRO gt
+
+START_MACRO lt 0
+pop.reg $d
+$d = $sp* - $d
+$jz = true
+$d ; JGT
+$sp* = 0
+$jz = false
+JMP
+
+true:
+$sp* = $d - 1
+
+false:
+END_MACRO lt
+
+START_MACRO not 0
+$sp* = ~$sp*
+END_MACRO not
+
+START_MACRO goto 1 label
+$jz = label
+JMP
+END_MACRO goto
+
+START_MACRO if.goto 1 label
+pop.reg $d
+$jz = label
+$d ; JNE
+END_MACRO if.goto
+
+START_MACRO push.memory 0
+$d = $sp*
+$d = $d*
+$sp* = $d
+END_MACRO push.memory
+
+START_MACRO pop.memory 0
+pop.reg $d
+pop.reg $a
+$a* = $d
+END_MACRO pop.memory
+
+START_MACRO push.static 1 address
+$a = address
+push.reg $a*
+END_MACRO push.static
+
+START_MACRO pop.static 1 address
+pop.reg $d
+$a = address
+$a* = $d
+END_MACRO pop.static
+
+START_MACRO call 2 functionName argumentCount
+DEFINE TEMP 3
+#Push ARGS
+push.static ARGS
+#Calculate new ARGS address
+$d = $a
+$a = argumentCount
+$d = $d - $a
+$a = ARGS
+$a* = $d
+#Push LOCALS, returnAddress
+push.static LOCALS
+push.value returnAddress
+#Jump to functionName
+goto functionName
+returnAddress:
+
+#Restore LOCALS
+pop.static LOCALS
+#Store current ARGS in TEMP slot
+pop.static TEMP
+#Set $sp to the previous ARGS value
+$a = ARGS
+$sp = $a*
+#Restore old ARGS value from stack
+push.static TEMP
+pop.static ARGS
+#Push RETVAL on stack
+push.static RETVAL
+END_MACRO call
+
+START_MACRO function 2 functionName localsCount
+functionName:
+$a = LOCALS
+$a* = $sp
+$a = localsCount
+$sp = $sp + $a
+END_MACRO function
+
+START_MACRO return 0
+pop.static RETVAL
+$a = LOCALS
+$sp = $a*
+pop.reg $rz
+JMP
+END_MACRO return
+
+START_MACRO push.argument 1 index
+push.value index
+push.static ARGS
+add
+push.memory
+END_MACRO push.argument
+
+START_MACRO pop.argument 1 index
+$d = index
+$a = ARGS
+$d = $d + $a*
+# stack: value| d: addr
+push.reg $d
+# stack: value addr| d: addr
+$d = 2
+$d = $sp - $d
+$ = $*d
+push.reg $d
+# stack: value addr value
+pop.memory
+# stack: value
+$sp = $sp - 1
+END_MACRO pop.argument
+
+START_MACRO push.local 1 index
+$d = index
+$a = LOCALS
+$d = $d + $a*
+push.reg $d*
+END_MACRO push.local
+
+START_MACRO pop.local 1 index
+$d = index
+$a = LOCALS
+$d = $d + $a*
+pop.reg $a
+$a = $d + $a
+$d = $a - $d
+$a = $a - $d
+$a* = $d
+END_MACRO pop.local

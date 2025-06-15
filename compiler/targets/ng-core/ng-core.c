@@ -42,7 +42,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                         return compile_error("fatal error: immediate write was requested but value was not found");
                     }
                     lineout[CI] = '0';
-                    char binval[16];
+                    char binval[15];
                     itob(atoi(x_reg), binval);
                     strcpy(s_slice(lineout, 1), binval);
                 }
@@ -69,7 +69,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                         // sets the opcode to be '~x' and then zeros x
                         for (int ol = 0; ol < ng_opcode_size; ol++)
                         {
-                            lineout[OPCODE + ol] = ng_opbits[2][ol];
+                            lineout[OPCODE + ol] = ng_opbits[4][ol];
                         }
                         lineout[ZERO_X] = '1';
                     }
@@ -135,7 +135,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                                 break;
                             }
                         }
-                        else if (x_reg[0] != 'D' && y_reg[0] != 'D')
+                        else if ((x_reg[0] != 'D' && y_reg[0] != 'D') || y_reg[0] == '1')
                         {
                             if (strcmp(y_reg, "1") == 0)
                             {

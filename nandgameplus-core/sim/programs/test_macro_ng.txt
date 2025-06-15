@@ -1,4 +1,4 @@
-INCLUDE stack_macros.txt
+INCLUDE stack_macros_ng.txt
 
 DEFINE addr 0x6001
 DEFINE dispAddr 0x6002

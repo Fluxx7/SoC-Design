@@ -10,10 +10,14 @@ module handler (
 
 logic lt, eq, gt;
 
+logic _unused;
+assign _unused = |instruction[15:13] | instruction[11]; // Dummy reference
+
+
 ngalu alu (
     .opcode(instruction[10:8]),
     .zx(instruction[7]),
-    .sw(instruction[6])
+    .sw(instruction[6]),
     .reg1(d_reg),
     .reg2(instruction[12] ? a_mem_reg : a_reg),
     .outval(out)

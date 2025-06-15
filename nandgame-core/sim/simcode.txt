@@ -1,0 +1,10 @@
+A = 7
+D = A
+
+loop:
+A = end
+D = D - 1 ; JEQ
+A = loop
+JMP
+
+end:

@@ -12,41 +12,42 @@ logic [15:0] x, y;
 assign x = zx ? 16'b0 : (sw ? reg2 : reg1);
 assign y = sw ? reg1 : reg2;
 
+/* verilator lint_off WIDTHEXPAND */
 always_comb begin
     case (opcode[2])
-    0: begin
+    1'b0: begin
         case (opcode[1:0])
-            00: begin
+            2'b00: begin
                 outval = x & y; 
             end
-            01: begin
+            2'b01: begin
                 outval = x | y;
             end
-            10: begin
+            2'b10: begin
                 outval = x ^ y;
             end
-            11: begin
+            2'b11: begin
                 outval = ~x;
             end
         endcase
     end
     1: begin
         case (opcode[1:0])
-            00: begin
+            2'b00: begin
                 outval = x + y; 
             end
-            01: begin
+            2'b01: begin
                 outval = x - y;
             end
-            10: begin
+            2'b10: begin
                 outval = x + 1;
             end
-            11: begin
+            2'b11: begin
                 outval = x - 1;
             end
         endcase
     end
     endcase
 end
-
+/* verilator lint_on WIDTHEXPAND */
 endmodule
