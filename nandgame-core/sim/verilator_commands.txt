@@ -1,4 +1,4 @@
-verilator -Wall --cc -I../rtl/ ../rtl/ng_core.sv --exe src/testbench.cpp src/rom.cpp src/debugger.cpp
+verilator -Wall --cc -I../rtl/ ../rtl/ng_core.sv --exe src/testbench.cpp src/rom.cpp src/ANSI_format.cpp
 
 make -C obj_dir -f Vng_core.mk Vng_core    
 
