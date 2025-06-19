@@ -1,30 +1,31 @@
 INCLUDE stack_macros_ngp.txt
+INCLUDE number_macros_ngp.txt
 
-DEFINE addr 0x6001
-DEFINE dispAddr 0x6002
+DEFINE addrMem 0x600
+DEFINE addrOffset 1
+DEFINE dispAddrOffset 0x2
 
 init.stack
-$a = dispAddr
-$a* = 0x4000
-goto main
+llimm addrMem dispAddrOffset $a
+llimm 0x400 0 $a*
 
 main:
 
 call waitSync 0
 pop.reg $d
-$jz = end
-$d ; JEQ
+$a = end
+$d == $zr :: $a
 call render 0
 $d = 0x20
-$a = dispAddr
+llimm addrMem dispAddrOffset $a
 $a* = $a* + $d
-$jz = main
-JMP
+$a = main
+@: $a
 
 function waitSync 1
 
 LABEL wait_sync:
-$a = addr
+llimm addrMem addrOffset $a
 $d = $a*
 $a = 2
 $d = $d & $a
@@ -32,24 +33,22 @@ push.reg $d
 pop.local 0
 
 loop_sync:
-$a = addr
+llimm addrMem addrOffset $a
 $d = $a*
 $a = 2
 $d = $d & $a
 push.reg $d
 push.local 0
 pop.reg $d
-pop.reg $a
-$d = $d - $a
-$jz = loop_sync
-$d ; JEQ
+$a = loop_sync
+$sp = $sp - 1
+$d == $sp* :: $a
 
 
-$a = addr
-$d = $a*
+llimm addrMem addrOffset $d
 $a = 1
-$d = $d & $a
-push.reg $d
+$sp* = $d* & $a
+$sp = $sp + 1
 return
 
 function render 1
@@ -59,7 +58,7 @@ pop.local 0
 render_loop:
 call waitSync 0
 pop.reg $d
-$a = dispAddr
+llimm addrMem dispAddrOffset $a
 $a = $a*
 $d = $a* + $d
 $a* = $a* + $d
@@ -69,8 +68,8 @@ add
 pop.local 0
 $a = 16
 $d = $a - $d
-$jz = render_return
-$d ; JEQ
+$a = render_return
+$d == $zr :: $a
 goto render_loop
 
 render_return:

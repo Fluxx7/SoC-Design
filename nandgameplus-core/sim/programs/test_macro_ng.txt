@@ -8,7 +8,6 @@ A = 0x4000
 D = A
 A = dispAddr
 *A = D
-goto main
 
 main:
 

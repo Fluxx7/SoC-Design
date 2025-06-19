@@ -18,96 +18,117 @@ END_MACRO pop.reg
 
 START_MACRO push.value 1 value
 $sp* = value
+$sp = $sp + 1
 END_MACRO push.value
 
 START_MACRO add 0
 pop.reg $d
+$sp = $sp - 1
 $sp* = $sp* + $d
+$sp = $sp + 1
 END_MACRO add
 
 START_MACRO sub 0
 pop.reg $d
+$sp = $sp - 1
 $sp* = $sp* - $d
+$sp = $sp + 1
 END_MACRO sub
 
 START_MACRO neg 0
+$sp = $sp - 1
 $sp* = -$sp*
+$sp = $sp + 1
 END_MACRO neg
 
 START_MACRO and 0
 pop.reg $d
+$sp = $sp - 1
 $sp* = $sp* & $d
+$sp = $sp + 1
 END_MACRO and
 
 START_MACRO or 0
 pop.reg $d
+$sp = $sp - 1
 $sp* = $sp* | $d
+$sp = $sp + 1
 END_MACRO or
 
 START_MACRO eq 0
 pop.reg $d
+$sp = $sp - 1
 $d = $sp* - $d
-$jz = true
-$d ; JEQ
+$a = true
+$d == $zr :: $a
 $sp* = 0
-$jz = false
-JMP
+$a = false
+@: $a
 
 true:
 $sp* = $d - 1
 
 false:
+$sp = $sp + 1
 END_MACRO eq
 
 START_MACRO gt 0
 pop.reg $d
+$sp = $sp - 1
 $d = $sp* - $d
-$jz = true
-$d ; JLT
+$a = true
+$d < $zr :: $a
 $sp* = 0
-$jz = false
-JMP
+$a = false
+@: $a
 
 true:
 $sp* = $d - 1
 
 false:
+$sp = $sp + 1
 END_MACRO gt
 
 START_MACRO lt 0
 pop.reg $d
+$sp = $sp - 1
 $d = $sp* - $d
-$jz = true
-$d ; JGT
+$a = true
+$d > $zr :: $a
 $sp* = 0
-$jz = false
-JMP
+$a = false
+@: $a
 
 true:
 $sp* = $d - 1
 
 false:
+$sp = $sp + 1
 END_MACRO lt
 
 START_MACRO not 0
+$sp = $sp - 1
 $sp* = ~$sp*
+$sp = $sp + 1
 END_MACRO not
 
 START_MACRO goto 1 label
-$jz = label
-JMP
+$d = label
+@: $d
 END_MACRO goto
 
 START_MACRO if.goto 1 label
-pop.reg $d
-$jz = label
-$d ; JNE
+$sp = $sp - 1
+$d = label
+$sp* != $zr :: $d
 END_MACRO if.goto
 
 START_MACRO push.memory 0
+$sp = $sp - 1
 $d = $sp*
 $d = $d*
 $sp* = $d
+$sp = $sp + 1
 END_MACRO push.memory
 
 START_MACRO pop.memory 0
@@ -137,14 +158,16 @@ $a = argumentCount
 $d = $d - $a
 $a = ARGS
 $a* = $d
-#Push LOCALS, returnAddress
+#Push LOCALS, set returnAddress
 push.static LOCALS
-push.value returnAddress
+push.reg $zr*
+$zr* = returnAddress
 #Jump to functionName
 goto functionName
 returnAddress:
 
-#Restore LOCALS
+#Restore LOCALS and returnAddress
+pop.reg $zr*
 pop.static LOCALS
 #Store current ARGS in TEMP slot
 pop.static TEMP
@@ -170,8 +193,7 @@ START_MACRO return 0
 pop.static RETVAL
 $a = LOCALS
 $sp = $a*
-pop.reg $rz
-JMP
+@: $zr*
 END_MACRO return
 
 START_MACRO push.argument 1 index
@@ -209,9 +231,6 @@ START_MACRO pop.local 1 index
 $d = index
 $a = LOCALS
 $d = $d + $a*
-pop.reg $a
-$a = $d + $a
-$d = $a - $d
-$a = $a - $d
-$a* = $d
+$sp = $sp - 1
+$d* = $sp*
 END_MACRO pop.local

@@ -1,0 +1,6 @@
+START_MACRO llimm 3 upper12 lower4 reg
+reg = upper12
+reg = reg << 4
+$sp* = lower4
+reg = reg | $sp*
+END_MACRO llimm

@@ -1,18 +1,27 @@
 INCLUDE stack_macros_ngp.txt
+INCLUDE number_macros_ngp.txt
 
-DEFINE addr 0x6001
-DEFINE dispAddr 0x6002
+DEFINE addrMem 0x600
+DEFINE addrOffset 1
+DEFINE dispAddrOffset 0x2
 
 # TOP MACRO 
 # init.stack
 $sp = 256
 
-$a = dispAddr
-$a* = 0x4000
 # TOP MACRO 
-# goto main
-$jz = main
-JMP
+# llimm addrMem dispAddrOffset $a
+$a = addrMem
+$a = $a << 4
+$sp* = dispAddrOffset
+$a = $a | $sp*
+
+# TOP MACRO 
+# llimm 0x400 0 $a*
+$a* = 0x400
+$a* = $a* << 4
+$sp* = 0
+$a* = $a* | $sp*
 
 
 main:
@@ -34,13 +43,18 @@ $a = LOCALS
 # push.reg $a*
 $sp* = $a*
 $sp = $sp + 1
-# push.value 0_12_call_returnAddress
-$sp* = 0_12_call_returnAddress
+# push.reg $zr*
+$sp* = $zr*
+$sp = $sp + 1
+$zr* = 0_13_call_returnAddress
 # goto waitSync
-$jz = waitSync
-JMP
-0_12_call_returnAddress:
+$d = waitSync
+@: $d
+0_13_call_returnAddress:
 
+# pop.reg $zr*
+$sp = $sp - 1
+$zr* = $sp*
 # pop.static LOCALS
 # pop.reg $d
 $sp = $sp - 1
@@ -77,8 +91,8 @@ $sp = $sp + 1
 $sp = $sp - 1
 $d = $sp*
 
-$jz = end
-$d ; JEQ
+$a = end
+$d == $zr :: $a
 # TOP MACRO 
 # call render 0
 # push.static ARGS
@@ -96,13 +110,18 @@ $a = LOCALS
 # push.reg $a*
 $sp* = $a*
 $sp = $sp + 1
-# push.value 0_16_call_returnAddress
-$sp* = 0_16_call_returnAddress
+# push.reg $zr*
+$sp* = $zr*
+$sp = $sp + 1
+$zr* = 0_17_call_returnAddress
 # goto render
-$jz = render
-JMP
-0_16_call_returnAddress:
+$d = render
+@: $d
+0_17_call_returnAddress:
 
+# pop.reg $zr*
+$sp = $sp - 1
+$zr* = $sp*
 # pop.static LOCALS
 # pop.reg $d
 $sp = $sp - 1
@@ -135,10 +154,16 @@ $sp* = $a*
 $sp = $sp + 1
 
 $d = 0x20
-$a = dispAddr
+# TOP MACRO 
+# llimm addrMem dispAddrOffset $a
+$a = addrMem
+$a = $a << 4
+$sp* = dispAddrOffset
+$a = $a | $sp*
+
 $a* = $a* + $d
-$jz = main
-JMP
+$a = main
+@: $a
 
 # TOP MACRO 
 # function waitSync 1
@@ -150,7 +175,13 @@ $sp = $sp + $a
 
 
 LABEL wait_sync:
-$a = addr
+# TOP MACRO 
+# llimm addrMem addrOffset $a
+$a = addrMem
+$a = $a << 4
+$sp* = addrOffset
+$a = $a | $sp*
+
 $d = $a*
 $a = 2
 $d = $d & $a
@@ -164,17 +195,18 @@ $sp = $sp + 1
 $d = 0
 $a = LOCALS
 $d = $d + $a*
-# pop.reg $a
 $sp = $sp - 1
-$a = $sp*
-$a = $d + $a
-$d = $a - $d
-$a = $a - $d
-$a* = $d
+$d* = $sp*
 
 
 loop_sync:
-$a = addr
+# TOP MACRO 
+# llimm addrMem addrOffset $a
+$a = addrMem
+$a = $a << 4
+$sp* = addrOffset
+$a = $a | $sp*
+
 $d = $a*
 $a = 2
 $d = $d & $a
@@ -197,25 +229,21 @@ $sp = $sp + 1
 $sp = $sp - 1
 $d = $sp*
 
-# TOP MACRO 
-# pop.reg $a
+$a = loop_sync
 $sp = $sp - 1
-$a = $sp*
-
-$d = $d - $a
-$jz = loop_sync
-$d ; JEQ
+$d == $sp* :: $a
 
 
-$a = addr
-$d = $a*
-$a = 1
-$d = $d & $a
 # TOP MACRO 
-# push.reg $d
-$sp* = $d
-$sp = $sp + 1
+# llimm addrMem addrOffset $d
+$d = addrMem
+$d = $d << 4
+$sp* = addrOffset
+$d = $d | $sp*
 
+$a = 1
+$sp* = $d* & $a
+$sp = $sp + 1
 # TOP MACRO 
 # return
 # pop.static RETVAL
@@ -226,10 +254,7 @@ $a = RETVAL
 $a* = $d
 $a = LOCALS
 $sp = $a*
-# pop.reg $rz
-$sp = $sp - 1
-$rz = $sp*
-JMP
+@: $zr*
 
 
 # TOP MACRO 
@@ -243,19 +268,15 @@ $sp = $sp + $a
 # TOP MACRO 
 # push.value 0
 $sp* = 0
+$sp = $sp + 1
 
 # TOP MACRO 
 # pop.local 0
 $d = 0
 $a = LOCALS
 $d = $d + $a*
-# pop.reg $a
 $sp = $sp - 1
-$a = $sp*
-$a = $d + $a
-$d = $a - $d
-$a = $a - $d
-$a* = $d
+$d* = $sp*
 
 
 render_loop:
@@ -276,13 +297,18 @@ $a = LOCALS
 # push.reg $a*
 $sp* = $a*
 $sp = $sp + 1
-# push.value 0_59_call_returnAddress
-$sp* = 0_59_call_returnAddress
+# push.reg $zr*
+$sp* = $zr*
+$sp = $sp + 1
+$zr* = 0_58_call_returnAddress
 # goto waitSync
-$jz = waitSync
-JMP
-0_59_call_returnAddress:
+$d = waitSync
+@: $d
+0_58_call_returnAddress:
 
+# pop.reg $zr*
+$sp = $sp - 1
+$zr* = $sp*
 # pop.static LOCALS
 # pop.reg $d
 $sp = $sp - 1
@@ -319,7 +345,13 @@ $sp = $sp + 1
 $sp = $sp - 1
 $d = $sp*
 
-$a = dispAddr
+# TOP MACRO 
+# llimm addrMem dispAddrOffset $a
+$a = addrMem
+$a = $a << 4
+$sp* = dispAddrOffset
+$a = $a | $sp*
+
 $a = $a*
 $d = $a* + $d
 $a* = $a* + $d
@@ -335,35 +367,33 @@ $sp = $sp + 1
 # TOP MACRO 
 # push.value 1
 $sp* = 1
+$sp = $sp + 1
 
 # TOP MACRO 
 # add
 # pop.reg $d
 $sp = $sp - 1
 $d = $sp*
+$sp = $sp - 1
 $sp* = $sp* + $d
+$sp = $sp + 1
 
 # TOP MACRO 
 # pop.local 0
 $d = 0
 $a = LOCALS
 $d = $d + $a*
-# pop.reg $a
 $sp = $sp - 1
-$a = $sp*
-$a = $d + $a
-$d = $a - $d
-$a = $a - $d
-$a* = $d
+$d* = $sp*
 
 $a = 16
 $d = $a - $d
-$jz = render_return
-$d ; JEQ
+$a = render_return
+$d == $zr :: $a
 # TOP MACRO 
 # goto render_loop
-$jz = render_loop
-JMP
+$d = render_loop
+@: $d
 
 
 render_return:
@@ -377,10 +407,7 @@ $a = RETVAL
 $a* = $d
 $a = LOCALS
 $sp = $a*
-# pop.reg $rz
-$sp = $sp - 1
-$rz = $sp*
-JMP
+@: $zr*
 
 
 
