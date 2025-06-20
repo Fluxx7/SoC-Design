@@ -38,8 +38,8 @@ int preprocess(const char* path) {
         if(fgets(rawline, linesize, input) == NULL) {
             break;
         }
+        std::println("here");
         if (rawline.smatch("INCLUDE ")) {
-
             f_string newfile = rawline.slice("INCLUDE ").sclean();
             f_string newfile_relative;
             build_relative_path(path, newfile, newfile_relative, 1024);
@@ -291,7 +291,7 @@ int preprocess(const char* path) {
                     for (int cons = 0; cons <= constants.size(); cons ++) {
                         if(proc_statement == constants[cons]) {
                             if(pverbose) std::print("{} is const with value {}\n", proc_statement, const_values[cons]);
-                            snprintf(fproc_statement, fproc_statement.length(), "%d", const_values[cons]);
+                            fproc_statement = std::format("{}", const_values[cons]).c_str();
                             
                             prmirror(fproc_statement, processed_input);
                             const_found = 1;
@@ -323,13 +323,12 @@ int preprocess(const char* path) {
 }
 
 
-
-#define curr_macro macro_list[macro_index]
-#define curr_macro_line curr_macro.body[macro_line]
 /**
  * Takes the list of macros, the current macro to insert, and outputs the fully expanded macro to the provided output file
  */
 int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
+    const macro_def& curr_macro = macro_list[macro_index];
+
     if (layer > recursion_limit) {
         return compile_error("Excessive recursion in macros, final macro in recursion {}", curr_macro.macro_name);
     }
@@ -348,77 +347,50 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
 
     f_string cleanline = f_string(codeline).sclean_i('\n', 0);
     // grab the provided arg values
-    int const_index = curr_macro.arg_count - 1;
-    char** constants;
-    char** const_values;
-    if (const_index >= 0) {
-        constants = (char**) malloc(sizeof(char*)*(const_index+1));
-        const_values = (char**) malloc(sizeof(char*)*(const_index+1));
-    }
+    array_vector<f_string> constants;
+    array_vector<f_string> const_values;
     int arg_scan_index = strlen(curr_macro.macro_name) + 1;
 
-    for(int arg_loop_index = 0; arg_loop_index <= const_index; arg_loop_index++) {
+    for(int arg_loop_index = 0; arg_loop_index <= (curr_macro.arg_count - 1); arg_loop_index++) {
         // allocate memory and add the argument name as a constant
-        constants[arg_loop_index] = (char*) calloc(linesize, sizeof(char));
-        const_values[arg_loop_index] = (char*) calloc(linesize, sizeof(char));
-        strcpy(constants[arg_loop_index], curr_macro.arg_names[arg_loop_index]);
+        constants += curr_macro.arg_names[arg_loop_index];
 
-        if (ssplit(cleanline, const_values[arg_loop_index], &arg_scan_index, " ") == 0) {
-            sclean(s_slice(cleanline, arg_scan_index), const_values[arg_loop_index]);
+        if (cleanline.ssplit(const_values[arg_loop_index], arg_scan_index, " ") == 0) {
+            const_values += cleanline.slice(arg_scan_index).sclean();
         }
         if(pverbose) std::println("arg '{}' has value '{}'", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
     }
 
     // first, filter through the file to define all constants as well as rename inner labels (via constants)
     //FILE* filterfile = tmpfile();
-    char filter_line[linesize];
+    f_string filter_line;
     for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
-        strcpy(filter_line, "");
+        f_string curr_macro_line = macro_list[macro_index].body[macro_line];
+        filter_line = "";
         // next, parse the line for macros, definitions, or labels
-        if (smatch(curr_macro_line, "DEFINE ")) {
+        if (curr_macro_line.smatch("DEFINE ")) {
             int def_index = strlen("DEFINE ");
-            const_index++;
-            if (const_index == 0) {
-                constants = (char**) malloc(sizeof(char*));
-                const_values = (char**) malloc(sizeof(char*));
-            } else {
-                constants = (char**) realloc(constants, sizeof(char*)*(const_index+1));
-                const_values = (char**) realloc(const_values, sizeof(char*)*(const_index+1));
-            }
-            constants[const_index] = (char*) calloc(linesize, sizeof(char));
-            const_values[const_index] = (char*) calloc(linesize, sizeof(char));
-            ssplit(curr_macro_line, constants[const_index], &def_index, " ");
+            curr_macro_line.ssplit(constants(), def_index, " ");
 
             // extracts the constant value as a string into const_val
-            sclean(s_slice(curr_macro_line, def_index), const_values[const_index]);
-            if(pverbose) printf("New constant '%s' with value '%s'\n", constants[const_index], const_values[const_index]);
+            const_values += curr_macro_line.slice(def_index).sclean();
+            if(pverbose) std::println("New constant '{}' with value '{}'\n", constants(), const_values());
         } else if (has_label(curr_macro_line, filter_line) == 1) {
             int not_arg = 1;
             for (int arg_check = 0; arg_check < curr_macro.arg_count && not_arg; arg_check++){
-                if (strcmp(filter_line, constants[arg_check]) == 0) {
+                if (filter_line == constants[arg_check]) {
                     not_arg = 0;
                 }
             }
 
             if (not_arg) {
-                const_index++;
-                if (const_index == 0) {
-                    constants = (char**) malloc(sizeof(char*));
-                    const_values = (char**) malloc(sizeof(char*));
-                } else {
-                    constants = (char**) realloc(constants, sizeof(char*)*(const_index+1));
-                    const_values = (char**) realloc(const_values, sizeof(char*)*(const_index+1));
-                }
-                constants[const_index] = (char*) calloc(linesize, sizeof(char));
-                const_values[const_index] = (char*) calloc(linesize, sizeof(char));
-
-                strcpy(constants[const_index], filter_line);
+                constants += filter_line;
 
                 // creates unique label tag
                 f_string labeltag = std::format("{}_{}_{}_", layer, linenum, localprefix).c_str();
                 labeltag += filter_line;
-                strcpy(const_values[const_index], labeltag);
-                if(pverbose) std::print("New label '{}' with value '{}'\n", constants[const_index], const_values[const_index]);
+                const_values += labeltag;
+                if(pverbose) std::println("New label '{}' with value '{}'", constants(), const_values());
             }
         }
     }
@@ -427,6 +399,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
     f_string filled_line;
     // second, go through the file again and replace all constants and labels, and expand all macros
     for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
+        const f_string curr_macro_line = macro_list[macro_index].body[macro_line];
         if (curr_macro_line[0] == '#'){
             //printf("%s\n", curr_macro_line);
             continue;
@@ -439,17 +412,17 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
         while(1){
             int const_found = 0;
             int label = 0;
-            char raw_segment[linesize];
+            f_string raw_segment;
             // find the next chunk of space-separated characters, if ssplit fails then the rest of the line is the last chunk
-            int end = ssplit(curr_macro_line, raw_segment, &segment_index, " ");
-            if (end == 0) sclean(s_slice(curr_macro_line, segment_index), raw_segment);
-            sclean_i(raw_segment, curr_segment, ':', 0);
+            int end = curr_macro_line.ssplit(raw_segment, segment_index, " ");
+            if (end == 0) raw_segment = curr_macro_line.slice(segment_index).sclean();
+            curr_segment = raw_segment.sclean_i(':', 0);
 
            
-            if (strcmp(raw_segment, curr_segment) != 0) {
+            if (raw_segment != curr_segment) {
                 label = 1;
             }
-            for (int cons = 0; cons <= const_index && !const_found; cons ++) {
+            for (int cons = 0; cons <= constants.size() && !const_found; cons ++) {
                 if(curr_segment == constants[cons]) {
                     curr_segment = const_values[cons];
                     if(pverbose) std::println("constant '{}' with value '{}' used", constants[cons], const_values[cons]);
@@ -471,7 +444,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
         if (!filled_line.smatch("DEFINE ")) {
             int macro_found = 0;
             for (int macro = 0; macro <= macro_list.get_count() && !macro_found; macro++) {
-                if (smatch(filled_line, macro_list[macro].macro_name) && (filled_line[strlen(macro_list[macro].macro_name)] == ' ' || filled_line[strlen(macro_list[macro].macro_name)] == '\n')) {
+                if (filled_line.smatch(macro_list[macro].macro_name) && (filled_line[strlen(macro_list[macro].macro_name)] == ' ' || filled_line[strlen(macro_list[macro].macro_name)] == '\n')) {
                     if (macro_replace(macro_list, macro, filled_line, macro_line, localfile, macr_mirror, layer+1, localprefix) == 1) return 1;
                     macro_found = 1;
                 }
@@ -480,14 +453,6 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
                 fputs(filled_line, localfile);
             }
         }
-    }
-    if (const_index > -1) {
-        for (int i = 0; i <= const_index; i++) {
-            free(constants[i]);
-            free(const_values[i]);
-        }
-        free(constants);
-        free(const_values);
     }
     rewind(localfile);
     f_string rawline = "# ";

@@ -1,6 +1,6 @@
 # Compiler and flags
 CC := g++
-CFLAGS :=  -g -gdwarf-4 -Wall
+CFLAGS :=  -std=c++23 -g -gdwarf-4 -Wall
 LDFLAGS := -lm
 
 # Output binary
@@ -14,18 +14,25 @@ TGT_DIR := targets/ng-core
 
 # Source files
 SRCS := \
-	$(SRC_DIR)/compiler.c \
-	$(UTIL_DIR)/computils.c \
-	$(PREP_DIR)/preprocessor.c \
-	$(PREP_DIR)/preprocessor_utils.c \
-	$(TGT_DIR)/ng-core.c
+	$(SRC_DIR)/compiler.cpp \
+	$(UTIL_DIR)/computils.cpp \
+	$(PREP_DIR)/preprocessor.cpp \
+	$(PREP_DIR)/preprocessor_utils.cpp \
+	$(TGT_DIR)/ng-core.cpp
 
 # Object and dependency files
-OBJS := $(SRCS:.c=.o)
-DEPS := $(SRCS:.c=.d)
+OBJS := $(SRCS:.cpp=.o)
+DEPS := $(SRCS:.cpp=.d)
 
 # Default target
 all: $(TARGET)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+%.o: %.cpp
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
 
 # Final binary
 $(TARGET): $(OBJS)
@@ -39,4 +46,6 @@ clean:
 	rm -f $(OBJS) $(TARGET) testout.txt 
 
 c_part:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(DEPS)
+
+-include $(DEPS)

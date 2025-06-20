@@ -64,6 +64,9 @@ class f_string {
         char& operator[](int index){
             return this->content[index];
         }
+        char operator[](int index) const {
+            return this->content[index];
+        }
         bool operator==(char* comp) const {
             return strcmp(this->content, comp) == 0;
         }
@@ -86,14 +89,14 @@ class f_string {
             return this->size;
         }
 
-        constexpr inline f_string slice(int index) {
+        inline f_string slice(int index) const {
             return f_string(this->content + index);
         } 
-        constexpr inline f_string slice(const char* index) {
+        inline f_string slice(const char* index) const {
             return f_string(this->content + strlen(index));
         } 
 
-        int ssplit(char* output, int& iindex, const char* delim){
+        int ssplit(char* output, int& iindex, const char* delim) const{
             auto& src = this->content;
             int delim_match = 0;
             std::shared_ptr<int> index(&iindex);
@@ -133,7 +136,7 @@ class f_string {
             }
         }  
 
-        f_string sclean_i(char character, int count){
+        f_string sclean_i(char character, int count) const{
             f_string out;
             int index = 0, tok_index = 0;
             int add_char = 0;
@@ -166,10 +169,10 @@ class f_string {
             }
             
         }
-        f_string sclean(){
+        f_string sclean() const {
             return sclean_i(' ', 0);   
         }
-        int smatch(const char* match){
+        int smatch(const char* match) const {
             for (int i = 0; i < strlen(match); i++){
                 if (this->content[i] != match[i]) {
                     return 0;
@@ -191,7 +194,7 @@ class f_string {
         }
 };
 
-f_string operator+(const char * lhs, f_string rhs) {
+inline f_string operator+(const char * lhs, f_string rhs) {
     f_string new_fstr(lhs);
     new_fstr += rhs;
     return new_fstr;
