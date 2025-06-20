@@ -28,7 +28,7 @@ FILE* tokens;
 
 int main(int argc, char** argv) {
     if (argc < 3){
-        if (strcmp(argv[1], "clean") == 0) {
+        if (argc > 1 && strcmp(argv[1], "clean") == 0) {
             remove("macro_processing.txt");
             remove("procmirror.txt");
             remove("smirror.txt");

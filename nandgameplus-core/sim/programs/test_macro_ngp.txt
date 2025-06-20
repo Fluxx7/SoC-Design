@@ -14,7 +14,7 @@ main:
 call waitSync 0
 pop.reg $d
 $a = end
-$d == $zr :: $a
+$d == $zr ?: $a
 call render 0
 $d = 0x20
 llimm addrMem dispAddrOffset $a
@@ -42,7 +42,7 @@ push.local 0
 pop.reg $d
 $a = loop_sync
 $sp = $sp - 1
-$d == $sp* :: $a
+$d == $sp* ?: $a
 
 
 llimm addrMem addrOffset $d
@@ -69,7 +69,7 @@ pop.local 0
 $a = 16
 $d = $a - $d
 $a = render_return
-$d == $zr :: $a
+$d == $zr ?: $a
 goto render_loop
 
 render_return:

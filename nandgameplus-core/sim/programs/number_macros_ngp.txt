@@ -1,6 +1,12 @@
-START_MACRO llimm 3 upper12 lower4 reg
-reg = upper12
-reg = reg << 4
-$sp* = lower4
-reg = reg | $sp*
+START_STATIC low: number 1 (imm: number)
+imm & 0x0FFF
+END_STATIC low
+
+START_STATIC high 1 (imm: number)
+imm >> 12
+END_STATIC high
+
+START_MACRO llimm 2 imm reg
+reg = $low(imm)
+reg = ^^$high(imm)
 END_MACRO llimm

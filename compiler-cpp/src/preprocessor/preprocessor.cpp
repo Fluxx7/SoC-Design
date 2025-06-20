@@ -1,10 +1,10 @@
-#include "preprocessor.h"
-#include "preprocessor_utils.h"
+#include "preprocessor.hpp"
+#include "preprocessor_utils.hpp"
 #include <stdlib.h>
 #include <libgen.h>  // for dirname
 #include <string.h>
 
-#include "../utilities/computils.h"
+#include "../utilities/computils.hpp"
 
 void build_relative_path(const char *input_file, const char *relative_file, char *out, size_t out_size) {
     char path_copy[1024];
@@ -23,14 +23,12 @@ int preprocess(const char* path) {
         state_mirror = fopen("smirror.txt", "w+");
         proc_mirror = fopen("procmirror.txt", "w+");
     }
-    if(pverbose) printf("Preprocessor start\n");
+    if(pverbose) std::print("Preprocessor start\n");
     rewind(input);
 
-    if(pverbose) printf("Expanding macros\n");
-    FILE** included;
-    macro_def* macros;
-    int macro_count = -1;
-    int include_count = -1;
+    if(pverbose) std::print("Expanding macros\n");
+    array_vector<FILE*> included;
+    array_vector<macro_def> macros;
     char** constants;
     int* const_values;
     int const_count = -1;
@@ -40,75 +38,61 @@ int preprocess(const char* path) {
             break;
         }
         if (smatch(rawline, "INCLUDE ")) {
-            // expands the list of included files by one
-            include_count++;
-            if (include_count == 0) {
-                
-                included = (FILE**) malloc(sizeof(FILE*));
-            } else {
-                included = (FILE**) realloc(included, sizeof(FILE*)*(include_count+1));
-            } 
 
             char newfile[1024];
             char newfile_relative[1024];
             sclean(s_slice(rawline, strlen("INCLUDE ")), newfile);
             build_relative_path(path, newfile, newfile_relative, 1024);
-            included[include_count] = fopen(newfile_relative, "r");
-            if (!included[include_count]) {
+            included.push_back(fopen(newfile_relative, "r"));
+            if (!included.top()) {
                 return compile_error("failed to open file '%s'", newfile);
             }
             while(1) {
-                if(fgets(rawline, linesize, included[include_count]) == NULL) {
+                if(fgets(rawline, linesize, included.top()) == NULL) {
                     break;
                 }
                 if (smatch(rawline, "START_MACRO ")) {
-                    // expands the list of macros by one
-                    macro_count++;
-                    if (macro_count == 0) {
-                        macros = (macro_def*) malloc(sizeof(macro_def));
-                    } else {
-                        macros = (macro_def*) realloc(macros, sizeof(macro_def)*(macro_count+1));
-                    }
+
 
                     // grabs macro name
                     int macro_scan_index = 0;
-                    ssplit(s_slice(rawline, strlen("START_MACRO ")), macros[macro_count].macro_name, &macro_scan_index, " ");
+                    ssplit(s_slice(rawline, strlen("START_MACRO ")), macros.expand().macro_name, &macro_scan_index, " ");
 
                     // grabs arg_count
                     char macro_buffer[linesize];
                     ssplit(s_slice(rawline, strlen("START_MACRO ")), macro_buffer, &macro_scan_index, " ");
-                    macros[macro_count].arg_count = atoi(macro_buffer);
+                    macros().arg_count = atoi(macro_buffer);
 
                     // grabs arg names
-                    macros[macro_count].arg_names = (char**) malloc(sizeof(char*)*macros[macro_count].arg_count);
+                    macros().arg_names = (char**) malloc(sizeof(char*)*macros().arg_count);
                     char arg_name[linesize];
-                    for (int macro_arg_loop = 0; macro_arg_loop < macros[macro_count].arg_count; macro_arg_loop++) {
-                        macros[macro_count].arg_names[macro_arg_loop] = (char*) calloc(strlen(rawline), sizeof(char));
+                    for (int macro_arg_loop = 0; macro_arg_loop < macros().arg_count; macro_arg_loop++) {
+                        macros().arg_names[macro_arg_loop] = (char*) calloc(strlen(rawline), sizeof(char));
                         ssplit(s_slice(rawline, strlen("START_MACRO ")), arg_name, &macro_scan_index, " ");
-                        sclean(arg_name, macros[macro_count].arg_names[macro_arg_loop]);
+                        sclean(arg_name, macros.top().arg_names[macro_arg_loop]);
                     }
 
                     int line_count = -1;
                     while(1) {
-                        if(fgets(rawline, linesize, included[include_count]) == NULL) {
-                            return compile_error("no END_MACRO call found for %s", macros[macro_count].macro_name);
+                        if(fgets(rawline, linesize, included.top()) == NULL) {
+                            return compile_error("no END_MACRO call found for %s", macros.top().macro_name);
                         }
-                        if(smatch(rawline, "END_MACRO ") && smatch(s_slice(rawline, strlen("END_MACRO ")), macros[macro_count].macro_name)) {
+                        if(smatch(rawline, "END_MACRO ") && smatch(s_slice(rawline, strlen("END_MACRO ")), macros.top().macro_name)) {
                             break;
                         }
                         line_count++;
                         if (line_count == 0) {
-                            macros[macro_count].body = (char**) malloc(sizeof(char*));
+                            macros().body = (char**) malloc(sizeof(char*));
                         } else {
-                            macros[macro_count].body = (char**) realloc(macros[macro_count].body, sizeof(char*)*(line_count+1));
+                            macros().body = (char**) realloc(macros().body, sizeof(char*)*(line_count+1));
                         }
-                        macros[macro_count].body[line_count] = (char*) calloc(strlen(rawline)+5, sizeof(char));
-                        strcpy(macros[macro_count].body[line_count], rawline);
+                        macros().body[line_count] = (char*) calloc(strlen(rawline)+5, sizeof(char));
+                        strcpy(macros().body[line_count], rawline);
                     }
-                    macros[macro_count].line_count = line_count + 1;
+                    macros().line_count = line_count + 1;
 
-                    if(pverbose) printf("macro name: %s, arg_count: %d, line_count: %d\n", macros[macro_count].macro_name, macros[macro_count].arg_count, macros[macro_count].line_count);
-                    if(pverbose) printf("macro count: %d\n\n", macro_count);
+                    if(pverbose) printf("macro name: %s, arg_count: %d, line_count: %d\n", macros().macro_name, macros().arg_count, macros().line_count);
+                    if(pverbose) printf("macro count: %d\n\n", macros.get_count());
                     
                 } else if (smatch(rawline, "DEFINE ")) {
                     int const_index = strlen("DEFINE ");
@@ -132,6 +116,17 @@ int preprocess(const char* path) {
                     } else {
                         return compile_error("Immediate value was not a valid number");
                     }
+                } else if (smatch(rawline, "START_STATIC ")) {
+                    /*
+                    new goal: support compile-time evaluation of predefined expressions
+                    these will be started with START_STATIC <name>: <type> <arg_count> (<arg_name>: <type>) ...
+                    supported types will initially only be numbers, later maybe registers as well
+                    these can be invoked using the $ operator, which therefore needs to be blacklisted
+                     from the start of constant names, macro names, and labels
+                    the main objective for now is to allow for a predefined expression like $upper(0xFFFF) to automatically convert to 0xF,
+                     which can then be used in an operation. 
+                    This would be handled after all other preprocessing, and they cannot alter the number of lines,
+                    */
                 }
             }
         }
@@ -154,9 +149,9 @@ int preprocess(const char* path) {
         char cleanline[linesize];
         sclean(rawline, cleanline);
         int macro_found = 0;
-        for (int macro = 0; macro <= macro_count && !macro_found; macro++) {
+        for (int macro = 0; macro <= macros.get_count() && !macro_found; macro++) {
             if (smatch(cleanline, macros[macro].macro_name)) {
-                if (macro_replace(macros, macro_count, macro, rawline, local_linenum, expanded_input, macr_mirror, 0, NULL)) return 1;
+                if (macro_replace(macros, macro, rawline, local_linenum, expanded_input, macr_mirror, 0, NULL)) return 1;
                 macro_found = 1;
             }
         }
@@ -174,39 +169,17 @@ int preprocess(const char* path) {
     input = expanded_input;
     rewind(input);
     
-    if (macro_count != -1) {
-        
-        for (int i = 0; i <= macro_count; i++) {
-            for (int j = 0; j < macros[i].arg_count; j++) {
-                free(macros[i].arg_names[j]);
-            }
-            free(macros[i].arg_names);
-            for (int j = 0; j < macros[i].line_count; j++) {
-                free(macros[i].body[j]);
-            }
-        }
-        
-        free(macros);
-    }
-    
-    if (include_count != -1) {
-        for (int i = 0; i <= include_count; i++) {
-            fclose(included[i]);
-        }
-        free(included);
-    }
-    /* 
-    macro targeting: 
-    START_MACRO <macro name> <number of arguments> <arg names>
-    default arg names are arg<arg_num> ie arg0, arg1, arg2, arg names are set in numerical order
-    <macro code>
-    END_MACRO <macro name>
 
-    to call a macro, just use <macro name>
+    for (auto& macro : macros) {
+        for (int j = 0; j < macro.arg_count; j++) {
+            free(macro.arg_names[j]);
+        }
+        free(macro.arg_names);
+        for (int j = 0; j < macro.line_count; j++) {
+            free(macro.body[j]);
+        }
+    }
 
-    use INCLUDE <file address> to use a file defining existing macros and constants 
-    this file WILL NOT be run through the compiler, ONLY through the preprocessor to grab definitions
-    */
 
     // statement processing
     
@@ -367,7 +340,7 @@ int preprocess(const char* path) {
 /**
  * Takes the list of macros, the current macro to insert, and outputs the fully expanded macro to the provided output file
  */
-int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char* codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
+int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
     if (layer > recursion_limit) {
         return compile_error("Excessive recursion in macros, final macro in recursion %s", curr_macro.macro_name);
     }
@@ -510,9 +483,9 @@ int macro_replace(macro_def* macro_list, int macro_count, int macro_index, char*
         
         if (!smatch(filled_line, "DEFINE ")) {
             int macro_found = 0;
-            for (int macro = 0; macro <= macro_count && !macro_found; macro++) {
+            for (int macro = 0; macro <= macro_list.get_count() && !macro_found; macro++) {
                 if (smatch(filled_line, macro_list[macro].macro_name) && (filled_line[strlen(macro_list[macro].macro_name)] == ' ' || filled_line[strlen(macro_list[macro].macro_name)] == '\n')) {
-                    if (macro_replace(macro_list, macro_count, macro, filled_line, macro_line, localfile, macr_mirror, layer+1, localprefix) == 1) return 1;
+                    if (macro_replace(macro_list, macro, filled_line, macro_line, localfile, macr_mirror, layer+1, localprefix) == 1) return 1;
                     macro_found = 1;
                 }
             }
