@@ -27,7 +27,7 @@ class array_vector {
 
         inline T& operator[](int index) { return this->array[index]; }
         inline T& operator()() {return this->array[this->i_top];}
-        inline array_vector& operator=(T val) { this->push_back(val); return this;}
+        inline array_vector& operator+=(T val) { this->push_back(val); return *this;}
 
         
     private:

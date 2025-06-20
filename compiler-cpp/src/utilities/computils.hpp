@@ -3,10 +3,12 @@
 #include <cstddef>
 #include <string>
 #include <iostream>
-#include "array_vector.hpp"
+#include "classes/array_vector.hpp"
+#include "classes/f_string.hpp"
 #ifndef linesize
 #define linesize 256
 #endif
+#pragma once
 #define here() printf("here\n")
 
 extern char rline_ptr[linesize];
@@ -68,7 +70,16 @@ int parse_number(const char* number_string);
 /**
  * returns -1, and prints the input as a formatted string
  */
-int compile_error(const char*, ...);
+template <typename... Args>
+int compile_error(std::format_string<Args...> fmt, Args&&... args) {
+    auto buf = std::format(fmt, std::forward<Args>(args)...);
+    if (strlen(rline_ptr) != 0){
+        std::println("Error: {}\n-> Line {}: {}\n", buf, truenum, rline_ptr);
+    } else {
+        std::println("Error: {}\n", buf);
+    }
+    return 1;
+}
 
 /**
  * takes an integer and puts the binary representation into token

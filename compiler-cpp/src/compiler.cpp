@@ -216,7 +216,7 @@ int main(int argc, char** argv) {
                             }
                         }
                         if (found == 0) {
-                            return compile_error("invalid character '%c' in register assignment", register_str[charnum]);
+                            return compile_error("invalid character '{}' in register assignment", register_str[charnum]);
                         }
                     }
                 }

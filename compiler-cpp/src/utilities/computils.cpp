@@ -130,16 +130,3 @@ int itob(int integer, char* token)
     return 0;
 }
 
-int compile_error(const char * message, ...){
-    char buf[1024];
-    va_list args;
-    va_start(args, message);
-    vsprintf(buf, message, args);
-    if (strlen(rline_ptr) != 0){
-        printf("Error: %s\n-> Line %d: %s\n", buf, truenum, rline_ptr);
-    } else {
-        printf("Error: %s\n", buf);
-    }
-    return 1;
-}
-
