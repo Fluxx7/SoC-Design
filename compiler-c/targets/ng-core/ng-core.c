@@ -42,7 +42,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                         return compile_error("fatal error: immediate write was requested but value was not found");
                     }
                     lineout[CI] = '0';
-                    char binval[15];
+                    char binval[17];
                     itob(atoi(x_reg), binval);
                     strcpy(s_slice(lineout, 1), binval);
                 }

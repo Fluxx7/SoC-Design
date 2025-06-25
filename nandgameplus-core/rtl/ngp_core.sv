@@ -4,7 +4,7 @@ module ngp_core (
     output logic [15:0] addr
 );
 
-logic [15:0] rx_reg, ry_reg, rx_mem_reg, t_reg, result;
+logic [15:0] rx_reg, ry_reg, rsp_reg, rzr_reg, rx_mem_reg, ry_mem_reg, rsp_mem_reg, rzr_mem_reg, t_reg, result;
 logic [2:0] write;
 logic jmp;
 

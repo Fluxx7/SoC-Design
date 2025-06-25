@@ -8,17 +8,9 @@
 
 #include "../utilities/computils.hpp"
 
-void build_relative_path(const char *input_file, const char *relative_file, char *out, size_t out_size) {
-    char path_copy[1024];
-    strncpy(path_copy, input_file, sizeof(path_copy));
-    path_copy[sizeof(path_copy)-1] = '\0';
-
-    char *dir = dirname(path_copy);
-    snprintf(out, out_size, "%s/%s", dir, relative_file);
-}
 
 int preprocess(const char* path) {
-    f_string rawline(linesize);
+    f_string rawline;
     FILE* state_mirror; 
     FILE* proc_mirror; 
     if(preflect) {
@@ -34,103 +26,7 @@ int preprocess(const char* path) {
     array_vector<f_string> constants;
     array_vector<int> const_values;
     // finding macros
-    while(1) {
-        if(fgets(rawline, linesize, input) == NULL) {
-            break;
-        }
-        std::println("here");
-        if (rawline.smatch("INCLUDE ")) {
-            f_string newfile = rawline.slice("INCLUDE ").sclean();
-            f_string newfile_relative;
-            build_relative_path(path, newfile, newfile_relative, 1024);
-            included.push_back(fopen(newfile_relative, "r"));
-            if (!included.top()) {
-                return compile_error("failed to open file '{}'", newfile);
-            }
-            while(1) {
-                if(fgets(rawline, linesize, included.top()) == NULL) {
-                    break;
-                }
-                if (rawline.smatch("START_MACRO ")) {
-
-
-                    // grabs macro name
-                    int macro_scan_index = 0;
-                    rawline.slice("START_MACRO ").ssplit(macros.expand().macro_name, macro_scan_index, " ");
-
-                    // grabs arg_count
-                    f_string macro_buffer;
-                    rawline.slice("START_MACRO ").ssplit(macro_buffer, macro_scan_index, " ");
-                    macros().arg_count = atoi(macro_buffer);
-
-                    // grabs arg names
-                    macros().arg_names = (char**) malloc(sizeof(char*)*macros().arg_count);
-                    f_string arg_name;
-                    for (int macro_arg_loop = 0; macro_arg_loop < macros().arg_count; macro_arg_loop++) {
-                        macros().arg_names[macro_arg_loop] = (char*) calloc(rawline.length(), sizeof(char));
-                        rawline.slice("START_MACRO ").ssplit(arg_name, macro_scan_index, " ");
-                        sclean(arg_name, macros.top().arg_names[macro_arg_loop]);
-                    }
-
-                    int line_count = -1;
-                    while(1) {
-                        if(fgets(rawline, linesize, included.top()) == NULL) {
-                            return compile_error("no END_MACRO call found for {}", macros.top().macro_name);
-                        }
-                        if(rawline.smatch("END_MACRO ") && rawline.slice("END_MACRO ").smatch(macros.top().macro_name)) {
-                            break;
-                        }
-                        line_count++;
-                        if (line_count == 0) {
-                            macros().body = (char**) malloc(sizeof(char*));
-                        } else {
-                            macros().body = (char**) realloc(macros().body, sizeof(char*)*(line_count+1));
-                        }
-                        macros().body[line_count] = (char*) calloc(strlen(rawline)+5, sizeof(char));
-                        strcpy(macros().body[line_count], rawline);
-                    }
-                    macros().line_count = line_count + 1;
-
-                    if(pverbose) std::print("macro name: {}, arg_count: {}, line_count: {}\n", macros().macro_name, macros().arg_count, macros().line_count);
-                    if(pverbose) std::print("macro count: {}\n\n", macros.get_count());
-                    
-                } else if (rawline.smatch("DEFINE ")) {
-                    int const_index = strlen("DEFINE ");
-
-                    rawline.ssplit(constants.expand(), const_index, " ");
-
-                    // extracts the constant value as a string into const_val
-                    f_string const_val = rawline.slice(const_index).sclean();
-        
-                    // parses the number in const_val and either puts the number into const_values or throws an error
-                    int imm;
-                    if ((imm = parse_number(const_val)) != -1) {
-                        if (imm < target->constants->imm_limit){
-                            const_values += imm;
-                            if (pverbose) std::print("Preprocessor: Constant '{}' defined as {}\n", constants(), const_values()); 
-                        } else {
-                            return compile_error("Constants must be between 1 and {}", target->constants->imm_limit - 1);
-                        }
-                    } else {
-                        return compile_error("Immediate value was not a valid number");
-                    }
-                } else if (rawline.smatch("START_STATIC ")) {
-                    /*
-                    new goal: support compile-time evaluation of predefined expressions
-                    these will be started with START_STATIC <name>: <type> <arg_count> (<arg_name>: <type>) ...
-                    supported types will initially only be numbers, later maybe registers as well
-                    these can be invoked using the $ operator, which therefore needs to be blacklisted
-                     from the start of constant names, macro names, and labels
-                    the main objective for now is to allow for a predefined expression like $upper(0xFFFF) to automatically convert to 0xF,
-                     which can then be used in an operation. 
-                    This would be handled after all other preprocessing, and they cannot alter the number of lines,
-                    */
-                }
-            }
-        }
-
-    }
-    rewind(input);
+    if (macro_scan(macros, constants, const_values, input,  path) == -1) return -1;
 
 
     FILE* expanded_input = tmpfile();
@@ -139,9 +35,10 @@ int preprocess(const char* path) {
         macr_mirror = fopen("macro_processing.txt", "w+");
     }
     int local_linenum = 0;
+    bool in_def = false;
     // replacing macros
     while(1) {
-        if(fgets(rawline, linesize, input) == NULL) {
+        if(rawline.fgets(linesize, input) == NULL) {
             break;
         }
         f_string cleanline = rawline.sclean();
@@ -153,9 +50,16 @@ int preprocess(const char* path) {
             }
         }
         if (!macro_found) {
-
-            //fputs(rawline, expanded_input);
-            fputs(rawline, expanded_input); if(preflect) fputs(rawline, macr_mirror);
+            if (rawline.smatch("START_MACRO ") || rawline.smatch("START_STATIC ")) {
+                in_def = true;
+            } else if (in_def) {
+                if (rawline.smatch("END_MACRO ") || rawline.smatch("END_STATIC ")) {
+                    in_def = false;
+                }
+            } else {
+                //fputs(rawline, expanded_input);
+                fputs(rawline, expanded_input); if(preflect) fputs(rawline, macr_mirror);
+            }
         }
         local_linenum++;
     }
@@ -165,17 +69,6 @@ int preprocess(const char* path) {
     }
     input = expanded_input;
     rewind(input);
-    
-
-    for (auto& macro : macros) {
-        for (int j = 0; j < macro.arg_count; j++) {
-            free(macro.arg_names[j]);
-        }
-        free(macro.arg_names);
-        for (int j = 0; j < macro.line_count; j++) {
-            free(macro.body[j]);
-        }
-    }
 
 
     // statement processing
@@ -183,19 +76,18 @@ int preprocess(const char* path) {
     int plinenum = 0;
     if(pverbose) printf("Finding statements, constants, and labels...\n");
     while(1) {
-        if(fgets(rawline, linesize, input) == NULL) {
+        if(rawline.fgets(linesize, input) == NULL) {
             break;
         }
         f_string line = rawline.sclean();
         f_string label_name;    
-        
         if (line.length() == 0 || line[0] == '#' || rawline.smatch("INCLUDE ")) {
-            stmirror("blank\n", statements);
+        stmirror("blank\n", statements);
         } else if (rawline.smatch("DEFINE ")) {
             stmirror("blank\n", statements);
             int const_index = strlen("DEFINE ");
             f_string new_const;
-            rawline.ssplit(new_const, const_index, " ");
+            rawline.ssplit(new_const, &const_index, " ");
             for (auto t_const : constants) {
                 if (new_const == t_const) {
                     return compile_error("Multiple constants with the same name are not allowed: '{}' at line {}", new_const, plinenum);
@@ -238,15 +130,15 @@ int preprocess(const char* path) {
             
         } else {
             int index=0;
-            if (line.ssplit(NULL, index, "=")){
+            if (line.ssplit(NULL, &index, "=")){
                 stmirror("=", statements);
             }
             for(int i = 0; i < target->constants->opcount; i++) {
-                if (line.ssplit(NULL, index, target->oplist[0][i])){
+                if (line.ssplit(NULL, &index, target->oplist[0][i])){
                     stmirror(target->oplist[0][i], statements);
                 }
             }
-            if (line.ssplit(NULL, index, ";")){
+            if (line.ssplit(NULL, &index, ";")){
                 stmirror(";", statements);
             }
             if (index == 0 && line[0] == 'J') {
@@ -255,6 +147,7 @@ int preprocess(const char* path) {
             stmirror("\n", statements);
             plinenum++;
         }
+    
     }
     f_string stateline;
     rewind(input);
@@ -266,12 +159,12 @@ int preprocess(const char* path) {
     plinenum = 0;
     // Replacing constants
     while (1) {
-        if(fgets(rawline, linesize, input) == NULL) {
+        if(rawline.fgets(linesize, input) == NULL) {
             break;
         } 
         plinenum++;
         f_string line = rawline.sclean();
-        fgets(stateline, linesize, statements);
+        stateline.fgets(linesize, statements);
         if (!stateline.smatch("blank")){ 
 
             if (stateline.smatch("LABEL")) { 
@@ -286,9 +179,9 @@ int preprocess(const char* path) {
                     char_string[0] = cha;
                     
                     int const_found = 0;
-                    line.ssplit(proc_statement, index, char_string);
+                    line.ssplit(proc_statement, &index, char_string);
         
-                    for (int cons = 0; cons <= constants.size(); cons ++) {
+                    for (int cons = 0; cons < constants.size(); cons ++) {
                         if(proc_statement == constants[cons]) {
                             if(pverbose) std::print("{} is const with value {}\n", proc_statement, const_values[cons]);
                             fproc_statement = std::format("{}", const_values[cons]).c_str();
@@ -326,7 +219,7 @@ int preprocess(const char* path) {
 /**
  * Takes the list of macros, the current macro to insert, and outputs the fully expanded macro to the provided output file
  */
-int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
+int macro_replace(array_vector<macro_def>& macro_list, int macro_index, f_string codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
     const macro_def& curr_macro = macro_list[macro_index];
 
     if (layer > recursion_limit) {
@@ -345,7 +238,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
         localprefix = f_string(prefix) + "_" + curr_macro.macro_name;
     }
 
-    f_string cleanline = f_string(codeline).sclean_i('\n', 0);
+    f_string cleanline = codeline.sclean_i('\n', 0);
     // grab the provided arg values
     array_vector<f_string> constants;
     array_vector<f_string> const_values;
@@ -354,9 +247,10 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
     for(int arg_loop_index = 0; arg_loop_index <= (curr_macro.arg_count - 1); arg_loop_index++) {
         // allocate memory and add the argument name as a constant
         constants += curr_macro.arg_names[arg_loop_index];
+        const_values.expand();
 
-        if (cleanline.ssplit(const_values[arg_loop_index], arg_scan_index, " ") == 0) {
-            const_values += cleanline.slice(arg_scan_index).sclean();
+        if (cleanline.ssplit(const_values[arg_loop_index], &arg_scan_index, " ") == 0) {
+            const_values[arg_loop_index] = const_values[arg_loop_index].sclean();
         }
         if(pverbose) std::println("arg '{}' has value '{}'", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
     }
@@ -370,7 +264,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
         // next, parse the line for macros, definitions, or labels
         if (curr_macro_line.smatch("DEFINE ")) {
             int def_index = strlen("DEFINE ");
-            curr_macro_line.ssplit(constants(), def_index, " ");
+            curr_macro_line.ssplit(constants.expand(), &def_index, " ");
 
             // extracts the constant value as a string into const_val
             const_values += curr_macro_line.slice(def_index).sclean();
@@ -414,7 +308,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
             int label = 0;
             f_string raw_segment;
             // find the next chunk of space-separated characters, if ssplit fails then the rest of the line is the last chunk
-            int end = curr_macro_line.ssplit(raw_segment, segment_index, " ");
+            int end = curr_macro_line.ssplit(raw_segment, &segment_index, " ");
             if (end == 0) raw_segment = curr_macro_line.slice(segment_index).sclean();
             curr_segment = raw_segment.sclean_i(':', 0);
 
@@ -422,7 +316,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
             if (raw_segment != curr_segment) {
                 label = 1;
             }
-            for (int cons = 0; cons <= constants.size() && !const_found; cons ++) {
+            for (int cons = 0; cons <= constants.get_count() && !const_found; cons ++) {
                 if(curr_segment == constants[cons]) {
                     curr_segment = const_values[cons];
                     if(pverbose) std::println("constant '{}' with value '{}' used", constants[cons], const_values[cons]);
@@ -464,7 +358,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
         fputs(rawline, output);
     }
     while(1) {
-        if(fgets(rawline, linesize, localfile) == NULL) {
+        if(rawline.fgets(linesize, localfile) == NULL) {
             break;
         }
         //fputs(rawline, output);
@@ -481,7 +375,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, char* co
     }
     
     fclose(localfile);
-    if (pverbose) printf("Preprocessor: macro '%s' expanded", macro_list[macro_index].macro_name);
+    if (pverbose) std::print("Preprocessor: macro '{}' expanded", macro_list[macro_index].macro_name);
     if (layer == 0 && pverbose) printf("--\n");
     if(pverbose) printf("\n");
     return 0;

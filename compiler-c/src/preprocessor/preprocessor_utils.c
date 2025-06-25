@@ -9,7 +9,7 @@
 int has_label(char* rawline, char* name_out){
     char line[linesize];
     sclean(rawline, line);
-    if (smatch(line, "LABEL") || line[strlen(line)-1] == ':') {
+    if (smatch(line, "LABEL") || (strlen(line) > 0 && line[strlen(line)-1] == ':')) {
         // labels are stored as a constant with the value being their line number
 
         // puts the label into constants[const_count]

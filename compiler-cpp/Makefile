@@ -1,7 +1,7 @@
 # Compiler and flags
-CC := g++
-CFLAGS :=  -std=c++23 -g -gdwarf-4 -Wall
-LDFLAGS := -lm
+CC := clang++
+CFLAGS := -fsanitize=address -std=c++23 -g -gdwarf-4 -Wall
+LDFLAGS := -lm -L/opt/homebrew/opt/llvm/lib
 
 # Output binary
 TARGET := fcc

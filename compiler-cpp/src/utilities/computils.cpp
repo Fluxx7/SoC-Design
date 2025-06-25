@@ -11,7 +11,7 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
     int orig_index;
     int output = out == NULL ? 0 : 1;
     if (iindex == NULL) {
-        index = (int*) malloc(sizeof(int));
+        index = new int;
         *index = 0;
         orig_index = 0;
     } else {
@@ -25,7 +25,7 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
     while(1){
         if (src[*index] == '\0') {
             if(iindex == NULL){
-                free(index);
+                delete(index);
             } else {
                 *iindex = orig_index;
             }
@@ -43,7 +43,7 @@ int ssplit(const char* src, char* out, int* iindex, const char* delim){
                     if (output) out[(*index-orig_index)-delim_match+1] = '\0';
                     (*index)++;
                     if (iindex == NULL) {
-                        free(index);
+                        delete(index);
                     }
                     return 1;
                 } 
@@ -101,18 +101,18 @@ int smatch(const char* src, const char* match){
 }
 
 int parse_number(const char* number_string) {
+    f_string n_string = number_string;
     int imm;
-    if (number_string[0] == '0' && number_string[1] == 'x'){
-        if ((imm = strtol(number_string+2, NULL, 16)) > 0) {
+    if (n_string[0] == '0' && n_string[1] == 'x'){
+        if ((imm = strtol(n_string+2, NULL, 16)) > 0) {
             return imm;
         }
-    } else if(number_string[0] == '0' && number_string[1] == 'b'){
-        char bin_num[strlen(number_string+2)];
-        sclean_i(number_string+2, bin_num, '_', 0);
+    } else if(n_string[0] == '0' && n_string[1] == 'b'){
+        f_string bin_num = n_string.slice(2).sclean_i('_', 0);
         if ((imm = strtol(bin_num, NULL, 2)) > 0) {
             return imm;
         }
-    } else if ((imm = atoi(number_string)) > 0 || strcmp(number_string, "0") == 0){
+    } else if ((imm = atoi(n_string)) > 0 || strcmp(n_string, "0") == 0){
        return imm;
     }
     return -1;
@@ -127,6 +127,20 @@ int itob(int integer, char* token)
         token_index++;
     }
     token[token_index] = '\0';
+    return 0;
+}
+
+int itob(int integer, f_string& token)
+{
+    char* token_str = new char[256];
+    int token_index = 0;
+    int i = 15;
+    while(i--) {
+        token_str[token_index] = ('0' + ((integer >> i) & 1)); 
+        token_index++;
+    }
+    token_str[token_index] = '\0';
+    token = token_str;
     return 0;
 }
 

@@ -33,10 +33,10 @@ int main(int argc, char** argv) {
             remove("procmirror.txt");
             remove("smirror.txt");
             remove("mirror.txt");
-            printf("Removed mirror files\n");
+            std::println("Removed mirror files");
             return 0;
         } else {
-            printf("An input and output file must both be provided\n");
+            std::println("An input and output file must both be provided");
             return 1;
         } 
     }
@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
         while ((a = fgetc(processed_input)) != EOF){
             fputc(a, outfile); 
         }
-        printf("%s compiled successfully, saved to %s\n", argv[1], argv[2]);
+        std::println("{} compiled successfully, saved to {}", argv[1], argv[2]);
         fclose(input);
         fclose(outfile);
         return 0;
@@ -130,43 +130,38 @@ int main(int argc, char** argv) {
 
     if (reflect) mirror = fopen("mirror.txt", "w+");
     rewind(input);
-    char lineout[instruction_size+1];
-    char rawline[linesize];
+    char* lineout = new char[instruction_size+1];
+    f_string rawline;
     for (int i = 0; i < instruction_size; i++) {
         lineout[i] = '0';
     }
     lineout[instruction_size] = '\0';
     while (1) {
 
-        char line[linesize];
-        if(fgets(rawline, linesize, processed_input) == NULL){
+        f_string line;
+        if(rawline.fgets(linesize, processed_input) == NULL){
             break;
         }
         int linenum_index = 0;
-        ssplit(rawline, NULL, &linenum_index, " ");
-        truenum = atoi(s_slice(rawline, linenum_index));
+        rawline.ssplit(NULL, &linenum_index, " ");
+        truenum = atoi(rawline.slice(linenum_index).get_content());
         rawline[linenum_index] = '\0';
-        sclean(rawline, line);
-        strcpy(rline_ptr, line);
-        if (line[0] != '#' && strlen(line) != 0){
-            if(line[strlen(line)]!='\n'){
-                if (verbose) printf("\nLine: %s\n", line);
-            } else {
-                if (verbose) printf("\nLine: %s", line);
-            }
-            
+        line = rawline.sclean();
+        strncpy(rline_ptr, line.get_content(), linesize);
+        if (line[0] != '#' && line.length() != 0){
+            if (verbose) std::println("\nLine: {}", line);
             int i_split = 0;
             
             
-            char outregs[linesize];
+            f_string outregs;
             // determine instruction type
-            if (ssplit(line, outregs, &i_split,"=") == 0) {
-                if (smatch(line, "LABEL")){ 
+            if (line.ssplit(outregs, &i_split,"=") == 0) {
+                if (line.smatch("LABEL")){ 
                     continue;
-                } else if (ssplit(line, outregs, &i_split,";") != 0){
+                } else if (line.ssplit(outregs, &i_split,";") != 0){
                     instruction_type = 2;
                     i_split = 0;
-                } else if (smatch(line, "JMP")) {
+                } else if (line.smatch( "JMP")) {
                     instruction_type = 0;
                 } else {
                     return compile_error("Invalid instruction format");
@@ -177,10 +172,10 @@ int main(int argc, char** argv) {
 
             // Register assignment
             if (instruction_type == 1) {
-                char register_str[30] = "";
+                f_string register_str;
                 
-                strcat(register_str, outregs);
-                if (verbose) printf("Register assignments: [%s]\n", register_str);
+                register_str += outregs;
+                if (verbose) std::println("Register assignments: [{}]", register_str);
                 int charnum = 0;
                 int end = 0;
                 pmirror("OUT ", tokens);
@@ -221,30 +216,29 @@ int main(int argc, char** argv) {
                 }
             }
             pmirror("\n", tokens);
-            if(verbose) printf("instruction type %d\n", instruction_type);
+            if(verbose) std::println("instruction type {}", instruction_type);
             // Operation handling
             if (instruction_type != 0) {
-                char operation[linesize];
-                char token[linesize];
-                if (ssplit(line, token, &i_split, ";") == 0){
-                    strcpy(operation, line+i_split);
+                f_string operation;
+                f_string token;
+                if (line.ssplit(token, &i_split, ";") == 0){
+                    operation += line.slice(i_split);
                 } else {
-                    strcpy(operation, token);
+                    operation = token;
                     instruction_type = 0;
-                    //printf("Token: %s Operation: %s\n", *token, operation);
                 }
 
                 pmirror("OP ", tokens);
-                char opr[linesize];
+                f_string opr;
                 int op_ind = 0;
                 int op_found = 0;
                 for (int op = 0; op < target->constants->opcount && !op_found; op++){
-                    if (ssplit(operation, opr, &op_ind, target->oplist[0][op]) != 0) {
+                    if (operation.ssplit(opr, &op_ind, target->oplist[0][op]) != 0) {
                         pmirror(target->oplist[1][op],tokens);
                         pmirror("\n", tokens);
-                        if (strcmp(opr,"") != 0) {
+                        if (opr != "") {
                             for (int r = 0; r < target->constants->reg_count; r++){
-                                if (strcmp(opr, target->registers[0][r]) == 0) {
+                                if (opr == target->registers[0][r]) {
                                     pmirror("X ", tokens);
                                     pmirror(target->registers[1][r], tokens);
                                     pmirror("\n", tokens);
@@ -255,10 +249,10 @@ int main(int argc, char** argv) {
                             pmirror("0", tokens);
                             pmirror("\n", tokens);
                         }
-                        if (strcmp(s_slice(operation, op_ind),"") != 0) {
+                        if (operation.slice(op_ind) != "") {
                             int reg_found = 0;
                             for (int r = 0; r < target->constants->reg_count; r++){
-                                if (strcmp(s_slice(operation, op_ind), target->registers[0][r]) == 0) {
+                                if (operation.slice(op_ind) == target->registers[0][r]) {
                                     pmirror("Y ", tokens);
                                     pmirror(target->registers[1][r], tokens);
                                     pmirror("\n", tokens);
@@ -266,53 +260,52 @@ int main(int argc, char** argv) {
                                 }
                             }
                             if (!reg_found) {
-                                if (parse_number(s_slice(operation, op_ind)) != -1) {
+                                if (parse_number(operation.slice(op_ind)) != -1) {
                                     pmirror("Y ", tokens);
-                                    pmirror(s_slice(operation, op_ind), tokens);
+                                    pmirror(operation.slice(op_ind), tokens);
                                     pmirror("\n", tokens);
                                 }
                             }
                         }
-                        if (verbose) printf("pre-op: %s op: %s post-op: %s\n", opr, target->oplist[0][op], s_slice(operation, op_ind));
+                        if (verbose) std::println("pre-op: {} op: {} post-op: {}", opr, target->oplist[0][op], operation.slice(op_ind));
                         op_found = 1;
                     }
                 }
                 if (!op_found){
-                    char buffer[32];
+                    f_string buffer;
                     int imm = 0;
                     if (operation[0] == '0' && operation[1] == 'x'){
-                        if ((imm = strtol(operation+2, NULL, 16)) > 0) {
+                        if ((imm = strtol(operation.slice(2).get_content(), NULL, 16)) > 0) {
                             if (imm < target->constants->imm_limit){
-                                if (verbose) printf("op is hex immediate of value %x\n", imm);
+                                if (verbose) std::println("op is hex immediate of value {}", imm);
                                 pmirror("IMM\n", tokens);
                                 pmirror("X ", tokens);
-                                sprintf(buffer, "%d\n", imm);
-                                pmirror(buffer, tokens);
+                                buffer = std::format("{}\n", imm).c_str();
+                                pmirror(buffer.get_content(), tokens);
                             }
                         }
                     } else if(operation[0] == '0' && operation[1] == 'b'){
-                        char bin_num[strlen(operation+2)];
-                        sclean_i(operation+2, bin_num, '_', 0);
-                        if ((imm = strtol(bin_num, NULL, 2)) > 0) {
+                        f_string bin_num = operation.slice(2).sclean_i('_', 0);
+                        if ((imm = strtol(bin_num.get_content(), NULL, 2)) > 0) {
                             if (imm < 32768){
-                                if (verbose) printf("op is binary immediate of value %d\n", imm);
+                                if (verbose) std::println("op is binary immediate of value {}", imm);
                                 pmirror("IMM\n", tokens);
                                 pmirror("X ", tokens);
-                                sprintf(buffer, "%d\n", imm);
-                                pmirror(buffer, tokens);
+                                buffer = std::format("{}\n", imm).c_str();
+                                pmirror(buffer.get_content(), tokens);
                             }  
                         }
-                    } else if ((imm = atoi(operation)) > 0 || strcmp(operation, "0") == 0){
-                        if (verbose) printf("op is decimal immediate of value %d\n", imm);
+                    } else if ((imm = atoi(operation.get_content())) > 0 || operation == "0"){
+                        if (verbose) std::println("op is decimal immediate of value {}", imm);
                         pmirror("IMM\n", tokens);
                         pmirror("X ", tokens);
-                        sprintf(buffer, "%d\n", imm);
-                        pmirror(buffer, tokens);
+                        buffer = std::format("{}\n", imm).c_str();
+                        pmirror(buffer.get_content(), tokens);
                     } else {
                         int reg_found = 0;
                         for (int i = 0; i < target->constants->reg_count && !reg_found; i++){
-                            if (strcmp(operation, target->registers[0][i]) == 0) {
-                                if (verbose) printf("op is copying value of %s\n", target->registers[0][i]);
+                            if (operation == target->registers[0][i]) {
+                                if (verbose) std::println("op is copying value of {}", target->registers[0][i]);
                                 reg_found = 1;
                                 pmirror("MOV\n", tokens);
                                 pmirror("X ", tokens);
@@ -325,15 +318,15 @@ int main(int argc, char** argv) {
                         }
                     }
                 }
-                if (verbose) printf("Operation: %s\n", operation);
+                if (verbose) std::println("Operation: {}\n", operation);
             }
 
             // handle branching
             if (instruction_type == 0){
                 pmirror("J ", tokens);
-                pmirror(s_slice(line, i_split), tokens);
+                pmirror(line.slice(i_split).get_content(), tokens);
                 pmirror("\n", tokens);
-                if (verbose) printf("Jump condition: %s\n", s_slice(line, i_split));
+                if (verbose) std::println("Jump condition: {}", line.slice(i_split));
             }
 
             if (target->comp_function(tokens, lineout) == 1) {
@@ -342,9 +335,8 @@ int main(int argc, char** argv) {
 
             fputs(lineout, output);
             if (debug) {
-                char debug_line[linesize];
-                sclean_i(rawline, debug_line, '\n', 0);
-                fprintf(output, " %d %s", truenum, debug_line);
+                f_string debug_line = rawline.sclean_i('\n', 0);
+                fprintf(output, " %d %s", truenum, debug_line.get_content());
             }
             fputs("\n", output);
             if(reflect) fputs("\n\n", mirror);
@@ -369,7 +361,7 @@ int main(int argc, char** argv) {
     while ((a = fgetc(output)) != EOF){
         fputc(a, outfile); 
     }
-    printf("%s compiled successfully, saved to %s\n", argv[1], argv[2]);
+    std::println("{} compiled successfully, saved to {}", argv[1], argv[2]);
     fclose(output);
     fclose(outfile);
     return 0;

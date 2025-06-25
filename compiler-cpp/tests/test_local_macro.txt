@@ -1,0 +1,9 @@
+START_MACRO inc_cpy_dec 2 reg1 reg2
+reg2 reg1 = reg1 + 1
+reg1 = reg1 - 1
+END_MACRO inc_cpy_dec
+
+
+A = 4
+D = 0
+inc_cpy_dec A D

@@ -86,7 +86,10 @@ int compile_error(std::format_string<Args...> fmt, Args&&... args) {
  */
 int itob(int integer, char* token);
 
-
+/**
+ * takes an integer and puts the binary representation into token
+ */
+int itob(int integer, f_string& token);
 
 #define s_slice(string, index) (string+index)
 #define pmirror(string, tokens) fputs(string, tokens); if(reflect) fputs(string, mirror)

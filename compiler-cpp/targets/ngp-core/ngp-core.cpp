@@ -3,13 +3,13 @@
 #include <stdlib.h>
 #include "ngp-core.h"
 #include "ngp-core-target.h"
-#include "../../src/computils.h"
+#include "../../src/utilities/computils.hpp"
 
 struct comp_target_constants ng_target_constants = {
     ngp_opcount, ngp_opcode_size, ngp_reg_count, ngp_instruction_size, ngp_imm_limit
 };
 
-// int ng_code_gen(FILE* tokens, char* lineout){
+// int ngp_code_gen(FILE* tokens, char* lineout){
 //     rewind(tokens);
 //     strcpy(lineout, "1000000000000000");
 //     int mov = 0;
