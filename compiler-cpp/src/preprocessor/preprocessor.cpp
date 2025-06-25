@@ -42,14 +42,14 @@ int preprocess(const char* path) {
             break;
         }
         f_string cleanline = rawline.sclean();
-        int macro_found = 0;
-        for (int macro = 0; macro <= macros.get_count() && !macro_found; macro++) {
+        int replacement_found = 0;
+        for (int macro = 0; macro <= macros.get_count() && !replacement_found; macro++) {
             if (cleanline.smatch( macros[macro].macro_name)) {
                 if (macro_replace(macros, macro, rawline, local_linenum, expanded_input, macr_mirror, 0, NULL)) return 1;
-                macro_found = 1;
+                replacement_found = 1;
             }
         }
-        if (!macro_found) {
+        if (!replacement_found) {
             if (rawline.smatch("START_MACRO ") || rawline.smatch("START_STATIC ")) {
                 in_def = true;
             } else if (in_def) {

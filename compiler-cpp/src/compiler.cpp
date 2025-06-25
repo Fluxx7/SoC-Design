@@ -6,20 +6,14 @@
 #include "utilities/computils.hpp"
 #include "preprocessor/preprocessor.hpp"
 #include "../targets/targets.h"
+#include "compiler.hpp"
 
 // I don't care if globals are bad practice, functions that have to take 8 million variables
 // to have access to every setting I want this compiler to have are worse
 char rline_ptr[linesize];
 int linenum = 0;
 int truenum = 0;
-int debug = 0;
 FILE* mirror;
-int reflect = 0;
-int preflect = 0;
-int verbose = 0;
-int pverbose = 0;
-int pronly;
-struct comp_target* target = &targets[0];
 FILE* input;
 FILE* output;
 FILE* processed_input;
@@ -41,58 +35,19 @@ int main(int argc, char** argv) {
         } 
     }
 
-    // I should really make this in a smarter fashion
-    // Maybe looping over an array of structs, with each struct having a name (eg 'pronly') and a function pointer that takes no arguments and returns void?
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-v") == 0) {
-            verbose = 1;
-        }
-        if (strcmp(argv[i], "-pronly") == 0) {
-            pronly = 1;
-        }
-        if (strcmp(argv[i], "-m") == 0) {
-            reflect = 1;
-        }
-        if (strcmp(argv[i], "-a") == 0) {
-            verbose = 1;
-            reflect = 1;
-        }
-        if (strcmp(argv[i], "-pm") == 0) {
-            preflect = 1;
-        }
-        if (strcmp(argv[i], "-pv") == 0) {
-            pverbose = 1;
-        }
-        if (strcmp(argv[i], "-pa") == 0) {
-            preflect = 1;
-            pverbose = 1;
-        }
-        if (strcmp(argv[i], "-ma") == 0) {
-            preflect = 1;
-            reflect = 1;
-        }
-        if (strcmp(argv[i], "-va") == 0) {
-            verbose = 1;
-            pverbose = 1;
-        }
-        if (strcmp(argv[i], "-aa") == 0) {
-            preflect = 1;
-            pverbose = 1;
-            verbose = 1;
-            reflect = 1;
-        }
-        if (smatch(argv[i], "-t=") == 1) {
-            for (int j = 0; j < target_count; j++){
-                if(strcmp(s_slice(argv[i], 3), targets[j].name) == 0) {
-                    target = &targets[j];
-                } else {
-                    printf("invalid compilation target '%s'\n", s_slice(argv[i], 3));
-                    return 1;
+        if (argv[i][0] == '-' ){
+            for (auto option : options) {
+                if (option.smat && smatch(argv[i] + 1, option.tag)) {
+                    if (option.opt_action(argv[i]) == 1) {
+                        return 1;
+                    }
+                } else if (!option.smat && strcmp(argv[i] + 1, option.tag) == 0){
+                    if (option.opt_action(argv[i]) == 1) {
+                        return 1;
+                    }
                 }
             }
-        }
-        if (strcmp(argv[i], "-d") == 0) {
-            debug = 1;
         }
     }
     

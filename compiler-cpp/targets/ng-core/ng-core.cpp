@@ -12,33 +12,32 @@ int ng_code_gen(FILE *tokens, char *lineout)
 {
     rewind(tokens);
     strcpy(lineout, "1000000000000000");
-    char codeline[linesize];
-    char x_reg[32] = "NULL";
-    char y_reg[8] = "NULL";
-    char out_regs[8] = "NULL";
-    char op[4] = "";
-    char jmp[5] = "NULL";
+    f_string codeline;
+    f_string x_reg  = "NULL";
+    f_string y_reg  = "NULL";
+    f_string out_regs  = "NULL";
+    f_string op  = "";
+    f_string jmp = "NULL";
     while (1)
     {
-        if (fgets(codeline, linesize, tokens) == NULL)
+        if (codeline.fgets(linesize, tokens) == NULL)
         {
             // code for output here
 
             // immediate value handling
-            if (strcmp(op, "IMM") == 0 && !(strcmp(x_reg, "0") == 0 || strcmp(x_reg, "1") == 0))
+            if (op == "IMM" && !(x_reg == "0" || x_reg == "1"))
             {
-                if (strcmp(jmp, "NULL") != 0)
+                if (jmp != "NULL")
                 {
                     return compile_error("ng-core: jumps cannot be performed when assigning an immediate value");
                 }
-                if (strcmp(out_regs, "A") != 0)
+                if (out_regs != "A")
                 {
                     return compile_error("ng-core: immediate values can only be written to the A register");
                 }
                 else
                 {
-                    if (strcmp(x_reg, "NULL") == 0)
-                    {
+                    if (x_reg == "NULL") {
                         return compile_error("fatal error: immediate write was requested but value was not found");
                     }
                     lineout[CI] = '0';
@@ -50,7 +49,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
             else
             {
                 // set output bits
-                for (int l = 0; l < strlen(out_regs); l++)
+                for (int l = 0; l < out_regs.length(); l++)
                 {
                     for (int r = 0; r < ng_reg_count; r++)
                     {
@@ -62,9 +61,9 @@ int ng_code_gen(FILE *tokens, char *lineout)
                 }
 
                 // set operation bits
-                if (strcmp(op, "IMM") == 0)
+                if (op == "IMM")
                 {
-                    if (strcmp(x_reg, "0") == 0)
+                    if (x_reg == "0")
                     {
                         // sets the opcode to be '~x' and then zeros x
                         for (int ol = 0; ol < ng_opcode_size; ol++)
@@ -86,7 +85,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                 {
                     for (int o = 0; o < ng_opcount; o++)
                     {
-                        if (strcmp(op, ng_op_outs[o]) == 0)
+                        if (op == ng_op_outs[o])
                         {
                             for (int ol = 0; ol < ng_opcode_size; ol++)
                             {
@@ -97,7 +96,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                 }
 
                 // handle register copying
-                if (strcmp(op, "MOV") == 0)
+                if (op == "MOV")
                 {
                     lineout[ZERO_X] = '1';
                     lineout[OPCODE] = '1';
@@ -110,16 +109,16 @@ int ng_code_gen(FILE *tokens, char *lineout)
                         lineout[PTR_IN] = '1';
                     }
                 }
-                else if (strcmp(op, "IMM") != 0)
+                else if (op != "IMM")
                 {
-                    if (strcmp(x_reg, "NULL") != 0 && strcmp(y_reg, "NULL") != 0)
+                    if (x_reg != "NULL" && y_reg != "NULL")
                     {
                         // needs to check for operations where a "register" is a number like A = A + 1 or *A = A - 1
 
                         // set register control bits
                         if (x_reg[0] == '0')
                         {
-                            if (strcmp(op, "INV") == 0) {
+                            if (op == "INV") {
                                 switch (y_reg[0])
                                 {
                                 case 'D':
@@ -154,7 +153,7 @@ int ng_code_gen(FILE *tokens, char *lineout)
                         }
                         else if ((x_reg[0] != 'D' && y_reg[0] != 'D') || y_reg[0] == '1')
                         {
-                            if (strcmp(y_reg, "1") == 0)
+                            if (y_reg == "1")
                             {
                                 lineout[OPCODE + 2] = '1';
                                 switch (x_reg[0])
@@ -201,12 +200,12 @@ int ng_code_gen(FILE *tokens, char *lineout)
                 }
 
                 // handle branches
-                if (strcmp(jmp, "NULL") != 0)
+                if (jmp != "NULL")
                 {
                     int match_found = 0;
                     for (int l = 0; l < 7 && !match_found; l++)
                     {
-                        if (strcmp(ng_branches[l], jmp) == 0)
+                        if (jmp == ng_branches[l])
                         {
                             match_found = 1;
                             for (int s = 0; s < 3; s++)
@@ -222,31 +221,30 @@ int ng_code_gen(FILE *tokens, char *lineout)
         }
         // code for reading inputs here
 
-        char cline[linesize];
-        sclean_i(codeline, cline, '\n', 0);
+        f_string cline = codeline.sclean_i('\n', 0);
 
         // outputs
-        if (smatch(cline, "OUT "))
+        if (cline.smatch("OUT "))
         {
-            strcpy(out_regs, s_slice(cline, 4));
+            out_regs = cline.slice(4);
         }
 
         // operation
-        if (smatch(cline, "OP "))
+        if (cline.smatch("OP "))
         {
-            strcpy(op, s_slice(cline, 3));
+            op =  cline.slice(3);
         }
-        if (smatch(cline, "X "))
+        if (cline.smatch("X "))
         {
-            strcpy(x_reg, s_slice(cline, 2));
+            x_reg = cline.slice(2);
         }
-        if (smatch(cline, "Y "))
+        if (cline.smatch("Y "))
         {
-            strcpy(y_reg, s_slice(cline, 2));
+            y_reg = cline.slice(2);
         }
-        if (smatch(cline, "J "))
+        if (cline.smatch("J "))
         {
-            strcpy(jmp, s_slice(cline, 2));
+            jmp = cline.slice(2);
         }
     }
 }
