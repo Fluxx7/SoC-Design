@@ -1,4 +1,4 @@
-module memory #(parameter MEM_SIZE=4096) (
+module memory #(parameter MEM_SIZE=65536) (
     input logic clk,
     input logic [15:0] x,
     input logic [2:0] write,

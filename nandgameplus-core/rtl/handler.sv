@@ -8,23 +8,31 @@ module handler (
     output logic [2:0] dst
 );
 
-logic lt, eq, gt;
+logic [15:0] x, y, alu_out;
 
 ngpalu alu (
-    .opcode(instruction[6:4]),
-    .zy(instruction[3]),
-    .rx_reg(instruction[14] ? rx_mem_reg : rx_reg),
-    .ry_reg(ry_reg),
-    .outval(out)
+    .opcode(instruction[8:5]),
+    .rx_reg(x),
+    .ry_reg(y),
+    .outval(alu_out)
+);
+
+ngpbranch branch (
+    .brcode(instruction[7:5]),
+    .rx_reg(x),
+    .ry_reg(y),
+    .outval(alu_out)
 );
 
 always_comb begin
-    lt = out[15];
-    eq = (out == 16'b0);
-    gt = ~lt & ~eq;
-end
-
-assign dst = instruction[9:7];
-assign jmp = (instruction[2] ? lt : 0) | (instruction[1] ? eq : 0) | (instruction[0] ? gt : 0);
+    x = instruction[9] ? ry_reg : rx_reg;
+    y = instruction[9] ? rx_reg : ry_reg;
+    if (instruction[8:5] == 0111) begin
+        
+    end
+    else begin
+        out = alu_out;
+    end
+end 
 
 endmodule

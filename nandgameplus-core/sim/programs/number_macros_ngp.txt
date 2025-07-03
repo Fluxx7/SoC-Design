@@ -7,6 +7,6 @@ imm >> 12
 END_STATIC high
 
 START_MACRO llimm 2 imm reg
-reg = $low(imm)
+reg = %low(imm)
 reg = ^^$high(imm)
 END_MACRO llimm
