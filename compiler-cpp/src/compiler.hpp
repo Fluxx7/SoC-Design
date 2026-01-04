@@ -7,6 +7,7 @@ int preflect = 0;
 int verbose = 0;
 int pverbose = 0;
 int pronly;
+
 struct comp_target* target = &targets[0];
 
 struct comp_option {

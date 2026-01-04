@@ -57,12 +57,16 @@ int macro_scan(array_vector<macro_def>& macros, array_vector<f_string>& constant
             f_string newfile_relative;
             FILE* included;
 
-            // build the path
-            f_string path_copy = path;
-            path_copy += '\0';
-            newfile_relative = dirname(path_copy);
-            newfile_relative += "/";
-            newfile_relative += newfile;
+            // puts the full file path relative to the compiler in newfile_relative
+            [&newfile_relative, path, newfile]
+            {
+                // build the path
+                f_string path_copy = path;
+                path_copy += '\0';
+                newfile_relative = dirname(path_copy);
+                newfile_relative += "/";
+                newfile_relative += newfile;
+            }();
 
             included = fopen(newfile_relative, "r");
             if (!included) {
@@ -76,16 +80,22 @@ int macro_scan(array_vector<macro_def>& macros, array_vector<f_string>& constant
             rawline.slice("START_MACRO ").ssplit(macros.expand().macro_name, &macro_scan_index, " ");
 
             // grabs arg_count
-            f_string macro_buffer;
-            rawline.slice("START_MACRO ").ssplit(macro_buffer, &macro_scan_index, " ");
-            macros().arg_count = atoi(macro_buffer);
-
+            [rawline, &macro_scan_index, &macros]
+            {
+                f_string macro_buffer;
+                rawline.slice("START_MACRO ").ssplit(macro_buffer, &macro_scan_index, " ");
+                macros().arg_count = atoi(macro_buffer);
+            }();
+            
             // grabs arg names
-            f_string arg_name;
-            for (int macro_arg_loop = 0; macro_arg_loop < macros().arg_count; macro_arg_loop++) {
-                rawline.slice("START_MACRO ").ssplit(arg_name, &macro_scan_index, " ");
-                macros.top().arg_names += arg_name.sclean();
-            }
+            [&macros, rawline, &macro_scan_index]{
+                f_string arg_name;
+                for (int macro_arg_loop = 0; macro_arg_loop < macros().arg_count; macro_arg_loop++) {
+                    rawline.slice("START_MACRO ").ssplit(arg_name, &macro_scan_index, " ");
+                    macros.top().arg_names += arg_name.sclean();
+                }
+            }();
+            
 
             int line_count = -1;
             while(1) {

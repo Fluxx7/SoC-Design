@@ -39,7 +39,7 @@ struct static_def {
     f_string oper;
 };
 
-int macro_replace(array_vector<macro_def>&, int, f_string, int, FILE*, FILE*, int, char*);
+int macro_replace(array_vector<macro_def>, int, f_string, int, FILE*, FILE*, int, char*);
 int has_label(char* rawline, char* name_out);
 int has_label(f_string& rawline, f_string& name_out);
 

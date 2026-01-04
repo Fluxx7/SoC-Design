@@ -20,6 +20,8 @@ FILE* processed_input;
 FILE* statements;
 FILE* tokens;
 
+
+
 int main(int argc, char** argv) {
     if (argc < 3){
         if (argc > 1 && strcmp(argv[1], "clean") == 0) {
@@ -53,18 +55,23 @@ int main(int argc, char** argv) {
     
     input = fopen(argv[1], "r");
     output = tmpfile();
-    processed_input = tmpfile(); // used to store  with 
-    statements = tmpfile(); // used to store 
+    processed_input = tmpfile(); 
+    statements = tmpfile(); 
     tokens = tmpfile(); // used to store parsed tokens from instructions ie. output, X, Y, operation, jmp condition, in a way that is easily turned to machine code
 
     
-
+    if (input == NULL){    
+        return compile_error("Invalid file path for compilation");
+    }
     if (output == NULL){
         return compile_error("Failed to create temp file for compilation");
     }
 
-    int instruction_type;
-    int instruction_size = target->constants->instruction_size;
+    int instruction_type = 0;
+    f_string rawline;
+    char* lineout;
+    // handle preprocessor
+    { int instruction_size = target->constants->instruction_size;
     if (preprocess(argv[1])) {
         return 1;
     }
@@ -85,30 +92,34 @@ int main(int argc, char** argv) {
 
     if (reflect) mirror = fopen("mirror.txt", "w+");
     rewind(input);
-    char* lineout = new char[instruction_size+1];
-    f_string rawline;
+    lineout = new char[instruction_size+1];
+    
     for (int i = 0; i < instruction_size; i++) {
         lineout[i] = '0';
     }
     lineout[instruction_size] = '\0';
+    } // ~instruction_size
+
     while (1) {
 
         f_string line;
         if(rawline.fgets(linesize, processed_input) == NULL){
             break;
         }
-        int linenum_index = 0;
+        // extract the line number from the preprocessed line
+        { int linenum_index = 0;
         rawline.ssplit(NULL, &linenum_index, " ");
         truenum = atoi(rawline.slice(linenum_index).get_content());
         rawline[linenum_index] = '\0';
         line = rawline.sclean();
         strncpy(rline_ptr, line.get_content(), linesize);
+        } // ~linenum_index
+        
         if (line[0] != '#' && line.length() != 0){
             if (verbose) std::println("\nLine: {}", line);
             int i_split = 0;
             
-            
-            f_string outregs;
+            { f_string outregs;
             // determine instruction type
             if (line.ssplit(outregs, &i_split,"=") == 0) {
                 if (line.smatch("LABEL")){ 
@@ -170,6 +181,7 @@ int main(int argc, char** argv) {
                     }
                 }
             }
+            } // ~outregs
             pmirror("\n", tokens);
             if(verbose) std::println("instruction type {}", instruction_type);
             // Operation handling

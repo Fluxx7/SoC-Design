@@ -9,3 +9,4 @@ compiler/console.txt
 compiler/*.o
 *.o
 compiler/fcc
+/compiler-rsc

@@ -1,13 +1,12 @@
 INCLUDE stack_macros_ngp.txt
 INCLUDE number_macros_ngp.txt
 
-DEFINE addrMem 0x600
-DEFINE addrOffset 1
-DEFINE dispAddrOffset 0x2
+DEFINE addr 0x6001
+DEFINE dispAddr 0x6002
 
 init.stack
-llimm addrMem dispAddrOffset $a
-llimm 0x400 0 $a*
+llimm dispAddr $a
+llimm 0x4000 $a*
 
 main:
 
@@ -17,7 +16,7 @@ $a = end
 $d == $zr ?: $a
 call render 0
 $d = 0x20
-llimm addrMem dispAddrOffset $a
+llimm ispAddr $a
 $a* = $a* + $d
 $a = main
 @: $a
@@ -25,7 +24,7 @@ $a = main
 function waitSync 1
 
 LABEL wait_sync:
-llimm addrMem addrOffset $a
+llimm addr $a
 $d = $a*
 $a = 2
 $d = $d & $a
@@ -33,7 +32,7 @@ push.reg $d
 pop.local 0
 
 loop_sync:
-llimm addrMem addrOffset $a
+llimm addr $a
 $d = $a*
 $a = 2
 $d = $d & $a
@@ -45,7 +44,7 @@ $sp = $sp - 1
 $d == $sp* ?: $a
 
 
-llimm addrMem addrOffset $d
+llimm addr $d
 $a = 1
 $sp* = $d* & $a
 $sp = $sp + 1
@@ -58,7 +57,7 @@ pop.local 0
 render_loop:
 call waitSync 0
 pop.reg $d
-llimm addrMem dispAddrOffset $a
+llimm dispAddr $a
 $a = $a*
 $d = $a* + $d
 $a* = $a* + $d

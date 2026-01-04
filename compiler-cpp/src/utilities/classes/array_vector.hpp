@@ -17,6 +17,14 @@ class array_vector {
                 new (&array[i]) T(val[i]);
             }
         }
+        array_vector(const array_vector& val) noexcept { 
+            this->i_top = val.get_count();
+
+            array = static_cast<T*>(::operator new[](sizeof(T)*(i_top+1)));
+            for(int i = 0; i <= i_top; ++i ){
+                new (&array[i]) T(val[i]);
+            }
+        }
         array_vector(array_vector&& val) noexcept { 
             this->i_top = val.i_top;
             this->array = val.array;
@@ -58,6 +66,19 @@ class array_vector {
         }
 
         array_vector& operator=(array_vector& val) noexcept { 
+            this->i_top = val.get_count();
+
+            T* new_array = static_cast<T*>(::operator new[](sizeof(T)*(i_top+1)));
+            for(int i = 0; i <= i_top; ++i ){
+                new (&new_array[i]) T(val[i]);
+                array[i].~T();
+            }
+            ::operator delete[](array);
+            array = new_array;
+            return *this;
+        }
+        
+        array_vector& operator=(const array_vector& val) noexcept { 
             this->i_top = val.get_count();
 
             T* new_array = static_cast<T*>(::operator new[](sizeof(T)*(i_top+1)));

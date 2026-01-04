@@ -21,7 +21,7 @@ int preprocess(const char* path) {
     rewind(input);
 
     if(pverbose) std::print("Expanding macros\n");
-    array_vector<FILE*> included;
+
     array_vector<macro_def> macros;
     array_vector<static_def> statics;
     array_vector<f_string> constants;
@@ -220,7 +220,7 @@ int preprocess(const char* path) {
 /**
  * Takes the list of macros, the current macro to insert, and outputs the fully expanded macro to the provided output file
  */
-int macro_replace(array_vector<macro_def>& macro_list, int macro_index, f_string codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
+int macro_replace(array_vector<macro_def> macro_list, int macro_index, f_string codeline, int linenum, FILE* output, FILE* macr_mirror, int layer, char* prefix) {
     const macro_def& curr_macro = macro_list[macro_index];
 
     if (layer > recursion_limit) {
@@ -243,54 +243,63 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, f_string
     // grab the provided arg values
     array_vector<f_string> constants;
     array_vector<f_string> const_values;
-    int arg_scan_index = strlen(curr_macro.macro_name) + 1;
 
-    for(int arg_loop_index = 0; arg_loop_index <= (curr_macro.arg_count - 1); arg_loop_index++) {
-        // allocate memory and add the argument name as a constant
-        constants += curr_macro.arg_names[arg_loop_index];
-        const_values.expand();
+    // extracts argument names and values
+    [=, &const_values, &constants, &cleanline] 
+    {
+        int arg_scan_index = strlen(curr_macro.macro_name) + 1;
 
-        if (cleanline.ssplit(const_values[arg_loop_index], &arg_scan_index, " ") == 0) {
-            const_values[arg_loop_index] = const_values[arg_loop_index].sclean();
+        for(int arg_loop_index = 0; arg_loop_index <= (curr_macro.arg_count - 1); arg_loop_index++) {
+            // allocate memory and add the argument name as a constant
+            constants += curr_macro.arg_names[arg_loop_index];
+            const_values.expand();
+
+            if (cleanline.ssplit(const_values[arg_loop_index], &arg_scan_index, " ") == 0) {
+                const_values[arg_loop_index] = const_values[arg_loop_index].sclean();
+            }
+            if(pverbose) std::println("arg '{}' has value '{}'", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
         }
-        if(pverbose) std::println("arg '{}' has value '{}'", curr_macro.arg_names[arg_loop_index], const_values[arg_loop_index]);
-    }
+    }();
+    
 
     // first, filter through the file to define all constants as well as rename inner labels (via constants)
-    //FILE* filterfile = tmpfile();
-    f_string filter_line;
-    for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
-        f_string curr_macro_line = macro_list[macro_index].body[macro_line];
-        filter_line = "";
-        // next, parse the line for macros, definitions, or labels
-        if (curr_macro_line.smatch("DEFINE ")) {
-            int def_index = strlen("DEFINE ");
-            curr_macro_line.ssplit(constants.expand(), &def_index, " ");
+    [=, &constants, &const_values]
+    {
+        f_string filter_line;
+        for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
+            f_string curr_macro_line = macro_list[macro_index].body[macro_line];
+            filter_line = "";
+            // next, parse the line for macros, definitions, or labels
+            if (curr_macro_line.smatch("DEFINE ")) {
+                int def_index = strlen("DEFINE ");
+                curr_macro_line.ssplit(constants.expand(), &def_index, " ");
 
-            // extracts the constant value as a string into const_val
-            const_values += curr_macro_line.slice(def_index).sclean();
-            if(pverbose) std::println("New constant '{}' with value '{}'\n", constants(), const_values());
-        } else if (has_label(curr_macro_line, filter_line) == 1) {
-            int not_arg = 1;
-            for (int arg_check = 0; arg_check < curr_macro.arg_count && not_arg; arg_check++){
-                if (filter_line == constants[arg_check]) {
-                    not_arg = 0;
+                // extracts the constant value as a string into const_val
+                const_values += curr_macro_line.slice(def_index).sclean();
+                if(pverbose) std::println("New constant '{}' with value '{}'\n", constants(), const_values());
+            } else if (has_label(curr_macro_line, filter_line) == 1) {
+                int not_arg = 1;
+                for (int arg_check = 0; arg_check < curr_macro.arg_count && not_arg; arg_check++){
+                    if (filter_line == constants[arg_check]) {
+                        not_arg = 0;
+                    }
+                }
+
+                if (not_arg) {
+                    constants += filter_line;
+
+                    // creates unique label tag
+                    f_string labeltag = std::format("{}_{}_{}_", layer, linenum, localprefix).c_str();
+                    labeltag += filter_line;
+                    const_values += labeltag;
+                    if(pverbose) std::println("New label '{}' with value '{}'", constants(), const_values());
                 }
             }
-
-            if (not_arg) {
-                constants += filter_line;
-
-                // creates unique label tag
-                f_string labeltag = std::format("{}_{}_{}_", layer, linenum, localprefix).c_str();
-                labeltag += filter_line;
-                const_values += labeltag;
-                if(pverbose) std::println("New label '{}' with value '{}'", constants(), const_values());
-            }
         }
-    }
+    }();
+    
     FILE* localfile = tmpfile();
-    // stores the current line, with constant values replaced
+    {
     f_string filled_line;
     // second, go through the file again and replace all constants and labels, and expand all macros
     for (int macro_line = 0; macro_line < curr_macro.line_count; macro_line++) {
@@ -313,7 +322,7 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, f_string
             if (end == 0) raw_segment = curr_macro_line.slice(segment_index).sclean();
             curr_segment = raw_segment.sclean_i(':', 0);
 
-           
+        
             if (raw_segment != curr_segment) {
                 label = 1;
             }
@@ -334,7 +343,6 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, f_string
             filled_line += " ";
         
         }
-        //printf("%s", filled_line);
         
         if (!filled_line.smatch("DEFINE ")) {
             int macro_found = 0;
@@ -349,6 +357,10 @@ int macro_replace(array_vector<macro_def>& macro_list, int macro_index, f_string
             }
         }
     }
+    }
+
+    // stores the current line, with constant values replaced
+    
     rewind(localfile);
     f_string rawline = "# ";
     rawline += cleanline + '\n';

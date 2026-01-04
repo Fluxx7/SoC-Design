@@ -4,7 +4,6 @@
 #include <format>
 #include <iostream>
 #include <utility>
-#include <vector>
 #include <type_traits>
 
 #pragma once

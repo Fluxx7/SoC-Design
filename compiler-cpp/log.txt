@@ -1,0 +1,3956 @@
+Preprocessor start
+Expanding macros
+Preprocessor: Constant 'SP' defined as 0
+Preprocessor: Constant 'ARGS' defined as 1
+Preprocessor: Constant 'LOCALS' defined as 2
+Preprocessor: Constant 'RETVAL' defined as 6
+macro name: init.stack, arg_count: 0, line_count: 4
+macro count: 0
+
+macro name: push.D, arg_count: 0, line_count: 4
+macro count: 1
+
+macro name: pop.D, arg_count: 0, line_count: 3
+macro count: 2
+
+macro name: pop.A, arg_count: 0, line_count: 3
+macro count: 3
+
+macro name: push.value, arg_count: 1, line_count: 3
+macro count: 4
+
+macro name: add, arg_count: 0, line_count: 4
+macro count: 5
+
+macro name: sub, arg_count: 0, line_count: 4
+macro count: 6
+
+macro name: neg, arg_count: 0, line_count: 3
+macro count: 7
+
+macro name: and, arg_count: 0, line_count: 4
+macro count: 8
+
+macro name: or, arg_count: 0, line_count: 4
+macro count: 9
+
+macro name: eq, arg_count: 0, line_count: 14
+macro count: 10
+
+macro name: gt, arg_count: 0, line_count: 14
+macro count: 11
+
+macro name: gt, arg_count: 0, line_count: 14
+macro count: 12
+
+macro name: lt, arg_count: 0, line_count: 14
+macro count: 13
+
+macro name: not, arg_count: 0, line_count: 3
+macro count: 14
+
+macro name: goto, arg_count: 1, line_count: 2
+macro count: 15
+
+macro name: if.goto, arg_count: 1, line_count: 3
+macro count: 16
+
+macro name: push.memory, arg_count: 0, line_count: 3
+macro count: 17
+
+macro name: pop.memory, arg_count: 0, line_count: 3
+macro count: 18
+
+macro name: push.static, arg_count: 1, line_count: 3
+macro count: 19
+
+macro name: pop.static, arg_count: 1, line_count: 3
+macro count: 20
+
+macro name: call, arg_count: 2, line_count: 28
+macro count: 21
+
+macro name: function, arg_count: 2, line_count: 7
+macro count: 22
+
+macro name: return, arg_count: 0, line_count: 5
+macro count: 23
+
+macro name: push.argument, arg_count: 1, line_count: 4
+macro count: 24
+
+macro name: pop.argument, arg_count: 1, line_count: 17
+macro count: 25
+
+macro name: push.local, arg_count: 1, line_count: 7
+macro count: 26
+
+macro name: pop.local, arg_count: 1, line_count: 9
+macro count: 27
+
+starting macro 'init.stack'
+Preprocessor: macro 'init.stack' expanded--
+
+starting macro 'goto'
+arg 'label' has value 'main'
+constant 'label' with value 'main' used
+Preprocessor: macro 'goto' expanded--
+
+starting macro 'call'
+arg 'functionName' has value 'waitSync'
+arg 'argumentCount' has value '0'
+New constant 'TEMP' with value '3'
+
+New label 'returnAddress' with value '0_14_call_returnAddress'
+constant 'TEMP' with value '3' used
+inner macro: 'push.static'
+
+arg 'address' has value 'ARGS'
+constant 'address' with value 'ARGS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'argumentCount' with value '0' used
+inner macro: 'push.static'
+
+arg 'address' has value 'LOCALS'
+constant 'address' with value 'LOCALS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'returnAddress' with value '0_14_call_returnAddress' used
+inner macro: 'push.value'
+
+arg 'value' has value '0_14_call_returnAddress'
+constant 'value' with value '0_14_call_returnAddress' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded
+constant 'functionName' with value 'waitSync' used
+inner macro: 'goto'
+
+arg 'label' has value 'waitSync'
+constant 'label' with value 'waitSync' used
+Preprocessor: macro 'goto' expanded
+constant 'returnAddress' with value '0_14_call_returnAddress' used
+inner macro: 'pop.static'
+
+arg 'address' has value 'LOCALS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'LOCALS' used
+Preprocessor: macro 'pop.static' expanded
+constant 'TEMP' with value '3' used
+inner macro: 'pop.static'
+
+arg 'address' has value '3'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value '3' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'ARGS'
+constant 'address' with value 'ARGS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+constant 'TEMP' with value '3' used
+inner macro: 'push.static'
+
+arg 'address' has value '3'
+constant 'address' with value '3' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'ARGS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'ARGS' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'RETVAL'
+constant 'address' with value 'RETVAL' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+Preprocessor: macro 'call' expanded--
+
+starting macro 'pop.D'
+Preprocessor: macro 'pop.D' expanded--
+
+starting macro 'call'
+arg 'functionName' has value 'render'
+arg 'argumentCount' has value '0'
+New constant 'TEMP' with value '3'
+
+New label 'returnAddress' with value '0_18_call_returnAddress'
+constant 'TEMP' with value '3' used
+inner macro: 'push.static'
+
+arg 'address' has value 'ARGS'
+constant 'address' with value 'ARGS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'argumentCount' with value '0' used
+inner macro: 'push.static'
+
+arg 'address' has value 'LOCALS'
+constant 'address' with value 'LOCALS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'returnAddress' with value '0_18_call_returnAddress' used
+inner macro: 'push.value'
+
+arg 'value' has value '0_18_call_returnAddress'
+constant 'value' with value '0_18_call_returnAddress' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded
+constant 'functionName' with value 'render' used
+inner macro: 'goto'
+
+arg 'label' has value 'render'
+constant 'label' with value 'render' used
+Preprocessor: macro 'goto' expanded
+constant 'returnAddress' with value '0_18_call_returnAddress' used
+inner macro: 'pop.static'
+
+arg 'address' has value 'LOCALS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'LOCALS' used
+Preprocessor: macro 'pop.static' expanded
+constant 'TEMP' with value '3' used
+inner macro: 'pop.static'
+
+arg 'address' has value '3'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value '3' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'ARGS'
+constant 'address' with value 'ARGS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+constant 'TEMP' with value '3' used
+inner macro: 'push.static'
+
+arg 'address' has value '3'
+constant 'address' with value '3' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'ARGS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'ARGS' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'RETVAL'
+constant 'address' with value 'RETVAL' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+Preprocessor: macro 'call' expanded--
+
+starting macro 'function'
+arg 'functionName' has value 'waitSync'
+arg 'localsCount' has value '1'
+constant 'functionName' with value 'waitSync' used
+inner macro: 'push.static'
+
+arg 'address' has value 'SP'
+constant 'address' with value 'SP' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'LOCALS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'LOCALS' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'SP'
+constant 'address' with value 'SP' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'localsCount' with value '1' used
+inner macro: 'push.value'
+
+arg 'value' has value '1'
+constant 'value' with value '1' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded
+inner macro: 'add'
+
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'add' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+Preprocessor: macro 'function' expanded--
+
+starting macro 'push.D'
+Preprocessor: macro 'push.D' expanded--
+
+starting macro 'pop.local'
+arg 'index' has value '0'
+constant 'index' with value '0' used
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+Preprocessor: macro 'pop.local' expanded--
+
+starting macro 'push.D'
+Preprocessor: macro 'push.D' expanded--
+
+starting macro 'push.local'
+arg 'index' has value '0'
+constant 'index' with value '0' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.local' expanded--
+
+starting macro 'pop.D'
+Preprocessor: macro 'pop.D' expanded--
+
+starting macro 'pop.A'
+Preprocessor: macro 'pop.A' expanded--
+
+starting macro 'push.D'
+Preprocessor: macro 'push.D' expanded--
+
+starting macro 'return'
+inner macro: 'pop.static'
+
+arg 'address' has value 'RETVAL'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'RETVAL' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'LOCALS'
+constant 'address' with value 'LOCALS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+Preprocessor: macro 'return' expanded--
+
+starting macro 'function'
+arg 'functionName' has value 'render'
+arg 'localsCount' has value '1'
+constant 'functionName' with value 'render' used
+inner macro: 'push.static'
+
+arg 'address' has value 'SP'
+constant 'address' with value 'SP' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'LOCALS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'LOCALS' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'SP'
+constant 'address' with value 'SP' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'localsCount' with value '1' used
+inner macro: 'push.value'
+
+arg 'value' has value '1'
+constant 'value' with value '1' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded
+inner macro: 'add'
+
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'add' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+Preprocessor: macro 'function' expanded--
+
+starting macro 'push.value'
+arg 'value' has value '0'
+constant 'value' with value '0' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded--
+
+starting macro 'pop.local'
+arg 'index' has value '0'
+constant 'index' with value '0' used
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+Preprocessor: macro 'pop.local' expanded--
+
+starting macro 'call'
+arg 'functionName' has value 'waitSync'
+arg 'argumentCount' has value '0'
+New constant 'TEMP' with value '3'
+
+New label 'returnAddress' with value '0_62_call_returnAddress'
+constant 'TEMP' with value '3' used
+inner macro: 'push.static'
+
+arg 'address' has value 'ARGS'
+constant 'address' with value 'ARGS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'argumentCount' with value '0' used
+inner macro: 'push.static'
+
+arg 'address' has value 'LOCALS'
+constant 'address' with value 'LOCALS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+constant 'returnAddress' with value '0_62_call_returnAddress' used
+inner macro: 'push.value'
+
+arg 'value' has value '0_62_call_returnAddress'
+constant 'value' with value '0_62_call_returnAddress' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded
+constant 'functionName' with value 'waitSync' used
+inner macro: 'goto'
+
+arg 'label' has value 'waitSync'
+constant 'label' with value 'waitSync' used
+Preprocessor: macro 'goto' expanded
+constant 'returnAddress' with value '0_62_call_returnAddress' used
+inner macro: 'pop.static'
+
+arg 'address' has value 'LOCALS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'LOCALS' used
+Preprocessor: macro 'pop.static' expanded
+constant 'TEMP' with value '3' used
+inner macro: 'pop.static'
+
+arg 'address' has value '3'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value '3' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'ARGS'
+constant 'address' with value 'ARGS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+constant 'TEMP' with value '3' used
+inner macro: 'push.static'
+
+arg 'address' has value '3'
+constant 'address' with value '3' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'ARGS'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'ARGS' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'RETVAL'
+constant 'address' with value 'RETVAL' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+Preprocessor: macro 'call' expanded--
+
+starting macro 'pop.D'
+Preprocessor: macro 'pop.D' expanded--
+
+starting macro 'push.local'
+arg 'index' has value '0'
+constant 'index' with value '0' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.local' expanded--
+
+starting macro 'push.value'
+arg 'value' has value '1'
+constant 'value' with value '1' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.value' expanded--
+
+starting macro 'add'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'add' expanded--
+
+starting macro 'pop.local'
+arg 'index' has value '0'
+constant 'index' with value '0' used
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+Preprocessor: macro 'pop.local' expanded--
+
+starting macro 'goto'
+arg 'label' has value 'render_loop'
+constant 'label' with value 'render_loop' used
+Preprocessor: macro 'goto' expanded--
+
+starting macro 'return'
+inner macro: 'pop.static'
+
+arg 'address' has value 'RETVAL'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'RETVAL' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'push.static'
+
+arg 'address' has value 'LOCALS'
+constant 'address' with value 'LOCALS' used
+inner macro: 'push.D'
+
+Preprocessor: macro 'push.D' expanded
+Preprocessor: macro 'push.static' expanded
+inner macro: 'pop.static'
+
+arg 'address' has value 'SP'
+inner macro: 'pop.D'
+
+Preprocessor: macro 'pop.D' expanded
+constant 'address' with value 'SP' used
+Preprocessor: macro 'pop.static' expanded
+inner macro: 'pop.A'
+
+Preprocessor: macro 'pop.A' expanded
+Preprocessor: macro 'return' expanded--
+
+Finding statements, constants, and labels...
+Preprocessor: Constant 'addr' defined as 24577
+Preprocessor: Constant 'dispAddr' defined as 24578
+Preprocessor: Label 'main' defined as linenum 10
+Preprocessor: Label '0_14_call_returnAddress' defined as linenum 35
+Preprocessor: Label '0_18_call_returnAddress' defined as linenum 103
+Preprocessor: Label 'waitSync' defined as linenum 147
+Preprocessor: Label 'wait_sync' defined as linenum 186
+Preprocessor: Label 'loop_sync' defined as linenum 205
+Preprocessor: Label 'render' defined as linenum 260
+Preprocessor: Label 'render_loop' defined as linenum 316
+Preprocessor: Label '0_62_call_returnAddress' defined as linenum 341
+Preprocessor: Label 'render_return' defined as linenum 430
+Preprocessor: Label 'end' defined as linenum 450
+Replacing constants and labels
+SP is const with value 0
+dispAddr is const with value 24578
+main is const with value 10
+Preprocessor: label found
+ARGS is const with value 1
+SP is const with value 0
+ARGS is const with value 1
+LOCALS is const with value 2
+SP is const with value 0
+0_14_call_returnAddress is const with value 35
+SP is const with value 0
+waitSync is const with value 147
+Preprocessor: label found
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+ARGS is const with value 1
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+ARGS is const with value 1
+RETVAL is const with value 6
+SP is const with value 0
+SP is const with value 0
+end is const with value 450
+ARGS is const with value 1
+SP is const with value 0
+ARGS is const with value 1
+LOCALS is const with value 2
+SP is const with value 0
+0_18_call_returnAddress is const with value 103
+SP is const with value 0
+render is const with value 260
+Preprocessor: label found
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+ARGS is const with value 1
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+ARGS is const with value 1
+RETVAL is const with value 6
+SP is const with value 0
+dispAddr is const with value 24578
+main is const with value 10
+Preprocessor: label found
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+Preprocessor: label found
+addr is const with value 24577
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+Preprocessor: label found
+addr is const with value 24577
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+loop_sync is const with value 205
+addr is const with value 24577
+SP is const with value 0
+SP is const with value 0
+RETVAL is const with value 6
+LOCALS is const with value 2
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+Preprocessor: label found
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+Preprocessor: label found
+ARGS is const with value 1
+SP is const with value 0
+ARGS is const with value 1
+LOCALS is const with value 2
+SP is const with value 0
+0_62_call_returnAddress is const with value 341
+SP is const with value 0
+waitSync is const with value 147
+Preprocessor: label found
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+ARGS is const with value 1
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+ARGS is const with value 1
+RETVAL is const with value 6
+SP is const with value 0
+SP is const with value 0
+dispAddr is const with value 24578
+LOCALS is const with value 2
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+LOCALS is const with value 2
+SP is const with value 0
+render_return is const with value 430
+render_loop is const with value 316
+Preprocessor: label found
+SP is const with value 0
+RETVAL is const with value 6
+LOCALS is const with value 2
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+SP is const with value 0
+Preprocessor: label found
+
+Line: A=256
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 256
+Operation: 256
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0x4000
+Register assignments: [A]
+instruction type 1
+op is hex immediate of value 16384
+Operation: 0x4000
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=24578
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 24578
+Operation: 24578
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=10
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 10
+Operation: 10
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=D-A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: - post-op: A
+Operation: D-A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=35
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 35
+Operation: 35
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=147
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 147
+Operation: 147
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=3
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 3
+Operation: 3
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=3
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 3
+Operation: 3
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=6
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 6
+Operation: 6
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=450
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 450
+Operation: 450
+
+
+Line: D;JEQ
+instruction type 2
+op is copying value of D
+Operation: D
+
+Jump condition: JEQ
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=D-A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: - post-op: A
+Operation: D-A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=103
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 103
+Operation: 103
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=260
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 260
+Operation: 260
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=3
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 3
+Operation: 3
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=3
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 3
+Operation: 3
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=6
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 6
+Operation: 6
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0x20
+Register assignments: [A]
+instruction type 1
+op is hex immediate of value 32
+Operation: 0x20
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=24578
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 24578
+Operation: 24578
+
+
+Line: *A=D+*A
+Register assignments: [*A]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=10
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 10
+Operation: 10
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: D=D+A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: A
+Operation: D+A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=24577
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 24577
+Operation: 24577
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D&A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: & post-op: A
+Operation: D&A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D+*A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=D+A
+Register assignments: [A]
+instruction type 1
+pre-op: D op: + post-op: A
+Operation: D+A
+
+
+Line: D=A-D
+Register assignments: [D]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: A=A-D
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=24577
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 24577
+Operation: 24577
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D&A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: & post-op: A
+Operation: D&A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D+*A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=D
+Register assignments: [A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: D=D-A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: - post-op: A
+Operation: D-A
+
+
+Line: A=205
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 205
+Operation: 205
+
+
+Line: D;JEQ
+instruction type 2
+op is copying value of D
+Operation: D
+
+Jump condition: JEQ
+
+Line: A=24577
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 24577
+Operation: 24577
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=D&A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: & post-op: A
+Operation: D&A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=6
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 6
+Operation: 6
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: D=D+A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: A
+Operation: D+A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D+*A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=D+A
+Register assignments: [A]
+instruction type 1
+pre-op: D op: + post-op: A
+Operation: D+A
+
+
+Line: D=A-D
+Register assignments: [D]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: A=A-D
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=D-A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: - post-op: A
+Operation: D-A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=341
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 341
+Operation: 341
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=147
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 147
+Operation: 147
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=3
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 3
+Operation: 3
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=3
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 3
+Operation: 3
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=6
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 6
+Operation: 6
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=24578
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 24578
+Operation: 24578
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: D=D+*A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: *A=D+*A
+Register assignments: [*A]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D+*A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=D
+Register assignments: [A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=1
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 1
+Operation: 1
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: D=D+A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: A
+Operation: D+A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: D=A
+Register assignments: [D]
+instruction type 1
+op is copying value of A
+Operation: A
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=D+*A
+Register assignments: [D]
+instruction type 1
+pre-op: D op: + post-op: *A
+Operation: D+*A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=D+A
+Register assignments: [A]
+instruction type 1
+pre-op: D op: + post-op: A
+Operation: D+A
+
+
+Line: D=A-D
+Register assignments: [D]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: A=A-D
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=16
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 16
+Operation: 16
+
+
+Line: D=A-D
+Register assignments: [D]
+instruction type 1
+pre-op: A op: - post-op: D
+Operation: A-D
+
+
+Line: A=430
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 430
+Operation: 430
+
+
+Line: D;JEQ
+instruction type 2
+op is copying value of D
+Operation: D
+
+Jump condition: JEQ
+
+Line: A=316
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 316
+Operation: 316
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=6
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 6
+Operation: 6
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=2
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 2
+Operation: 2
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A+1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: + post-op: 1
+Operation: *A+1
+
+
+Line: A=A-1
+Register assignments: [A]
+instruction type 1
+pre-op: A op: - post-op: 1
+Operation: A-1
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: D=*A
+Register assignments: [D]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: *A=D
+Register assignments: [*A]
+instruction type 1
+op is copying value of D
+Operation: D
+
+
+Line: A=0
+Register assignments: [A]
+instruction type 1
+op is decimal immediate of value 0
+Operation: 0
+
+
+Line: A*A=*A-1
+Register assignments: [A*A]
+instruction type 1
+pre-op: *A op: - post-op: 1
+Operation: *A-1
+
+
+Line: A=*A
+Register assignments: [A]
+instruction type 1
+op is copying value of *A
+Operation: *A
+
+
+Line: JMP
+instruction type 0
+Jump condition: JMP
+./tests/test_macro.txt compiled successfully, saved to testing.txt
